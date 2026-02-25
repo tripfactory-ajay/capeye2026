@@ -4,58 +4,60 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CapeEye | Auto Capital Command Centre</title>
-<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700;800&family=Barlow+Condensed:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="./firebase-config.js"></script>
 <script src="./ac-data.js"></script>
 <style>
-:root {
-  --bg: #0b0e15;
-  --bg2: #111622;
-  --bg3: #1a2035;
-  --border: rgba(255,255,255,0.07);
-  --accent: #e8b84b;
-  --accent2: #3b7ff5;
-  --green: #22c55e;
-  --red: #ef4444;
-  --orange: #f97316;
-  --text: #f1f5f9;
-  --muted: #64748b;
-  --card-radius: 12px;
+:root{
+  --bg:#f4f6f9;--bg2:#fff;--bg3:#f0f2f6;--bg4:#eef0f5;
+  --border:#e2e6ed;--border2:#c8d0dc;
+  --red:#C8102E;--red2:#a00d24;--red-light:rgba(200,16,46,.07);
+  --blue:#003DA5;--blue2:#002d7a;--blue-light:rgba(0,61,165,.07);
+  --gold:#d4980a;--green:#1a7f37;--green-light:rgba(26,127,55,.07);
+  --orange:#d4600a;--purple:#6d28d9;
+  --text:#0f1923;--text2:#3d4d5c;--muted:#7a8fa6;
+  --shadow:0 1px 3px rgba(0,0,0,.07),0 4px 16px rgba(0,0,0,.04);
+  --shadow-md:0 4px 12px rgba(0,0,0,.1),0 12px 40px rgba(0,0,0,.07);
+  --card-radius:12px;
 }
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased}
+.header{background:var(--blue);padding:0 32px;height:68px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;box-shadow:0 2px 16px rgba(0,61,165,.25)}
+.logo-area{display:flex;align-items:center;gap:16px}
+.logo-area img{height:42px;filter:brightness(0) invert(1)}
+.logo-divider{width:1px;height:34px;background:rgba(255,255,255,.2)}
+.system-name{font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.8)}
+.nav{display:flex;gap:2px}
+.nav a{padding:8px 13px;border-radius:7px;font-size:13px;font-weight:500;color:rgba(255,255,255,.72);text-decoration:none;transition:all .18s;display:flex;align-items:center;gap:6px}
+.nav a i{font-size:12px}
+.nav a:hover{background:rgba(255,255,255,.13);color:#fff}
+.nav a.active{background:var(--red);color:#fff;font-weight:700}
+.header-right{display:flex;align-items:center;gap:12px}
+.user-badge{background:rgba(255,255,255,.15);color:#fff;font-weight:600;font-size:11px;padding:5px 14px;border-radius:20px;letter-spacing:1px;text-transform:uppercase;border:1px solid rgba(255,255,255,.2)}
+.btn-logout{background:transparent;border:1px solid rgba(255,255,255,.25);color:rgba(255,255,255,.8);padding:6px 12px;border-radius:7px;cursor:pointer;font-size:12px;font-family:'DM Sans',sans-serif;transition:all .2s}
+.btn-logout:hover{background:rgba(255,255,255,.1);color:#fff}
+
+
 * { margin:0; padding:0; box-sizing:border-box; }
-body { font-family:'Barlow',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
+
 
 /* HEADER */
-.header {
-  background:var(--bg2);
-  border-bottom:1px solid var(--border);
-  padding:0 28px;
-  height:64px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  position:sticky;
-  top:0;
-  z-index:100;
-}
-.logo-area { display:flex; align-items:center; gap:14px; }
+
+
 .logo-area img { height:40px; width:auto; }
 .logo-divider { width:1px; height:32px; background:var(--border); }
-.system-name { font-family:'Barlow Condensed',sans-serif; font-size:22px; font-weight:700; letter-spacing:2px; color:var(--accent); }
-.nav { display:flex; gap:4px; }
-.nav a { position:relative;
-  padding:8px 16px; border-radius:8px; font-size:14px; font-weight:500;
-  color:var(--muted); text-decoration:none; transition:all .2s;
-}
-.nav a:hover, .nav a.active { background:var(--bg3); color:var(--text); }
-.nav a.active { color:var(--accent); }
+
+
+
+
+.nav a.active { color:var(--gold); }
 .header-right { display:flex; align-items:center; gap:12px; }
-.user-badge { background:var(--accent); color:#000; font-weight:700; font-size:12px; padding:4px 12px; border-radius:20px; letter-spacing:1px; }
+
 .btn-sm { padding:7px 14px; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer; border:none; font-family:'Barlow',sans-serif; }
 .btn-outline { background:transparent; border:1px solid var(--border); color:var(--muted); transition:all .2s; }
-.btn-outline:hover { border-color:var(--accent); color:var(--accent); }
+.btn-outline:hover { border-color:var(--gold); color:var(--gold); }
 
 /* MAIN */
 .main { max-width:1600px; margin:0 auto; padding:28px; }
@@ -74,7 +76,7 @@ body { font-family:'Barlow',sans-serif; background:var(--bg); color:var(--text);
 .kpi-card:hover { border-color:rgba(255,255,255,0.15); }
 .kpi-card::before {
   content:''; position:absolute; top:0; left:0; right:0; height:3px;
-  background:var(--kpi-color, var(--accent));
+  background:var(--kpi-color, var(--gold));
 }
 .kpi-label { font-size:11px; font-weight:600; letter-spacing:1.5px; color:var(--muted); text-transform:uppercase; margin-bottom:10px; }
 .kpi-value { font-family:'Barlow Condensed',sans-serif; font-size:36px; font-weight:800; line-height:1; }
@@ -112,8 +114,8 @@ body { font-family:'Barlow',sans-serif; background:var(--bg); color:var(--text);
 .badge-green { background:rgba(34,197,94,.15); color:var(--green); }
 .badge-red { background:rgba(239,68,68,.15); color:var(--red); }
 .badge-orange { background:rgba(249,115,22,.15); color:var(--orange); }
-.badge-blue { background:rgba(59,127,245,.15); color:var(--accent2); }
-.badge-yellow { background:rgba(232,184,75,.15); color:var(--accent); }
+.badge-blue { background:rgba(59,127,245,.15); color:var(--blue); }
+.badge-yellow { background:rgba(232,184,75,.15); color:var(--gold); }
 .badge-gray { background:rgba(100,116,139,.15); color:var(--muted); }
 
 /* STOCK REG */
@@ -134,15 +136,15 @@ body { font-family:'Barlow',sans-serif; background:var(--bg); color:var(--text);
 /* SEARCH BAR */
 .search-bar { display:flex; gap:10px; margin-bottom:20px; }
 .search-input { flex:1; background:var(--bg2); border:1px solid var(--border); border-radius:8px; padding:10px 16px; color:var(--text); font-size:14px; font-family:'Barlow',sans-serif; outline:none; }
-.search-input:focus { border-color:var(--accent2); }
+.search-input:focus { border-color:var(--blue); }
 .search-input::placeholder { color:var(--muted); }
 .filter-select { background:var(--bg2); border:1px solid var(--border); border-radius:8px; padding:10px 14px; color:var(--text); font-size:13px; font-family:'Barlow',sans-serif; outline:none; cursor:pointer; }
 
 /* QUICK ACTIONS */
 .quick-actions { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
 .qa-btn { background:var(--bg3); border:1px solid var(--border); border-radius:10px; padding:16px; text-align:center; cursor:pointer; text-decoration:none; color:var(--text); transition:all .2s; display:block; }
-.qa-btn:hover { border-color:var(--accent); transform:translateY(-1px); }
-.qa-btn i { font-size:22px; color:var(--accent); display:block; margin-bottom:8px; }
+.qa-btn:hover { border-color:var(--gold); transform:translateY(-1px); }
+.qa-btn i { font-size:22px; color:var(--gold); display:block; margin-bottom:8px; }
 .qa-btn span { font-size:12px; font-weight:600; letter-spacing:.5px; }
 
 /* MOT WARNING */
@@ -160,22 +162,24 @@ body { font-family:'Barlow',sans-serif; background:var(--bg); color:var(--text);
 
 <header class="header">
   <div class="logo-area">
-    <img src="./autocapital-logo.png" alt="Auto Capital">
+    <img src="./autocapital-logo.png" alt="Auto Capital" onerror="this.style.display='none'">
     <div class="logo-divider"></div>
-    <span class="system-name">CAPEYE</span>
+    <span class="system-name">Back Office System</span>
   </div>
-    <nav class="nav">
+  <nav class="nav">
     <a href="./index.html" class="active"><i class="fas fa-th-large"></i> Dashboard</a>
     <a href="./inventory.html"><i class="fas fa-car"></i> Inventory</a>
     <a href="./workflow.html"><i class="fas fa-tasks"></i> Workflow</a>
     <a href="./alerts.html"><i class="fas fa-bell"></i> Alerts</a>
+    <a href="./analytics.html"><i class="fas fa-chart-bar"></i> Analytics</a>
     <a href="./marketing.html"><i class="fas fa-chart-line"></i> Marketing</a>
+    <a href="./keys.html"><i class="fas fa-key"></i> Keys</a>
     <a href="./team.html"><i class="fas fa-users"></i> Team</a>
     <a href="./admin.html"><i class="fas fa-cog"></i> Admin</a>
   </nav>
   <div class="header-right">
-    <span class="user-badge">AUTO CAPITAL</span>
-    <button class="btn-sm btn-outline" onclick="refreshDash()"><i class="fas fa-sync-alt"></i></button>
+    <span id="userBadge" class="user-badge">Auto Capital</span>
+    <button class="btn-logout" onclick="doLogout()"><i class="fas fa-sign-out-alt"></i></button>
   </div>
 </header>
 
@@ -195,7 +199,7 @@ body { font-family:'Barlow',sans-serif; background:var(--bg); color:var(--text);
   <!-- STATUS PILLS -->
   <div class="status-row">
     <div class="status-pill">
-      <div class="status-pill-icon" style="background:rgba(59,127,245,.15);color:var(--accent2)"><i class="fas fa-car"></i></div>
+      <div class="status-pill-icon" style="background:rgba(59,127,245,.15);color:var(--blue)"><i class="fas fa-car"></i></div>
       <div><div class="status-pill-label">Total Stock</div><div class="status-pill-val" id="kTotal">—</div></div>
     </div>
     <div class="status-pill">
@@ -215,7 +219,7 @@ body { font-family:'Barlow',sans-serif; background:var(--bg); color:var(--text);
       <div><div class="status-pill-label">Subject To</div><div class="status-pill-val" id="kSubject">—</div></div>
     </div>
     <div class="status-pill">
-      <div class="status-pill-icon" style="background:rgba(232,184,75,.15);color:var(--accent)"><i class="fas fa-pound-sign"></i></div>
+      <div class="status-pill-icon" style="background:rgba(232,184,75,.15);color:var(--gold)"><i class="fas fa-pound-sign"></i></div>
       <div><div class="status-pill-label">Total Value</div><div class="status-pill-val" id="kValue" style="font-size:20px">—</div></div>
     </div>
   </div>
@@ -225,7 +229,7 @@ body { font-family:'Barlow',sans-serif; background:var(--bg); color:var(--text);
     <!-- STOCK TABLE -->
     <div class="card">
       <div class="card-header">
-        <span class="card-title"><i class="fas fa-car" style="color:var(--accent2);margin-right:8px"></i>Live Stock</span>
+        <span class="card-title"><i class="fas fa-car" style="color:var(--blue);margin-right:8px"></i>Live Stock</span>
         <div style="display:flex;gap:8px">
           <input class="search-input" style="width:200px;padding:6px 12px;font-size:12px" id="stockSearch" placeholder="Search reg, make, model..." oninput="filterTable()">
           <select class="filter-select" id="statusFilter" onchange="filterTable()" style="font-size:12px;padding:6px 10px">
@@ -261,7 +265,7 @@ body { font-family:'Barlow',sans-serif; background:var(--bg); color:var(--text);
       <!-- MAKE CHART -->
       <div class="card">
         <div class="card-header">
-          <span class="card-title"><i class="fas fa-chart-pie" style="color:var(--accent);margin-right:8px"></i>Stock by Make</span>
+          <span class="card-title"><i class="fas fa-chart-pie" style="color:var(--gold);margin-right:8px"></i>Stock by Make</span>
         </div>
         <div class="card-body">
           <div class="chart-wrap"><canvas id="makeChart"></canvas></div>
@@ -287,7 +291,7 @@ body { font-family:'Barlow',sans-serif; background:var(--bg); color:var(--text);
   <div class="content-grid-3">
     <!-- STATUS CHART -->
     <div class="card">
-      <div class="card-header"><span class="card-title"><i class="fas fa-chart-doughnut" style="color:var(--accent);margin-right:8px"></i>Status Split</span></div>
+      <div class="card-header"><span class="card-title"><i class="fas fa-chart-doughnut" style="color:var(--gold);margin-right:8px"></i>Status Split</span></div>
       <div class="card-body">
         <div class="chart-wrap"><canvas id="statusChart"></canvas></div>
       </div>
@@ -295,7 +299,7 @@ body { font-family:'Barlow',sans-serif; background:var(--bg); color:var(--text);
 
     <!-- LOCATION CHART -->
     <div class="card">
-      <div class="card-header"><span class="card-title"><i class="fas fa-map-marker-alt" style="color:var(--accent2);margin-right:8px"></i>By Location</span></div>
+      <div class="card-header"><span class="card-title"><i class="fas fa-map-marker-alt" style="color:var(--blue);margin-right:8px"></i>By Location</span></div>
       <div class="card-body">
         <div class="chart-wrap"><canvas id="locationChart"></canvas></div>
       </div>
@@ -374,7 +378,7 @@ function buildTable() {
     const days = motDays(v.mot);
     const motColor = days === null ? '' : days < 0 ? 'color:var(--red)' : days < 30 ? 'color:var(--orange)' : 'color:var(--muted)';
     return `<tr>
-      <td style="font-weight:600;color:var(--accent2)">${v.stockNo}</td>
+      <td style="font-weight:600;color:var(--blue)">${v.stockNo}</td>
       <td><span class="reg-plate">${v.registration}</span></td>
       <td><div style="font-weight:600">${v.make} ${v.model}</div><div style="font-size:11px;color:var(--muted)">${v.fuel} · ${v.gearbox} · ${parseInt(v.mileage||0).toLocaleString()}mi</div></td>
       <td style="font-size:12px;color:var(--muted)">${v.location||'—'}</td>
@@ -444,7 +448,7 @@ function buildMOT() {
 
   document.getElementById('motCount').textContent = soon.length;
   document.getElementById('motList').innerHTML = soon.map(v => {
-    const color = v.days < 0 ? 'var(--red)' : v.days < 30 ? 'var(--orange)' : 'var(--accent)';
+    const color = v.days < 0 ? 'var(--red)' : v.days < 30 ? 'var(--orange)' : 'var(--gold)';
     const label = v.days < 0 ? 'EXPIRED' : `${v.days}d`;
     return `<div class="mot-item">
       <span class="reg-plate" style="font-size:11px">${v.registration}</span>
@@ -469,13 +473,12 @@ refreshNavBadge();setInterval(refreshNavBadge,10000);
 </script>
 
 
+
 <script>
-// ── No login required — review mode ─────────────────────────────
-document.addEventListener('DOMContentLoaded', function() {
-  var b = document.getElementById('userBadge');
-  if (b) b.textContent = 'AUTO CAPITAL';
+document.addEventListener('DOMContentLoaded',function(){
+  var b=document.getElementById('userBadge');if(b)b.textContent='AUTO CAPITAL';
 });
-function doLogout() { window.location.href = './login.html'; }
+function doLogout(){window.location.href='./login.html';}
 </script>
 </body>
 </html>

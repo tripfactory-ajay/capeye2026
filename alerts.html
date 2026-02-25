@@ -4,36 +4,65 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Alerts | CapeEye Auto Capital</title>
-<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700;800&family=Barlow+Condensed:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <script src="./firebase-config.js"></script>
 <script src="./ac-data.js"></script>
 <style>
-:root{--bg:#0b0e15;--bg2:#111622;--bg3:#1a2035;--border:rgba(255,255,255,0.07);--accent:#e8b84b;--accent2:#3b7ff5;--green:#22c55e;--red:#ef4444;--orange:#f97316;--text:#f1f5f9;--muted:#64748b;--card-radius:12px}
+:root{
+  --bg:#f4f6f9;--bg2:#fff;--bg3:#f0f2f6;--bg4:#eef0f5;
+  --border:#e2e6ed;--border2:#c8d0dc;
+  --red:#C8102E;--red2:#a00d24;--red-light:rgba(200,16,46,.07);
+  --blue:#003DA5;--blue2:#002d7a;--blue-light:rgba(0,61,165,.07);
+  --gold:#d4980a;--green:#1a7f37;--green-light:rgba(26,127,55,.07);
+  --orange:#d4600a;--purple:#6d28d9;
+  --text:#0f1923;--text2:#3d4d5c;--muted:#7a8fa6;
+  --shadow:0 1px 3px rgba(0,0,0,.07),0 4px 16px rgba(0,0,0,.04);
+  --shadow-md:0 4px 12px rgba(0,0,0,.1),0 12px 40px rgba(0,0,0,.07);
+  --card-radius:12px;
+}
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
-.header{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 28px;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
-.logo-area{display:flex;align-items:center;gap:14px}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased}
+.header{background:var(--blue);padding:0 32px;height:68px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;box-shadow:0 2px 16px rgba(0,61,165,.25)}
+.logo-area{display:flex;align-items:center;gap:16px}
+.logo-area img{height:42px;filter:brightness(0) invert(1)}
+.logo-divider{width:1px;height:34px;background:rgba(255,255,255,.2)}
+.system-name{font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.8)}
+.nav{display:flex;gap:2px}
+.nav a{padding:8px 13px;border-radius:7px;font-size:13px;font-weight:500;color:rgba(255,255,255,.72);text-decoration:none;transition:all .18s;display:flex;align-items:center;gap:6px}
+.nav a i{font-size:12px}
+.nav a:hover{background:rgba(255,255,255,.13);color:#fff}
+.nav a.active{background:var(--red);color:#fff;font-weight:700}
+.header-right{display:flex;align-items:center;gap:12px}
+.user-badge{background:rgba(255,255,255,.15);color:#fff;font-weight:600;font-size:11px;padding:5px 14px;border-radius:20px;letter-spacing:1px;text-transform:uppercase;border:1px solid rgba(255,255,255,.2)}
+.btn-logout{background:transparent;border:1px solid rgba(255,255,255,.25);color:rgba(255,255,255,.8);padding:6px 12px;border-radius:7px;cursor:pointer;font-size:12px;font-family:'DM Sans',sans-serif;transition:all .2s}
+.btn-logout:hover{background:rgba(255,255,255,.1);color:#fff}
+
+
+
+
+
+
 .logo-area img{height:40px;width:auto}
 .logo-divider{width:1px;height:32px;background:var(--border)}
-.system-name{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;letter-spacing:2px;color:var(--accent)}
-.nav{display:flex;gap:4px}
-.nav a{padding:8px 16px;border-radius:8px;font-size:14px;font-weight:500;color:var(--muted);text-decoration:none;transition:all .2s;position:relative}
-.nav a:hover,.nav a.active{background:var(--bg3);color:var(--text)}
-.nav a.active{color:var(--accent)}
+
+
+
+
+.nav a.active{color:var(--gold)}
 .alert-badge{position:absolute;top:5px;right:5px;background:var(--red);color:#fff;font-size:9px;font-weight:800;min-width:16px;height:16px;border-radius:8px;display:none;align-items:center;justify-content:center;padding:0 3px}
-.user-badge{background:var(--accent);color:#000;font-weight:700;font-size:12px;padding:4px 12px;border-radius:20px;letter-spacing:1px}
+
 .main{max-width:1600px;margin:0 auto;padding:28px}
 .page-title{margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
 .page-title h1{font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:800;letter-spacing:1px}
 .btn{padding:9px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:none;font-family:'Barlow',sans-serif;transition:all .2s;display:inline-flex;align-items:center;gap:8px}
 .btn-ghost{background:var(--bg3);border:1px solid var(--border);color:var(--muted)}.btn-ghost:hover{color:var(--text)}
-.btn-primary{background:var(--accent2);color:#fff}
+.btn-primary{background:var(--blue);color:#fff}
 .btn-danger{background:rgba(239,68,68,.15);color:var(--red);border:1px solid rgba(239,68,68,.3)}
 /* KPIs */
 .kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px}
 .kpi-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--card-radius);padding:20px;position:relative;overflow:hidden}
-.kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--kpi-color,var(--accent))}
+.kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--kpi-color,var(--gold))}
 .kpi-label{font-size:11px;font-weight:700;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;margin-bottom:10px}
 .kpi-val{font-family:'Barlow Condensed',sans-serif;font-size:40px;font-weight:800;line-height:1}
 .kpi-sub{font-size:12px;color:var(--muted);margin-top:6px}
@@ -41,16 +70,16 @@ body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--text);min-
 /* FILTERS */
 .filters{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap}
 .filter-btn{padding:7px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;border:1px solid var(--border);background:var(--bg3);color:var(--muted);transition:all .2s;letter-spacing:.5px}
-.filter-btn.active{border-color:var(--accent2);color:var(--accent2);background:rgba(59,127,245,.08)}
+.filter-btn.active{border-color:var(--blue);color:var(--blue);background:rgba(59,127,245,.08)}
 /* CARDS */
 .alerts-section{margin-bottom:32px}
 .section-title{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:800;letter-spacing:1px;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
 .alert-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--card-radius);padding:0;overflow:hidden;margin-bottom:10px;transition:border-color .2s}
 .alert-card:hover{border-color:rgba(255,255,255,.12)}
-.alert-card.unread{border-left:3px solid var(--accent2)}
+.alert-card.unread{border-left:3px solid var(--blue)}
 .alert-card.level-critical{border-left:3px solid var(--red)}
 .alert-card.level-warning{border-left:3px solid var(--orange)}
-.alert-card.level-info{border-left:3px solid var(--accent2)}
+.alert-card.level-info{border-left:3px solid var(--blue)}
 .alert-card.level-success{border-left:3px solid var(--green)}
 .ac-inner{padding:14px 18px;display:flex;align-items:flex-start;gap:14px}
 .ac-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;margin-top:2px}
@@ -62,9 +91,9 @@ body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--text);min-
 .ac-badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:12px;font-size:10px;font-weight:800;letter-spacing:.5px}
 .badge-red{background:rgba(239,68,68,.15);color:var(--red)}
 .badge-orange{background:rgba(249,115,22,.15);color:var(--orange)}
-.badge-blue{background:rgba(59,127,245,.15);color:var(--accent2)}
+.badge-blue{background:rgba(59,127,245,.15);color:var(--blue)}
 .badge-green{background:rgba(34,197,94,.15);color:var(--green)}
-.badge-yellow{background:rgba(232,184,75,.15);color:var(--accent)}
+.badge-yellow{background:rgba(232,184,75,.15);color:var(--gold)}
 .ac-actions{display:flex;gap:8px;margin-left:auto;flex-shrink:0}
 .ac-btn{padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;border:1px solid var(--border);background:var(--bg3);color:var(--muted);transition:all .2s;font-family:'Barlow',sans-serif}
 .ac-btn:hover{color:var(--text);border-color:rgba(255,255,255,.2)}
@@ -86,21 +115,24 @@ body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--text);min-
 <body>
 <header class="header">
   <div class="logo-area">
-    <img src="./autocapital-logo.png" alt="Auto Capital">
+    <img src="./autocapital-logo.png" alt="Auto Capital" onerror="this.style.display='none'">
     <div class="logo-divider"></div>
-    <span class="system-name">CAPEYE</span>
+    <span class="system-name">Back Office System</span>
   </div>
-    <nav class="nav">
+  <nav class="nav">
     <a href="./index.html"><i class="fas fa-th-large"></i> Dashboard</a>
     <a href="./inventory.html"><i class="fas fa-car"></i> Inventory</a>
     <a href="./workflow.html"><i class="fas fa-tasks"></i> Workflow</a>
     <a href="./alerts.html" class="active"><i class="fas fa-bell"></i> Alerts</a>
+    <a href="./analytics.html"><i class="fas fa-chart-bar"></i> Analytics</a>
     <a href="./marketing.html"><i class="fas fa-chart-line"></i> Marketing</a>
+    <a href="./keys.html"><i class="fas fa-key"></i> Keys</a>
     <a href="./team.html"><i class="fas fa-users"></i> Team</a>
     <a href="./admin.html"><i class="fas fa-cog"></i> Admin</a>
   </nav>
-  <div style="display:flex;gap:10px;align-items:center">
-    <span class="user-badge">AUTO CAPITAL</span>
+  <div class="header-right">
+    <span id="userBadge" class="user-badge">Auto Capital</span>
+    <button class="btn-logout" onclick="doLogout()"><i class="fas fa-sign-out-alt"></i></button>
   </div>
 </header>
 
@@ -130,13 +162,13 @@ body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--text);min-
       <div class="kpi-val" id="kMot">—</div>
       <div class="kpi-sub">Require immediate attention</div>
     </div>
-    <div class="kpi-card" style="--kpi-color:var(--accent)">
+    <div class="kpi-card" style="--kpi-color:var(--gold)">
       <i class="fas fa-pound-sign kpi-icon"></i>
       <div class="kpi-label">No Price Set</div>
       <div class="kpi-val" id="kNoPrice">—</div>
       <div class="kpi-sub">In-stock vehicles without a price</div>
     </div>
-    <div class="kpi-card" style="--kpi-color:var(--accent2)">
+    <div class="kpi-card" style="--kpi-color:var(--blue)">
       <i class="fas fa-exchange-alt kpi-icon"></i>
       <div class="kpi-label">Handovers Today</div>
       <div class="kpi-val" id="kHandovers">—</div>
@@ -179,7 +211,7 @@ body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--text);min-
 
   <!-- PRICE ALERTS -->
   <div class="alerts-section" id="priceSection">
-    <div class="section-title"><i class="fas fa-pound-sign" style="color:var(--accent)"></i> In-Stock Vehicles Without a Price</div>
+    <div class="section-title"><i class="fas fa-pound-sign" style="color:var(--gold)"></i> In-Stock Vehicles Without a Price</div>
     <div class="card">
       <div style="overflow-x:auto">
         <table class="ac-table">
@@ -192,7 +224,7 @@ body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--text);min-
 
   <!-- HANDOVER FEED -->
   <div class="alerts-section" id="handoverSection">
-    <div class="section-title"><i class="fas fa-exchange-alt" style="color:var(--accent2)"></i> Handover &amp; Activity Feed</div>
+    <div class="section-title"><i class="fas fa-exchange-alt" style="color:var(--blue)"></i> Handover &amp; Activity Feed</div>
     <div id="activityFeed"></div>
   </div>
 
@@ -257,7 +289,7 @@ function buildStuck() {
   }
   list.innerHTML = stuckVehicles.map(({v,cs,hrs,stage})=>{
     const level = hrs>=120?'critical':hrs>=72?'warning':'info';
-    const lvlColors={critical:'var(--red)',warning:'var(--orange)',info:'var(--accent)'};
+    const lvlColors={critical:'var(--red)',warning:'var(--orange)',info:'var(--gold)'};
     const lvlBg={critical:'rgba(239,68,68,.12)',warning:'rgba(249,115,22,.12)',info:'rgba(232,184,75,.12)'};
     const days = Math.floor(hrs/24), remHrs = hrs%24;
     return `<div class="alert-card level-${level}">
@@ -289,12 +321,12 @@ function buildMOT() {
     .sort((a,b)=>a.days-b.days);
   document.getElementById('motBadge').textContent = soon.length;
   document.getElementById('motTable').innerHTML = soon.map(v=>{
-    const color = v.days<0?'var(--red)':v.days<14?'var(--red)':v.days<30?'var(--orange)':'var(--accent)';
+    const color = v.days<0?'var(--red)':v.days<14?'var(--red)':v.days<30?'var(--orange)':'var(--gold)';
     const label = v.days<0?'EXPIRED':`${v.days}d`;
     const badgeClass = v.days<0?'badge-red':v.days<30?'badge-orange':'badge-yellow';
     return `<tr>
       <td><span class="reg-plate">${v.registration}</span></td>
-      <td style="color:var(--accent2);font-weight:700">${v.stockNo}</td>
+      <td style="color:var(--blue);font-weight:700">${v.stockNo}</td>
       <td>${v.make} ${v.model}<div style="font-size:11px;color:var(--muted)">${v.fuel}·${v.gearbox}</div></td>
       <td style="font-size:12px;color:var(--muted)">${v.location||'—'}</td>
       <td>${statusBadge(v.status)}</td>
@@ -311,7 +343,7 @@ function buildPrice() {
     const days = daysSince(v.regDate);
     return `<tr>
       <td><span class="reg-plate">${v.registration}</span></td>
-      <td style="color:var(--accent2);font-weight:700">${v.stockNo}</td>
+      <td style="color:var(--blue);font-weight:700">${v.stockNo}</td>
       <td>${v.make} ${v.model}<div style="font-size:11px;color:var(--muted)">${v.fuel}·${v.gearbox}</div></td>
       <td style="font-size:12px;color:var(--muted)">${v.location||'—'}</td>
       <td style="color:${days>30?'var(--orange)':'var(--muted)'}">${days}d</td>
@@ -328,7 +360,7 @@ function buildActivity() {
     return;
   }
   const levelIcons = {handover:'fa-exchange-alt',stuck:'fa-hourglass-half',mot:'fa-calendar-times',info:'fa-info-circle'};
-  const levelColors = {handover:'var(--accent2)',stuck:'var(--orange)',mot:'var(--red)',info:'var(--muted)'};
+  const levelColors = {handover:'var(--blue)',stuck:'var(--orange)',mot:'var(--red)',info:'var(--muted)'};
   const levelBg = {handover:'rgba(59,127,245,.12)',stuck:'rgba(249,115,22,.12)',mot:'rgba(239,68,68,.12)',info:'rgba(100,116,139,.12)'};
   feed.innerHTML = alerts.slice(0,50).map(a=>{
     const t = a.type||'info';
@@ -340,7 +372,7 @@ function buildActivity() {
           <i class="fas ${levelIcons[t]||levelIcons.info}"></i>
         </div>
         <div class="ac-content">
-          <div class="ac-title">${a.title||'System Event'}${!a.read?'<span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--accent2);margin-left:8px;vertical-align:middle"></span>':''}</div>
+          <div class="ac-title">${a.title||'System Event'}${!a.read?'<span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--blue);margin-left:8px;vertical-align:middle"></span>':''}</div>
           <div class="ac-body">${a.body||''}</div>
           <div class="ac-meta">
             <span class="ac-time"><i class="fas fa-clock"></i> ${ago} · ${ts.toLocaleString('en-GB')}</span>
@@ -406,13 +438,12 @@ setInterval(buildAll, 60000);
 </script>
 
 
+
 <script>
-// ── No login required — review mode ─────────────────────────────
-document.addEventListener('DOMContentLoaded', function() {
-  var b = document.getElementById('userBadge');
-  if (b) b.textContent = 'AUTO CAPITAL';
+document.addEventListener('DOMContentLoaded',function(){
+  var b=document.getElementById('userBadge');if(b)b.textContent='AUTO CAPITAL';
 });
-function doLogout() { window.location.href = './login.html'; }
+function doLogout(){window.location.href='./login.html';}
 </script>
 </body>
 </html>

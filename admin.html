@@ -4,25 +4,54 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin | CapeEye Auto Capital</title>
-<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700;800&family=Barlow+Condensed:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <script src="./firebase-config.js"></script>
 <script src="./ac-data.js"></script>
 <style>
-:root{--bg:#0b0e15;--bg2:#111622;--bg3:#1a2035;--border:rgba(255,255,255,0.07);--accent:#e8b84b;--accent2:#3b7ff5;--green:#22c55e;--red:#ef4444;--orange:#f97316;--text:#f1f5f9;--muted:#64748b;--card-radius:12px}
+:root{
+  --bg:#f4f6f9;--bg2:#fff;--bg3:#f0f2f6;--bg4:#eef0f5;
+  --border:#e2e6ed;--border2:#c8d0dc;
+  --red:#C8102E;--red2:#a00d24;--red-light:rgba(200,16,46,.07);
+  --blue:#003DA5;--blue2:#002d7a;--blue-light:rgba(0,61,165,.07);
+  --gold:#d4980a;--green:#1a7f37;--green-light:rgba(26,127,55,.07);
+  --orange:#d4600a;--purple:#6d28d9;
+  --text:#0f1923;--text2:#3d4d5c;--muted:#7a8fa6;
+  --shadow:0 1px 3px rgba(0,0,0,.07),0 4px 16px rgba(0,0,0,.04);
+  --shadow-md:0 4px 12px rgba(0,0,0,.1),0 12px 40px rgba(0,0,0,.07);
+  --card-radius:12px;
+}
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
-.header{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 28px;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
-.logo-area{display:flex;align-items:center;gap:14px}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased}
+.header{background:var(--blue);padding:0 32px;height:68px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;box-shadow:0 2px 16px rgba(0,61,165,.25)}
+.logo-area{display:flex;align-items:center;gap:16px}
+.logo-area img{height:42px;filter:brightness(0) invert(1)}
+.logo-divider{width:1px;height:34px;background:rgba(255,255,255,.2)}
+.system-name{font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.8)}
+.nav{display:flex;gap:2px}
+.nav a{padding:8px 13px;border-radius:7px;font-size:13px;font-weight:500;color:rgba(255,255,255,.72);text-decoration:none;transition:all .18s;display:flex;align-items:center;gap:6px}
+.nav a i{font-size:12px}
+.nav a:hover{background:rgba(255,255,255,.13);color:#fff}
+.nav a.active{background:var(--red);color:#fff;font-weight:700}
+.header-right{display:flex;align-items:center;gap:12px}
+.user-badge{background:rgba(255,255,255,.15);color:#fff;font-weight:600;font-size:11px;padding:5px 14px;border-radius:20px;letter-spacing:1px;text-transform:uppercase;border:1px solid rgba(255,255,255,.2)}
+.btn-logout{background:transparent;border:1px solid rgba(255,255,255,.25);color:rgba(255,255,255,.8);padding:6px 12px;border-radius:7px;cursor:pointer;font-size:12px;font-family:'DM Sans',sans-serif;transition:all .2s}
+.btn-logout:hover{background:rgba(255,255,255,.1);color:#fff}
+
+
+
+
+
+
 .logo-area img{height:40px;width:auto}
 .logo-divider{width:1px;height:32px;background:var(--border)}
-.system-name{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;letter-spacing:2px;color:var(--accent)}
-.nav{display:flex;gap:4px}
-.nav a{padding:8px 16px;border-radius:8px;font-size:14px;font-weight:500;color:var(--muted);text-decoration:none;transition:all .2s;position:relative}
-.nav a:hover,.nav a.active{background:var(--bg3);color:var(--text)}
-.nav a.active{color:var(--accent)}
+
+
+
+
+.nav a.active{color:var(--gold)}
 .user-info{display:flex;align-items:center;gap:10px}
-.user-badge{background:var(--accent);color:#000;font-weight:700;font-size:12px;padding:4px 12px;border-radius:20px;letter-spacing:1px}
+
 .btn-sm{padding:6px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:none;font-family:'Barlow',sans-serif;transition:all .2s}
 .btn-ghost{background:transparent;border:1px solid var(--border);color:var(--muted)}.btn-ghost:hover{color:var(--text)}
 .main{max-width:1400px;margin:0 auto;padding:28px}
@@ -32,7 +61,7 @@ body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--text);min-
 /* TABS */
 .admin-tabs{display:flex;gap:6px;margin-bottom:28px;flex-wrap:wrap}
 .admin-tab{padding:10px 20px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;border:1px solid var(--border);background:var(--bg2);color:var(--muted);transition:all .2s;display:flex;align-items:center;gap:8px}
-.admin-tab.active{background:var(--accent);color:#000;border-color:var(--accent)}
+.admin-tab.active{background:var(--gold);color:#000;border-color:var(--gold)}
 .admin-tab:hover:not(.active){color:var(--text)}
 /* PANELS */
 .panel{display:none}
@@ -47,12 +76,12 @@ body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--text);min-
 .form-field{margin-bottom:16px}
 .form-label{font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);margin-bottom:7px;display:block}
 .form-control{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--text);font-size:14px;font-family:'Barlow',sans-serif;outline:none;transition:border-color .2s}
-.form-control:focus{border-color:var(--accent2)}
+.form-control:focus{border-color:var(--blue)}
 .form-control::placeholder{color:var(--muted)}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .btn{padding:10px 20px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;border:none;font-family:'Barlow',sans-serif;transition:all .2s;display:inline-flex;align-items:center;gap:8px}
-.btn-primary{background:var(--accent2);color:#fff}.btn-primary:hover{background:#2563eb}
-.btn-accent{background:var(--accent);color:#000}.btn-accent:hover{opacity:.9}
+.btn-primary{background:var(--blue);color:#fff}.btn-primary:hover{background:#2563eb}
+.btn-accent{background:var(--gold);color:#000}.btn-accent:hover{opacity:.9}
 .btn-danger{background:rgba(239,68,68,.15);color:var(--red);border:1px solid rgba(239,68,68,.3)}.btn-danger:hover{background:rgba(239,68,68,.3)}
 .btn-success{background:rgba(34,197,94,.15);color:var(--green);border:1px solid rgba(34,197,94,.3)}
 .btn-block{width:100%;justify-content:center;margin-top:4px}
@@ -61,7 +90,7 @@ body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--text);min-
 .staff-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--card-radius);overflow:hidden;transition:border-color .2s}
 .staff-card:hover{border-color:rgba(255,255,255,.15)}
 .staff-card-top{padding:20px;display:flex;align-items:center;gap:14px}
-.staff-avatar{width:52px;height:52px;border-radius:50%;object-fit:cover;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:800;color:var(--accent);flex-shrink:0;border:2px solid var(--border)}
+.staff-avatar{width:52px;height:52px;border-radius:50%;object-fit:cover;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:800;color:var(--gold);flex-shrink:0;border:2px solid var(--border)}
 .staff-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%}
 .staff-name{font-size:15px;font-weight:700}
 .staff-role{font-size:12px;color:var(--muted);margin-top:2px}
@@ -80,11 +109,11 @@ body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--text);min-
 .del-btn:hover{background:rgba(239,68,68,.3)}
 .add-row{display:flex;gap:8px;padding:12px}
 .add-input{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:9px 12px;color:var(--text);font-size:13px;font-family:'Barlow',sans-serif;outline:none}
-.add-input:focus{border-color:var(--accent2)}
-.add-btn{padding:9px 16px;border-radius:8px;background:var(--accent2);color:#fff;border:none;cursor:pointer;font-size:13px;font-weight:700;font-family:'Barlow',sans-serif;white-space:nowrap}
+.add-input:focus{border-color:var(--blue)}
+.add-btn{padding:9px 16px;border-radius:8px;background:var(--blue);color:#fff;border:none;cursor:pointer;font-size:13px;font-weight:700;font-family:'Barlow',sans-serif;white-space:nowrap}
 /* PHOTO UPLOAD */
 .avatar-upload{width:80px;height:80px;border-radius:50%;background:var(--bg3);border:2px dashed var(--border);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:24px;position:relative;overflow:hidden;transition:border-color .2s;margin:0 auto 16px}
-.avatar-upload:hover{border-color:var(--accent2)}
+.avatar-upload:hover{border-color:var(--blue)}
 .avatar-upload img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
 .avatar-upload input{display:none}
 /* TOAST */
@@ -100,26 +129,28 @@ body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--text);min-
   <div class="logo-area">
     <img src="./autocapital-logo.png" alt="Auto Capital" onerror="this.style.display='none'">
     <div class="logo-divider"></div>
-    <span class="system-name">CAPEYE</span>
+    <span class="system-name">Back Office System</span>
   </div>
   <nav class="nav">
     <a href="./index.html"><i class="fas fa-th-large"></i> Dashboard</a>
     <a href="./inventory.html"><i class="fas fa-car"></i> Inventory</a>
     <a href="./workflow.html"><i class="fas fa-tasks"></i> Workflow</a>
     <a href="./alerts.html"><i class="fas fa-bell"></i> Alerts</a>
+    <a href="./analytics.html"><i class="fas fa-chart-bar"></i> Analytics</a>
     <a href="./marketing.html"><i class="fas fa-chart-line"></i> Marketing</a>
+    <a href="./keys.html"><i class="fas fa-key"></i> Keys</a>
     <a href="./team.html"><i class="fas fa-users"></i> Team</a>
     <a href="./admin.html" class="active"><i class="fas fa-cog"></i> Admin</a>
   </nav>
-  <div class="user-info">
-    <span id="userEmail" class="user-badge">ADMIN</span>
-    <button class="btn-sm btn-ghost" onclick="doLogout()"><i class="fas fa-sign-out-alt"></i></button>
+  <div class="header-right">
+    <span id="userBadge" class="user-badge">Auto Capital</span>
+    <button class="btn-logout" onclick="doLogout()"><i class="fas fa-sign-out-alt"></i></button>
   </div>
 </header>
 
 <main class="main">
   <div class="page-title">
-    <h1><i class="fas fa-cog" style="color:var(--accent);margin-right:10px"></i>Admin Panel</h1>
+    <h1><i class="fas fa-cog" style="color:var(--gold);margin-right:10px"></i>Admin Panel</h1>
     <p>Manage staff, departments, dropdown lists and system configuration</p>
   </div>
 
@@ -297,13 +328,12 @@ body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--text);min-
 
 
 
+
 <script>
-// ── No login required — review mode ─────────────────────────────
-document.addEventListener('DOMContentLoaded', function() {
-  var b = document.getElementById('userBadge');
-  if (b) b.textContent = 'AUTO CAPITAL';
+document.addEventListener('DOMContentLoaded',function(){
+  var b=document.getElementById('userBadge');if(b)b.textContent='AUTO CAPITAL';
 });
-function doLogout() { window.location.href = './login.html'; }
+function doLogout(){window.location.href='./login.html';}
 </script>
 </body>
 </html>
