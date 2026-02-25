@@ -24,6 +24,8 @@
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased}
 .header{background:var(--blue);padding:0 32px;height:68px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;box-shadow:0 2px 16px rgba(0,61,165,.25)}
+.logo-img{height:40px;width:auto;object-fit:contain;flex-shrink:0}
+.logo-divider{width:1px;height:34px;background:rgba(255,255,255,.2);flex-shrink:0}
 .logo-area{display:flex;align-items:center;gap:16px}
 .logo-area img{height:42px;filter:brightness(0) invert(1)}
 .logo-divider{width:1px;height:34px;background:rgba(255,255,255,.2)}
@@ -104,9 +106,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 <body>
 <header class="header">
   <div class="logo-area">
-    <img src="./autocapital-logo.png" alt="Auto Capital" onerror="this.style.display='none'">
+    <img class="logo-img" src="./auto-capital-logo.png" alt="Auto Capital" onerror="this.style.opacity=0">
     <div class="logo-divider"></div>
-    <span class="system-name">Back Office System</span>
+    <span class="system-name">Back Office</span>
   </div>
   <nav class="nav">
     <a href="./index.html"><i class="fas fa-th-large"></i> Dashboard</a>

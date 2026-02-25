@@ -3,150 +3,102 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Workflow | CapeEye Auto Capital</title>
+<title>Workflow | Auto Capital</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <script src="./firebase-config.js"></script>
 <script src="./ac-data.js"></script>
 <style>
-:root{
-  --bg:#f4f6f9;--bg2:#fff;--bg3:#f0f2f6;--bg4:#eef0f5;
-  --border:#e2e6ed;--border2:#c8d0dc;
-  --red:#C8102E;--red2:#a00d24;--red-light:rgba(200,16,46,.07);
-  --blue:#003DA5;--blue2:#002d7a;--blue-light:rgba(0,61,165,.07);
-  --gold:#d4980a;--green:#1a7f37;--green-light:rgba(26,127,55,.07);
-  --orange:#d4600a;--purple:#6d28d9;
-  --text:#0f1923;--text2:#3d4d5c;--muted:#7a8fa6;
-  --shadow:0 1px 3px rgba(0,0,0,.07),0 4px 16px rgba(0,0,0,.04);
-  --shadow-md:0 4px 12px rgba(0,0,0,.1),0 12px 40px rgba(0,0,0,.07);
-  --card-radius:12px;
-}
+:root{--bg:#f4f6f9;--bg2:#fff;--bg3:#f0f2f6;--border:#e2e6ed;--border2:#c8d0dc;--red:#C8102E;--red2:#a00d24;--red-light:rgba(200,16,46,.07);--blue:#003DA5;--blue2:#002d7a;--blue-light:rgba(0,61,165,.07);--gold:#d4980a;--green:#1a7f37;--green-light:rgba(26,127,55,.07);--orange:#d4600a;--text:#0f1923;--text2:#3d4d5c;--muted:#7a8fa6;--shadow:0 1px 3px rgba(0,0,0,.07),0 4px 16px rgba(0,0,0,.04);--shadow-md:0 4px 12px rgba(0,0,0,.1),0 12px 40px rgba(0,0,0,.07);--card-radius:12px}
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased}
-.header{background:var(--blue);padding:0 32px;height:68px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;box-shadow:0 2px 16px rgba(0,61,165,.25)}
-.logo-area{display:flex;align-items:center;gap:16px}
-.logo-area img{height:42px;filter:brightness(0) invert(1)}
-.logo-divider{width:1px;height:34px;background:rgba(255,255,255,.2)}
-.system-name{font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.8)}
-.nav{display:flex;gap:2px}
-.nav a{padding:8px 13px;border-radius:7px;font-size:13px;font-weight:500;color:rgba(255,255,255,.72);text-decoration:none;transition:all .18s;display:flex;align-items:center;gap:6px}
-.nav a i{font-size:12px}
+body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased}
+.header{background:var(--blue);padding:0 24px;height:68px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;box-shadow:0 2px 16px rgba(0,61,165,.25)}
+.logo-area{display:flex;align-items:center;gap:14px;flex-shrink:0}
+.logo-img{height:40px;width:auto;object-fit:contain}
+.logo-divider{width:1px;height:34px;background:rgba(255,255,255,.2);flex-shrink:0}
+.system-name{font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.8);white-space:nowrap}
+.nav{display:flex;gap:1px;overflow-x:auto}
+.nav a{padding:8px 11px;border-radius:7px;font-size:12px;font-weight:500;color:rgba(255,255,255,.72);text-decoration:none;transition:all .18s;display:flex;align-items:center;gap:5px;white-space:nowrap}
+.nav a i{font-size:11px}
 .nav a:hover{background:rgba(255,255,255,.13);color:#fff}
 .nav a.active{background:var(--red);color:#fff;font-weight:700}
-.header-right{display:flex;align-items:center;gap:12px}
-.user-badge{background:rgba(255,255,255,.15);color:#fff;font-weight:600;font-size:11px;padding:5px 14px;border-radius:20px;letter-spacing:1px;text-transform:uppercase;border:1px solid rgba(255,255,255,.2)}
-.btn-logout{background:transparent;border:1px solid rgba(255,255,255,.25);color:rgba(255,255,255,.8);padding:6px 12px;border-radius:7px;cursor:pointer;font-size:12px;font-family:'DM Sans',sans-serif;transition:all .2s}
-.btn-logout:hover{background:rgba(255,255,255,.1);color:#fff}
-
-
-
-
-
-
-.logo-area img{height:40px;width:auto}
-.logo-divider{width:1px;height:32px;background:var(--border)}
-
-
-
-
-.nav a.active{color:var(--gold)}
-.alert-badge{position:absolute;top:5px;right:5px;background:var(--red);color:#fff;font-size:9px;font-weight:800;min-width:16px;height:16px;border-radius:8px;display:none;align-items:center;justify-content:center;padding:0 3px}
-
+.header-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.user-badge{background:rgba(255,255,255,.15);color:#fff;font-weight:600;font-size:11px;padding:5px 12px;border-radius:20px;letter-spacing:1px;text-transform:uppercase;border:1px solid rgba(255,255,255,.2);white-space:nowrap}
+.btn-logout{background:transparent;border:1px solid rgba(255,255,255,.25);color:rgba(255,255,255,.8);padding:6px 10px;border-radius:7px;cursor:pointer;font-size:12px;font-family:"DM Sans",sans-serif}
 .main{max-width:1600px;margin:0 auto;padding:28px}
-.page-title{margin-bottom:24px;display:flex;align-items:center;justify-content:space-between}
-.page-title h1{font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:800;letter-spacing:1px}
-.vehicle-selector{background:var(--bg2);border:1px solid var(--border);border-radius:var(--card-radius);padding:20px;margin-bottom:24px}
-.selector-row{display:grid;grid-template-columns:2fr 1fr 1fr auto;gap:12px;align-items:end}
-.field-label{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:6px}
-.field-input{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--text);font-size:14px;font-family:'Barlow',sans-serif;outline:none}
-.field-input:focus{border-color:var(--blue)}
-.field-input::placeholder{color:var(--muted)}
-.btn{padding:10px 20px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;border:none;font-family:'Barlow',sans-serif;transition:all .2s;display:inline-flex;align-items:center;gap:8px}
-.btn-primary{background:var(--blue);color:#fff}.btn-primary:hover{background:#2563eb}
-.btn-accent{background:var(--gold);color:#000}.btn-accent:hover{opacity:.9}
-.btn-ghost{background:var(--bg3);border:1px solid var(--border);color:var(--muted)}.btn-ghost:hover{color:var(--text)}
-.btn-green{background:var(--green);color:#000;font-weight:800}.btn-green:hover{opacity:.9}
-.vehicle-info{background:var(--bg2);border:1px solid var(--gold);border-radius:var(--card-radius);padding:20px;margin-bottom:24px;display:none}
-.vi-grid{display:grid;grid-template-columns:auto 1fr 1fr 1fr 1fr;gap:20px;align-items:center}
-.reg-plate{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:28px;letter-spacing:2px;background:#f5c518;color:#000;padding:8px 20px;border-radius:8px;display:inline-block}
-.vi-label{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:4px}
-.vi-val{font-size:15px;font-weight:600}
-.stages-header{display:grid;grid-template-columns:repeat(12,1fr);gap:4px;margin-bottom:4px}
-.stage-label{font-size:9px;text-align:center;color:var(--muted);font-weight:600;letter-spacing:.5px;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:2px}
-.stage-bar{display:grid;grid-template-columns:repeat(12,1fr);gap:4px;margin-bottom:20px}
-.stage-dot{height:8px;border-radius:4px;background:var(--bg3);cursor:pointer;transition:all .2s}
-.stage-dot.completed{background:var(--green)}
-.stage-dot:hover{opacity:.8}
-.stage-form{background:var(--bg2);border:1px solid var(--border);border-radius:var(--card-radius);overflow:hidden}
-.stage-form-header{padding:18px 20px;border-bottom:1px solid var(--border);background:var(--bg3);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
-.stage-number{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:2px;color:var(--muted);text-transform:uppercase}
-.stage-name-title{font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:800}
-.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:20px}
-.form-field{display:flex;flex-direction:column;gap:6px}
-.form-field.full{grid-column:1/-1}
-.form-label{font-size:12px;font-weight:600;color:var(--muted);letter-spacing:.5px}
-.form-control{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--text);font-size:13px;font-family:'Barlow',sans-serif;outline:none;resize:vertical}
-.form-control:focus{border-color:var(--blue)}
-.form-control::placeholder{color:var(--muted)}
-.checkbox-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)}
-.checkbox-row:last-child{border-bottom:none}
-.checkbox-row input{width:16px;height:16px;accent-color:var(--blue)}
-.checkbox-row label{font-size:13px;cursor:pointer}
-.handover-banner{padding:12px 20px;background:rgba(34,197,94,.08);border-bottom:1px solid rgba(34,197,94,.2);display:flex;align-items:center;gap:10px;font-size:13px}
-.pipeline-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--card-radius);overflow:hidden;margin-bottom:20px}
+.page-hdr{margin-bottom:24px;display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:14px}
+.page-hdr h1{font-size:26px;font-weight:800;letter-spacing:-.3px}
+.page-hdr h1 .r{color:var(--red)}
+.page-hdr p{color:var(--muted);font-size:13px;margin-top:3px}
+.kpi-strip{display:grid;grid-template-columns:repeat(7,1fr);gap:12px;margin-bottom:24px}
+.kpi{background:var(--bg2);border:1px solid var(--border);border-top:3px solid var(--kc,var(--blue));border-radius:var(--card-radius);padding:16px 18px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.kpi-label{font-size:10px;font-weight:700;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;margin-bottom:6px}
+.kpi-val{font-size:28px;font-weight:800;line-height:1;color:var(--kc,var(--text))}
+.kpi-sub{font-size:11px;color:var(--muted);margin-top:3px}
+.kpi i.bg-i{position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:26px;opacity:.06}
+.loc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+.loc-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--card-radius);padding:16px 20px;box-shadow:var(--shadow);border-left:4px solid var(--lc,var(--blue))}
+.loc-name{font-size:11px;font-weight:700;color:var(--text2);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px}
+.loc-count{font-size:32px;font-weight:800;color:var(--lc,var(--blue))}
+.loc-sub{font-size:11px;color:var(--muted);margin-top:3px}
+.loc-chips{margin-top:8px;display:flex;flex-wrap:wrap;gap:4px}
+.loc-chip{font-family:"DM Mono",monospace;font-size:10px;background:var(--bg3);color:var(--text2);padding:2px 6px;border-radius:4px;letter-spacing:.5px}
+.flow-wrap{overflow-x:auto;margin-bottom:4px}
+.flow-stages{display:flex;gap:0;min-width:max-content;border:1px solid var(--border);border-radius:var(--card-radius);overflow:hidden;box-shadow:var(--shadow)}
+.flow-stage{min-width:120px;border-right:1px solid var(--border);background:var(--bg2)}
+.flow-stage:last-child{border-right:none}
+.fs-hdr{padding:10px 12px;border-bottom:1px solid var(--border);background:var(--bg3)}
+.fs-name{font-size:10px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px}
+.fs-count{font-size:22px;font-weight:800;color:var(--blue);margin-top:2px}
+.fs-body{padding:8px;min-height:50px}
+.fs-chip{font-family:"DM Mono",monospace;font-size:10px;background:var(--blue-light);color:var(--blue);padding:3px 6px;border-radius:4px;margin:2px;display:inline-block;letter-spacing:.5px;cursor:default}
+.fs-chip.b{background:var(--red-light);color:var(--red)}
+.fs-chip.w{background:rgba(212,96,10,.1);color:var(--orange)}
+.dept-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+.dept-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--card-radius);overflow:hidden;box-shadow:var(--shadow)}
+.dept-hdr{padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+.dept-name{font-size:13px;font-weight:700;display:flex;align-items:center;gap:8px}
+.dept-num{font-size:22px;font-weight:800}
+.dept-meta{font-size:11px;color:var(--muted);padding:8px 16px;border-bottom:1px solid var(--border);display:flex;gap:14px}
+.dept-vehicles{max-height:190px;overflow-y:auto}
+.dv{padding:7px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border)}
+.dv:last-child{border-bottom:none}
+.dv:hover{background:var(--blue-light)}
+.dv .reg{font-family:"DM Mono",monospace;font-size:11px;background:#fff9db;color:#7a5c00;padding:2px 7px;border-radius:4px;border:1px solid #e6d080;letter-spacing:1px;flex-shrink:0}
+.dv.blk .reg{background:var(--red-light);color:var(--red);border-color:rgba(200,16,46,.2)}
+.dv-name{font-size:12px;font-weight:600;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dv-days{font-size:11px;font-weight:700;flex-shrink:0}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--card-radius);overflow:hidden;box-shadow:var(--shadow);margin-bottom:20px}
+.card-hdr{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--bg3)}
+.card-title{font-size:12px;font-weight:700;color:var(--text2);letter-spacing:.5px;text-transform:uppercase;display:flex;align-items:center;gap:8px}
+.card-title i{color:var(--blue)}
 .ac-table{width:100%;border-collapse:collapse;font-size:13px}
-.ac-table th{padding:10px 14px;text-align:left;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);font-weight:600;border-bottom:1px solid var(--border);background:var(--bg2)}
-.ac-table td{padding:11px 14px;border-bottom:1px solid rgba(255,255,255,0.04)}
-.ac-table tr:hover td{background:rgba(255,255,255,0.02)}
+.ac-table th{padding:10px 14px;text-align:left;font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);font-weight:700;border-bottom:2px solid var(--border);background:var(--bg3)}
+.ac-table td{padding:10px 14px;border-bottom:1px solid var(--border);vertical-align:middle}
 .ac-table tr:last-child td{border-bottom:none}
-.badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700}
-.badge-green{background:rgba(34,197,94,.15);color:var(--green)}
-.badge-orange{background:rgba(249,115,22,.15);color:var(--orange)}
-.badge-red{background:rgba(239,68,68,.15);color:var(--red)}
-.stage-pill{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:6px;font-size:11px;font-weight:700}
-.search-bar{display:flex;gap:10px;padding:14px 16px;background:var(--bg2);border-bottom:1px solid var(--border)}
-.search-input-sm{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:8px 14px;color:var(--text);font-size:13px;font-family:'Barlow',sans-serif;outline:none}
-.search-input-sm::placeholder{color:var(--muted)}
-/* ── HANDOVER MODAL ── */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:2000;display:flex;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(6px)}
-.modal{background:var(--bg2);border:1px solid rgba(255,255,255,0.1);border-radius:16px;width:100%;max-width:580px;max-height:92vh;overflow-y:auto;animation:popIn .22s ease}
-@keyframes popIn{from{transform:scale(.94) translateY(20px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}
-.modal-header{padding:20px 24px;border-bottom:1px solid var(--border);background:var(--bg3);display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:1}
-.modal-icon{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;background:rgba(34,197,94,.15);flex-shrink:0}
-.modal-title{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:800}
-.modal-sub{font-size:12px;color:var(--muted);margin-top:2px}
-.modal-body{padding:22px 24px;display:flex;flex-direction:column;gap:20px}
-.modal-footer{padding:16px 24px;border-top:1px solid var(--border);display:flex;gap:10px;justify-content:flex-end;background:var(--bg3)}
-.section-label{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
-.vehicle-strip{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:14px 16px;display:flex;align-items:center;gap:14px}
-.vs-reg{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:18px;letter-spacing:1px;background:#f5c518;color:#000;padding:4px 12px;border-radius:6px;white-space:nowrap}
-.ho-tabs{display:flex;gap:6px;margin-bottom:12px}
-.ho-tab{padding:7px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;border:1px solid var(--border);background:var(--bg3);color:var(--muted);transition:all .2s}
-.ho-tab.active{background:var(--blue);color:#fff;border-color:var(--blue)}
-.ho-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.ho-card{background:var(--bg3);border:2px solid var(--border);border-radius:10px;padding:10px 8px;cursor:pointer;transition:all .2s;text-align:center}
-.ho-card:hover{border-color:rgba(59,127,245,.5)}
-.ho-card.selected{border-color:var(--green);background:rgba(34,197,94,.08)}
-.ho-card .hc-icon{font-size:20px;margin-bottom:4px}
-.ho-card .hc-name{font-size:12px;font-weight:700;line-height:1.2}
-.ho-card .hc-role{font-size:10px;color:var(--muted);margin-top:2px}
-.ho-card .hc-suggest{font-size:10px;color:var(--green);margin-top:3px}
-.priority-row{display:flex;gap:8px}
-.pri-opt{flex:1;text-align:center;padding:10px 6px;background:var(--bg3);border:2px solid var(--border);border-radius:8px;cursor:pointer;font-size:12px;font-weight:700;transition:all .2s;user-select:none}
-.pri-opt:hover{opacity:.85}
-.pri-opt.sel-low{border-color:var(--green);background:rgba(34,197,94,.1)}
-.pri-opt.sel-med{border-color:var(--gold);background:rgba(232,184,75,.1)}
-.pri-opt.sel-high{border-color:var(--red);background:rgba(239,68,68,.1)}
-/* TOAST */
-.toast-msg{position:fixed;bottom:24px;right:24px;border-radius:10px;z-index:9999;font-size:14px;font-weight:700;padding:13px 22px;display:flex;align-items:center;gap:10px;animation:popIn .2s ease;max-width:360px}
+.ac-table tbody tr:hover td{background:var(--blue-light)}
+.rp{font-family:"DM Mono",monospace;font-size:11px;background:#fff9db;color:#7a5c00;padding:3px 8px;border-radius:5px;border:1px solid #e6d080;letter-spacing:1.5px}
+.badge{display:inline-flex;align-items:center;padding:3px 9px;border-radius:7px;font-size:11px;font-weight:700}
+.b-red{background:var(--red-light);color:var(--red)}
+.b-blue{background:var(--blue-light);color:var(--blue)}
+.b-green{background:var(--green-light);color:var(--green)}
+.b-orange{background:rgba(212,96,10,.08);color:var(--orange)}
+.b-grey{background:var(--bg3);color:var(--muted)}
+.sec{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin:24px 0 14px;display:flex;align-items:center;gap:10px}
+.sec::after{content:"";flex:1;height:1px;background:var(--border)}
+.btn{padding:8px 16px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:none;font-family:"DM Sans",sans-serif;transition:all .2s;display:inline-flex;align-items:center;gap:6px}
+.btn-ghost{background:var(--bg3);border:1px solid var(--border);color:var(--muted)}
+.btn-ghost:hover{color:var(--text)}
+@media(max-width:1200px){.dept-grid{grid-template-columns:1fr 1fr}.kpi-strip{grid-template-columns:repeat(4,1fr)}.loc-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:700px){.kpi-strip{grid-template-columns:1fr 1fr}}
 </style>
 </head>
 <body>
 <header class="header">
   <div class="logo-area">
-    <img src="./autocapital-logo.png" alt="Auto Capital" onerror="this.style.display='none'">
+    <img class="logo-img" src="./auto-capital-logo.png" alt="Auto Capital" onerror="this.style.opacity=0">
     <div class="logo-divider"></div>
-    <span class="system-name">Back Office System</span>
+    <span class="system-name">Back Office</span>
   </div>
   <nav class="nav">
     <a href="./index.html"><i class="fas fa-th-large"></i> Dashboard</a>
@@ -166,458 +118,181 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 </header>
 
 <main class="main">
-  <div class="page-title">
+  <div class="page-hdr">
     <div>
-      <h1>Vehicle Workflow</h1>
-      <p style="color:var(--muted);font-size:14px;margin-top:4px">Track vehicles through the preparation pipeline · Stage handovers logged automatically</p>
+      <h1>Workflow <span class="r">Dashboard</span></h1>
+      <p id="wfSub">Loading...</p>
     </div>
+    <button class="btn btn-ghost" onclick="buildAll()"><i class="fas fa-sync-alt"></i> Refresh</button>
   </div>
 
-  <!-- VEHICLE SELECTOR -->
-  <div class="vehicle-selector">
-    <div class="selector-row">
-      <div>
-        <div class="field-label">Search Vehicle</div>
-        <select class="field-input" id="vehicleSelect" onchange="loadVehicle(this.value)">
-          <option value="">— Select from stock —</option>
-        </select>
-      </div>
-      <div>
-        <div class="field-label">Or Stock No</div>
-        <input class="field-input" id="stockNoInput" placeholder="e.g. R0461" onkeydown="if(event.key==='Enter')searchVehicle()">
-      </div>
-      <div>
-        <div class="field-label">Or Registration</div>
-        <input class="field-input" id="regInput" placeholder="e.g. RF66UBC" onkeydown="if(event.key==='Enter')searchVehicle()">
-      </div>
-      <div>
-        <div class="field-label">&nbsp;</div>
-        <button class="btn btn-primary" onclick="searchVehicle()"><i class="fas fa-search"></i> Load</button>
-      </div>
-    </div>
+  <!-- KPIs -->
+  <div class="kpi-strip">
+    <div class="kpi" style="--kc:var(--blue)"><i class="fas fa-car bg-i"></i><div class="kpi-label">Total Active</div><div class="kpi-val" id="kTotal">—</div><div class="kpi-sub">In pipeline</div></div>
+    <div class="kpi" style="--kc:var(--red)"><i class="fas fa-lock bg-i"></i><div class="kpi-label">Blocked</div><div class="kpi-val" id="kBlocked">—</div><div class="kpi-sub">Need action</div></div>
+    <div class="kpi" style="--kc:var(--orange)"><i class="fas fa-hourglass-half bg-i"></i><div class="kpi-label">60+ Days</div><div class="kpi-val" id="kOld">—</div><div class="kpi-sub">Aged stock</div></div>
+    <div class="kpi" style="--kc:var(--gold)"><i class="fas fa-clock bg-i"></i><div class="kpi-label">Stage 7d+</div><div class="kpi-val" id="kLongStage">—</div><div class="kpi-sub">Stuck in dept</div></div>
+    <div class="kpi" style="--kc:var(--green)"><i class="fas fa-check bg-i"></i><div class="kpi-label">Ready to Sell</div><div class="kpi-val" id="kReady">—</div><div class="kpi-sub">Advertising</div></div>
+    <div class="kpi" style="--kc:var(--blue)"><i class="fas fa-pound-sign bg-i"></i><div class="kpi-label">Stock Value</div><div class="kpi-val" id="kValue">—</div><div class="kpi-sub">Priced vehicles</div></div>
+    <div class="kpi" style="--kc:var(--text2)"><i class="fas fa-chart-line bg-i"></i><div class="kpi-label">Avg Days</div><div class="kpi-val" id="kAvg">—</div><div class="kpi-sub">In stock avg</div></div>
   </div>
 
-  <!-- VEHICLE INFO CARD -->
-  <div class="vehicle-info" id="vehicleInfo">
-    <div class="vi-grid">
-      <div><span class="reg-plate" id="viReg">—</span></div>
-      <div><div class="vi-label">Vehicle</div><div class="vi-val" id="viVehicle">—</div></div>
-      <div><div class="vi-label">Location</div><div class="vi-val" id="viLocation">—</div></div>
-      <div><div class="vi-label">Status</div><div class="vi-val" id="viStatus">—</div></div>
-      <div><div class="vi-label">Price</div><div class="vi-val" id="viPrice">—</div></div>
+  <!-- WHERE IS OUR STOCK -->
+  <div class="sec"><i class="fas fa-map-marker-alt" style="color:var(--blue)"></i> Where Is Our Stock Right Now</div>
+  <div class="loc-grid" id="locGrid"></div>
+
+  <!-- PIPELINE FLOW -->
+  <div class="sec"><i class="fas fa-stream" style="color:var(--blue)"></i> Pipeline by Stage</div>
+  <div class="flow-wrap"><div class="flow-stages" id="flowStages"></div></div>
+
+  <!-- DEPT BREAKDOWN -->
+  <div class="sec" style="margin-top:24px"><i class="fas fa-sitemap" style="color:var(--blue)"></i> By Department</div>
+  <div class="dept-grid" id="deptGrid"></div>
+
+  <!-- BLOCKED -->
+  <div class="sec"><i class="fas fa-lock" style="color:var(--red)"></i> Blocked Vehicles — Immediate Action Required</div>
+  <div class="card">
+    <div class="card-hdr">
+      <span class="card-title"><i class="fas fa-exclamation-triangle"></i> Blocked</span>
+      <span id="blockedCount" style="font-size:12px;color:var(--muted)"></span>
     </div>
-    <div style="margin-top:16px">
-      <div class="stages-header" id="stageLabels"></div>
-      <div class="stage-bar" id="stageDots"></div>
-    </div>
+    <table class="ac-table"><thead><tr><th>Reg</th><th>Make / Model</th><th>Stage</th><th>Dept</th><th>Days in Stage</th><th>Total Days</th><th>Location</th><th>Price</th></tr></thead>
+    <tbody id="blockedBody"></tbody></table>
   </div>
 
-  <!-- STAGE FORM -->
-  <div class="stage-form" id="stageForm" style="display:none">
-    <div class="stage-form-header">
-      <div>
-        <div class="stage-number" id="formStageNum">STAGE 1 OF 12</div>
-        <div class="stage-name-title" id="formStageName">Vehicle Intake</div>
-      </div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <button class="btn btn-ghost" onclick="prevStage()"><i class="fas fa-chevron-left"></i> Prev</button>
-        <button class="btn btn-ghost" onclick="nextStage()">Next <i class="fas fa-chevron-right"></i></button>
-        <button class="btn btn-accent" onclick="saveDraft()"><i class="fas fa-save"></i> Save Draft</button>
-        <button class="btn btn-green" onclick="openHandoverModal()"><i class="fas fa-check-circle"></i> Complete Stage</button>
-      </div>
+  <!-- AGED STOCK -->
+  <div class="sec"><i class="fas fa-hourglass-end" style="color:var(--orange)"></i> Aged Stock — 60+ Days</div>
+  <div class="card">
+    <div class="card-hdr">
+      <span class="card-title"><i class="fas fa-hourglass-half"></i> Aged Stock</span>
+      <span id="agedCount" style="font-size:12px;color:var(--muted)"></span>
     </div>
-    <!-- Handover banner shown after stage complete -->
-    <div id="handoverBannerArea"></div>
-    <div id="stageFormBody"></div>
+    <table class="ac-table"><thead><tr><th>Reg</th><th>Make / Model</th><th>Days in Stock</th><th>Current Stage</th><th>Days in Stage</th><th>Location</th><th>Price</th></tr></thead>
+    <tbody id="agedBody"></tbody></table>
   </div>
 
-  <!-- PIPELINE TABLE -->
-  <div style="margin-top:32px">
-    <div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:800;letter-spacing:1px;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border);color:var(--gold)">
-      📋 All Vehicles in Pipeline
+  <!-- ALL STOCK -->
+  <div class="sec"><i class="fas fa-list" style="color:var(--blue)"></i> All Active Stock</div>
+  <div class="card">
+    <div class="card-hdr">
+      <span class="card-title"><i class="fas fa-car"></i> Full Pipeline</span>
+      <input id="stockSearch" placeholder="Search reg, make, model..." oninput="filterTable()" style="padding:6px 12px;border:1px solid var(--border);border-radius:7px;font-size:12px;font-family:inherit;outline:none;width:220px">
     </div>
-    <div class="pipeline-card">
-      <div class="search-bar">
-        <input class="search-input-sm" id="pipeSearch" placeholder="🔍 Search pipeline..." oninput="renderPipeline()">
-        <select class="search-input-sm" id="pipeStageFilter" onchange="renderPipeline()" style="max-width:200px">
-          <option value="">All Stages</option>
-        </select>
-      </div>
-      <div style="overflow-x:auto">
-        <table class="ac-table">
-          <thead><tr>
-            <th>Stock No</th><th>Reg</th><th>Vehicle</th><th>Location</th><th>Price</th>
-            <th>Current Stage</th><th>In Stage</th><th>Last Handover</th><th>Done</th><th>Action</th>
-          </tr></thead>
-          <tbody id="pipelineBody"></tbody>
-        </table>
-      </div>
+    <div style="overflow-x:auto;max-height:500px;overflow-y:auto">
+    <table class="ac-table"><thead><tr><th>Reg</th><th>Make / Model</th><th>Status</th><th>Stage</th><th>Dept</th><th>Stage Days</th><th>Total Days</th><th>Location</th><th>Price</th><th>Blocked</th></tr></thead>
+    <tbody id="allBody"></tbody></table>
     </div>
   </div>
 </main>
 
-<!-- ══ HANDOVER MODAL ══ -->
-<div class="modal-overlay" id="handoverModal" style="display:none" onclick="if(event.target===this)closeHandoverModal()">
-  <div class="modal">
-    <div class="modal-header">
-      <div class="modal-icon">🔄</div>
-      <div>
-        <div class="modal-title">Handover Required</div>
-        <div class="modal-sub" id="modalStageSub">Completing Stage 1: Intake</div>
-      </div>
-    </div>
-    <div class="modal-body">
-
-      <!-- Vehicle strip -->
-      <div class="vehicle-strip" id="modalVehicleStrip"></div>
-
-      <!-- Handover target -->
-      <div>
-        <div class="section-label">Hand Over To</div>
-        <div class="ho-tabs">
-          <div class="ho-tab active" id="tabPerson" onclick="setHoTab('person')">👤 Person</div>
-          <div class="ho-tab" id="tabDept" onclick="setHoTab('dept')">🏢 Department</div>
-        </div>
-        <div id="panelPerson"><div class="ho-grid" id="personGrid"></div></div>
-        <div id="panelDept" style="display:none"><div class="ho-grid" id="deptGrid"></div></div>
-      </div>
-
-      <!-- Note -->
-      <div>
-        <div class="section-label">Handover Note</div>
-        <textarea class="form-control" id="hoNote" rows="3" placeholder="What does the next person need to know? Issues found, next steps, keys location, special instructions..."></textarea>
-      </div>
-
-      <!-- Priority -->
-      <div>
-        <div class="section-label">Priority</div>
-        <div class="priority-row">
-          <div class="pri-opt" id="priNormal" onclick="setPri('normal',this)">🟢 Normal</div>
-          <div class="pri-opt" id="priUrgent" onclick="setPri('urgent',this)">🟡 Urgent</div>
-          <div class="pri-opt" id="priCritical" onclick="setPri('critical',this)">🔴 Critical</div>
-        </div>
-      </div>
-
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeHandoverModal()"><i class="fas fa-times"></i> Cancel</button>
-      <button class="btn btn-green" onclick="confirmHandover()"><i class="fas fa-paper-plane"></i> Confirm Handover &amp; Complete Stage</button>
-    </div>
-  </div>
-</div>
-
 <script>
-const vehicles = getVehicles();
-let currentVehicle = null;
-let currentStageIdx = 0;
-let hoTarget = null;
-let hoTargetType = 'person';
-let hoPriority = 'normal';
+const V=getVehicles();
+const LOC_C={"Stanmore Retail":"var(--blue)","Stanmore 2":"var(--green)","ACL":"var(--orange)","With Supplier":"var(--gold)"};
+const DEPT_C={"Intake":"#0891b2","Workshop":"#7c3aed","Bodyshop":"#be185d","Valeting":"#0369a1","Marketing":"var(--blue)","Sales":"var(--green)","Finance":"var(--orange)","Management":"var(--red)"};
+const DEPT_I={"Intake":"fa-sign-in-alt","Workshop":"fa-wrench","Bodyshop":"fa-paint-brush","Valeting":"fa-spray-can","Marketing":"fa-chart-line","Sales":"fa-handshake","Finance":"fa-file-invoice-dollar","Management":"fa-user-tie"};
+const STAGE_ORDER=["Intake","Mechanical","External Work","Paint","Bodyshop","Valeting","Accounts","Legal & Docs","Management","Advertising","Delivery Prep"];
 
-/* ── INIT ── */
-function init() {
-  const sel = document.getElementById('vehicleSelect');
-  vehicles.forEach(v => {
-    const o = document.createElement('option');
-    o.value = v.stockNo;
-    o.textContent = `${v.stockNo} — ${v.registration} — ${v.make} ${v.model}`;
-    sel.appendChild(o);
-  });
-  const sf = document.getElementById('pipeStageFilter');
-  AC_WORKFLOW_STAGES.forEach(s => {
-    const o = document.createElement('option');
-    o.value = s.id; o.textContent = `Stage ${s.id}: ${s.name}`; sf.appendChild(o);
-  });
-  const params = new URLSearchParams(window.location.search);
-  const stock = params.get('stock');
-  if (stock) { document.getElementById('stockNoInput').value = stock; searchVehicle(); }
-  renderPipeline();
-  refreshAlertBadge();
+function dc(d){return d>=14?"var(--red)":d>=7?"var(--orange)":d>=4?"var(--gold)":"var(--green)";}
+function fgbp(n){return n?"£"+new Intl.NumberFormat("en-GB").format(n):"—";}
+function row(x){
+  const sc=x.status==="In Stock"?"b-green":x.status==="In Transit"?"b-blue":"b-grey";
+  return "<tr><td><span class=rp>"+x.registration+"</span></td><td><strong>"+x.make+"</strong> "+x.model+"</td><td><span class='badge "+sc+"'>"+x.status+"</span></td><td><span class='badge b-blue' style='font-size:10px'>"+x.workflowStage+"</span></td><td>"+x.workflowDept+"</td><td style='color:"+dc(x.daysInStage)+";font-weight:700'>"+x.daysInStage+"d</td><td style='color:"+(x.daysInStock>=60?"var(--red)":x.daysInStock>=30?"var(--orange)":"inherit")+";font-weight:"+(x.daysInStock>=60?"700":"400")+"'>"+x.daysInStock+"d</td><td>"+x.location+"</td><td>"+fgbp(x.price)+"</td><td>"+(x.blocked?"<i class='fas fa-lock' style='color:var(--red)'></i>":"<i class='fas fa-check' style='color:var(--green)'></i>")+"</td></tr>";
 }
 
-function refreshAlertBadge() {
-  const n = getAlerts().filter(a=>!a.read).length;
-  const b = document.getElementById('navBadge');
-  if(n>0){b.style.display='flex';b.textContent=n>9?'9+':n;}else{b.style.display='none';}
+function buildAll(){
+  const blocked=V.filter(x=>x.blocked);
+  const aged=V.filter(x=>x.daysInStock>=60);
+  const ls=V.filter(x=>x.daysInStage>=7);
+  const ready=V.filter(x=>x.workflowStage==="Advertising");
+  const priced=V.filter(x=>x.price>0);
+  const tv=priced.reduce((s,x)=>s+x.price,0);
+  const avg=Math.round(V.reduce((s,x)=>s+(x.daysInStock||0),0)/V.length);
+
+  document.getElementById("wfSub").textContent=V.length+" vehicles in pipeline · "+blocked.length+" blocked · "+ls.length+" stuck in stage · Avg "+avg+" days";
+  document.getElementById("kTotal").textContent=V.length;
+  document.getElementById("kBlocked").textContent=blocked.length;
+  document.getElementById("kOld").textContent=aged.length;
+  document.getElementById("kLongStage").textContent=ls.length;
+  document.getElementById("kReady").textContent=ready.length;
+  document.getElementById("kValue").textContent="£"+Math.round(tv/1000)+"k";
+  document.getElementById("kAvg").textContent=avg+"d";
+
+  // LOCATIONS
+  const locs={};V.forEach(x=>{const l=x.location||"Unknown";if(!locs[l])locs[l]=[];locs[l].push(x);});
+  document.getElementById("locGrid").innerHTML=Object.entries(locs).sort((a,b)=>b[1].length-a[1].length).map(([loc,vs])=>
+    "<div class=loc-card style='--lc:"+( LOC_C[loc]||"var(--blue)")+
+    "'><div class=loc-name><i class='fas fa-map-marker-alt' style='margin-right:6px;opacity:.5'></i>"+loc+
+    "</div><div class=loc-count>"+vs.length+
+    "</div><div class=loc-sub>"+vs.filter(x=>x.price>0).length+" priced &middot; "+vs.filter(x=>x.blocked).length+" blocked</div>"+
+    "<div class=loc-chips>"+vs.slice(0,14).map(x=>"<span class=loc-chip>"+x.registration+"</span>").join("")+(vs.length>14?"<span style='font-size:10px;color:var(--muted)'>+"+( vs.length-14)+" more</span>":"")+"</div></div>"
+  ).join("");
+
+  // PIPELINE FLOW
+  const sm={};V.forEach(x=>{const s=x.workflowStage||"Unknown";if(!sm[s])sm[s]=[];sm[s].push(x);});
+  const stages=STAGE_ORDER.filter(s=>sm[s]).concat(Object.keys(sm).filter(s=>!STAGE_ORDER.includes(s)));
+  document.getElementById("flowStages").innerHTML=stages.map(s=>{
+    const vs=sm[s]||[];
+    return "<div class=flow-stage><div class=fs-hdr><div class=fs-name>"+s+"</div><div class=fs-count>"+vs.length+"</div></div>"+
+           "<div class=fs-body>"+vs.map(x=>"<span class='fs-chip"+(x.blocked?" b":x.daysInStage>=7?" w":"")+"' title='"+x.make+" "+x.model+" · "+x.daysInStage+"d'>"+x.registration+"</span>").join("")+"</div></div>";
+  }).join("");
+
+  // DEPTS
+  const depts={};V.forEach(x=>{const d=x.workflowDept||"Unknown";if(!depts[d])depts[d]=[];depts[d].push(x);});
+  document.getElementById("deptGrid").innerHTML=Object.entries(depts).sort((a,b)=>b[1].length-a[1].length).map(([dept,vs])=>{
+    const avg=(vs.reduce((s,x)=>s+(x.daysInStage||0),0)/vs.length).toFixed(1);
+    const bl=vs.filter(x=>x.blocked).length;
+    const col=DEPT_C[dept]||"var(--blue)";
+    const icon=DEPT_I[dept]||"fa-cogs";
+    return "<div class=dept-card><div class=dept-hdr>"+
+      "<div class=dept-name style='color:"+col+"'><i class='fas "+icon+"' style='font-size:12px;opacity:.7'></i>"+dept+"</div>"+
+      "<div class=dept-num style='color:"+col+"'>"+vs.length+"</div></div>"+
+      "<div class=dept-meta><span><i class='fas fa-clock' style='opacity:.5;margin-right:3px'></i>Avg "+avg+"d</span>"+
+      (bl?"<span style='color:var(--red)'><i class='fas fa-lock' style='opacity:.7;margin-right:3px'></i>"+bl+" blocked</span>":"<span style='color:var(--green)'><i class='fas fa-check' style='opacity:.7;margin-right:3px'></i>No blocks</span>")+"</div>"+
+      "<div class=dept-vehicles>"+vs.sort((a,b)=>(b.daysInStage||0)-(a.daysInStage||0)).map(x=>
+        "<div class='dv"+(x.blocked?" blk":"")+"'>"+
+        "<span class=reg>"+x.registration+"</span>"+
+        "<span class=dv-name>"+x.make+" "+x.model+"</span>"+
+        "<span class=dv-days style='color:"+dc(x.daysInStage)+"'>"+x.daysInStage+"d</span>"+
+        (x.blocked?"<i class='fas fa-lock' style='color:var(--red);font-size:10px'></i>":"")+"</div>"
+      ).join("")+"</div></div>";
+  }).join("");
+
+  // BLOCKED TABLE
+  document.getElementById("blockedCount").textContent=blocked.length+" vehicles";
+  document.getElementById("blockedBody").innerHTML=blocked.length?blocked.map(x=>
+    "<tr><td><span class=rp>"+x.registration+"</span></td><td><strong>"+x.make+"</strong> "+x.model+"</td>"+
+    "<td><span class='badge b-blue'>"+x.workflowStage+"</span></td><td>"+x.workflowDept+"</td>"+
+    "<td><strong style='color:"+dc(x.daysInStage)+"'>"+x.daysInStage+"d</strong></td>"+
+    "<td><strong style='color:"+(x.daysInStock>=60?"var(--red)":"var(--orange)")+"'>"+x.daysInStock+"d</strong></td>"+
+    "<td>"+x.location+"</td><td>"+fgbp(x.price)+"</td></tr>"
+  ).join(""):"<tr><td colspan=8 style='text-align:center;padding:24px;color:var(--muted)'><i class='fas fa-check-circle' style='color:var(--green);margin-right:8px'></i>No blocked vehicles</td></tr>";
+
+  // AGED
+  const aged2=aged.sort((a,b)=>b.daysInStock-a.daysInStock);
+  document.getElementById("agedCount").textContent=aged.length+" vehicles";
+  document.getElementById("agedBody").innerHTML=aged2.map(x=>
+    "<tr><td><span class=rp>"+x.registration+"</span></td><td><strong>"+x.make+"</strong> "+x.model+"</td>"+
+    "<td><strong style='color:"+(x.daysInStock>=90?"var(--red)":"var(--orange)")+"'>"+x.daysInStock+"d</strong></td>"+
+    "<td><span class='badge b-blue'>"+x.workflowStage+"</span></td>"+
+    "<td style='color:"+dc(x.daysInStage)+";font-weight:600'>"+x.daysInStage+"d</td>"+
+    "<td>"+x.location+"</td><td>"+fgbp(x.price)+"</td></tr>"
+  ).join("")||"<tr><td colspan=7 style='text-align:center;padding:24px;color:var(--muted)'>No aged stock</td></tr>";
+
+  buildAllTable(V);
 }
 
-/* ── VEHICLE LOAD ── */
-function searchVehicle() {
-  const stock = document.getElementById('stockNoInput').value.trim().toUpperCase();
-  const reg   = document.getElementById('regInput').value.trim().toUpperCase();
-  const sel   = document.getElementById('vehicleSelect').value;
-  let v = stock ? vehicles.find(x=>x.stockNo.toUpperCase()===stock)
-        : reg   ? vehicles.find(x=>x.registration.toUpperCase()===reg)
-        : sel   ? vehicles.find(x=>x.stockNo===sel) : null;
-  if (v) loadVehicle(v.stockNo); else alert('Vehicle not found');
+function buildAllTable(v){
+  document.getElementById("allBody").innerHTML=v.map(x=>row(x)).join("");
 }
-
-function loadVehicle(stockNo) {
-  currentVehicle = vehicles.find(v=>v.stockNo===stockNo);
-  if (!currentVehicle) return;
-  document.getElementById('vehicleSelect').value = stockNo;
-  document.getElementById('vehicleInfo').style.display = 'block';
-  document.getElementById('viReg').textContent      = currentVehicle.registration;
-  document.getElementById('viVehicle').textContent  = `${currentVehicle.make} ${currentVehicle.model} ${currentVehicle.variant||''}`;
-  document.getElementById('viLocation').textContent = currentVehicle.location||'—';
-  document.getElementById('viStatus').textContent   = currentVehicle.status||'—';
-  document.getElementById('viPrice').textContent    = currentVehicle.price ? formatGBP(currentVehicle.price) : '—';
-  const wf = getWorkflow(stockNo);
-  const done = Object.keys(wf).map(Number).filter(n=>wf[n]&&wf[n].completed);
-  const next = done.length ? Math.max(...done)+1 : 1;
-  currentStageIdx = Math.min(next, 12)-1;
-  // stamp startedAt if fresh
-  if (!wf[currentStageIdx+1]) { wf[currentStageIdx+1]={startedAt:new Date().toISOString()}; saveWorkflow(stockNo,wf); }
-  renderStageDots(done);
-  showStageForm(currentStageIdx);
+function filterTable(){
+  const q=document.getElementById("stockSearch").value.toLowerCase();
+  buildAllTable(V.filter(x=>!q||(x.registration+x.make+x.model+x.workflowStage).toLowerCase().includes(q)));
 }
-
-function renderStageDots(done) {
-  document.getElementById('stageLabels').innerHTML = AC_WORKFLOW_STAGES.map(s=>`<div class="stage-label">${s.name}</div>`).join('');
-  document.getElementById('stageDots').innerHTML   = AC_WORKFLOW_STAGES.map((s,i)=>{
-    const isDone = done.includes(i+1), isCurrent = i===currentStageIdx;
-    return `<div class="stage-dot ${isDone?'completed':''}"
-      style="background:${isDone?s.color:isCurrent?s.color:'var(--bg3)'};${isCurrent&&!isDone?'box-shadow:0 0 8px '+s.color:''};"
-      title="Stage ${i+1}: ${s.name}" onclick="jumpToStage(${i})"></div>`;
-  }).join('');
-}
-
-function jumpToStage(idx) {
-  currentStageIdx = idx;
-  const wf = getWorkflow(currentVehicle.stockNo);
-  renderStageDots(Object.keys(wf).map(Number).filter(n=>wf[n]&&wf[n].completed));
-  showStageForm(idx);
-}
-function prevStage(){ if(currentStageIdx>0){currentStageIdx--;jumpToStage(currentStageIdx);} }
-function nextStage(){ if(currentStageIdx<11){currentStageIdx++;jumpToStage(currentStageIdx);} }
-
-function showStageForm(idx) {
-  const stage = AC_WORKFLOW_STAGES[idx];
-  document.getElementById('stageForm').style.display = 'block';
-  document.getElementById('formStageNum').textContent  = `STAGE ${stage.id} OF 12 — ${stage.dept.toUpperCase()}`;
-  document.getElementById('formStageName').textContent = stage.name;
-  const wf   = getWorkflow(currentVehicle.stockNo);
-  const data = wf[stage.id]||{};
-  document.getElementById('stageFormBody').innerHTML = buildForm(stage, data);
-  // Handover banner
-  const ho  = getHandover(currentVehicle.stockNo, stage.id);
-  const area = document.getElementById('handoverBannerArea');
-  if (ho && data.completed) {
-    const priColors={normal:'var(--green)',urgent:'var(--gold)',critical:'var(--red)'};
-    area.innerHTML = `<div class="handover-banner">
-      <i class="fas fa-check-circle" style="color:var(--green);font-size:16px"></i>
-      <span><strong>Stage complete</strong> · Handed to <strong>${ho.toName}</strong>
-      ${ho.priority&&ho.priority!=='normal'?`<span style="color:${priColors[ho.priority]||'var(--muted)'};margin-left:4px">[${ho.priority.toUpperCase()}]</span>`:''}
-      ${ho.note?`· <em style="color:var(--muted)">${ho.note}</em>`:''}</span>
-      <span style="margin-left:auto;color:var(--muted);font-size:11px;white-space:nowrap">${new Date(ho.ts).toLocaleString('en-GB')}</span>
-    </div>`;
-  } else { area.innerHTML = ''; }
-}
-
-/* ── FORM BUILDER ── */
-function buildForm(stage, ex) {
-  const v = k => ex[k]||'';
-  const ck = k => ex[k]?'checked':'';
-  const staffOpts = AC_STAFF.map(s=>`<option value="${s.name}" ${v('assignedTo')===s.name?'selected':''}>${s.name} (${s.role})</option>`).join('');
-  let f = '<div class="form-grid">';
-  if (stage.id===1) {
-    f+=`<div class="form-field"><div class="form-label">Date Acquired</div><input class="form-control" type="date" id="f_dateAcquired" value="${v('dateAcquired')}"></div>
-    <div class="form-field"><div class="form-label">Source</div><select class="form-control" id="f_source"><option>Auction</option><option>Trade</option><option>Private</option><option>Part Exchange</option><option>Finance Company</option></select></div>
-    <div class="form-field"><div class="form-label">Purchase Price (£)</div><input class="form-control" type="number" id="f_purchasePrice" value="${v('purchasePrice')}"></div>
-    <div class="form-field"><div class="form-label">Mileage at Intake</div><input class="form-control" type="number" id="f_mileage" value="${v('mileage')||currentVehicle.mileage}"></div>
-    <div class="form-field"><div class="form-label">Overall Condition</div><select class="form-control" id="f_condition"><option>Excellent</option><option>Good</option><option>Fair</option><option>Poor</option></select></div>
-    <div class="form-field"><div class="form-label">Location</div><select class="form-control" id="f_location">${AC_LOCATIONS.map(l=>`<option ${v('location')===l?'selected':''}>${l}</option>`).join('')}</select></div>
-    <div class="form-field full"><div class="form-label">Condition Notes</div><textarea class="form-control" id="f_notes" rows="3" placeholder="Describe condition...">${v('notes')}</textarea></div>
-    <div class="form-field full"><div class="form-label">Documentation Checklist</div><div style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px">
-    ${['V5 Present','MOT Certificate','Service History','Spare Keys','HPI Clear','Purchase Invoice'].map(item=>`<div class="checkbox-row"><input type="checkbox" id="doc_${item.replace(/\s/g,'_')}" ${ck('doc_'+item.replace(/\s/g,'_'))}><label for="doc_${item.replace(/\s/g,'_')}">${item}</label></div>`).join('')}</div></div>`;
-  } else if (stage.id===2||stage.id===3) {
-    f+=`<div class="form-field"><div class="form-label">Work Required</div><select class="form-control" id="f_workType"><option>Minor Repair</option><option>Major Repair</option><option>Full Respray</option><option>Panel Replacement</option><option>None Required</option></select></div>
-    <div class="form-field"><div class="form-label">Estimated Cost (£)</div><input class="form-control" type="number" id="f_cost" value="${v('cost')}"></div>
-    <div class="form-field"><div class="form-label">Supplier / Garage</div><input class="form-control" id="f_supplier" value="${v('supplier')}"></div>
-    <div class="form-field"><div class="form-label">Expected Completion</div><input class="form-control" type="date" id="f_completion" value="${v('completion')}"></div>
-    <div class="form-field full"><div class="form-label">Work Description</div><textarea class="form-control" id="f_notes" rows="3">${v('notes')}</textarea></div>
-    <div class="form-field full"><div class="form-label">Faults Identified</div><select class="form-control" id="f_faults" multiple style="height:120px">${AC_FAULTS.map(x=>`<option>${x}</option>`).join('')}</select></div>`;
-  } else if (stage.id===5||stage.id===6) {
-    f+=`<div class="form-field"><div class="form-label">Assigned Mechanic</div><select class="form-control" id="f_mechanic">${AC_STAFF.filter(s=>s.dept==='Workshop').map(s=>`<option>${s.name}</option>`).join('')}</select></div>
-    <div class="form-field"><div class="form-label">Estimated Cost (£)</div><input class="form-control" type="number" id="f_cost" value="${v('cost')}"></div>
-    <div class="form-field full"><div class="form-label">Faults Found</div><select class="form-control" id="f_faults" multiple style="height:100px">${AC_FAULTS.map(x=>`<option>${x}</option>`).join('')}</select></div>
-    <div class="form-field full"><div class="form-label">Parts Replaced</div><select class="form-control" id="f_parts" multiple style="height:100px">${AC_PARTS.map(x=>`<option>${x}</option>`).join('')}</select></div>
-    <div class="form-field full"><div class="form-label">Workshop Notes</div><textarea class="form-control" id="f_notes" rows="3">${v('notes')}</textarea></div>`;
-  } else if (stage.id===7) {
-    f+=`<div class="form-field"><div class="form-label">Valeter</div><select class="form-control" id="f_valeter">${AC_STAFF.filter(s=>s.dept==='Valeting'||s.dept==='Workshop').map(s=>`<option>${s.name}</option>`).join('')}</select></div>
-    <div class="form-field"><div class="form-label">Valet Type</div><select class="form-control" id="f_valetType"><option>Full Valet</option><option>Mini Valet</option><option>Detail</option><option>Machine Polish</option></select></div>
-    <div class="form-field full"><div class="form-label">Valet Checklist</div><div style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px">
-    ${['Exterior Wash','Interior Hoover','Dashboard Clean','Glass Clean','Tyre Shine','Engine Bay Clean','Odour Treatment'].map(item=>`<div class="checkbox-row"><input type="checkbox" id="v_${item.replace(/\s/g,'_')}"><label for="v_${item.replace(/\s/g,'_')}">${item}</label></div>`).join('')}</div></div>
-    <div class="form-field full"><div class="form-label">Notes</div><textarea class="form-control" id="f_notes" rows="2">${v('notes')}</textarea></div>`;
-  } else if (stage.id===9) {
-    f+=`<div class="form-field"><div class="form-label">Retail Price (£)</div><input class="form-control" type="number" id="f_retailPrice" value="${v('retailPrice')||currentVehicle.price}"></div>
-    <div class="form-field"><div class="form-label">Assigned To</div><select class="form-control" id="f_sales">${AC_STAFF.filter(s=>s.dept==='Sales'||s.dept==='Marketing').map(s=>`<option>${s.name}</option>`).join('')}</select></div>
-    <div class="form-field full"><div class="form-label">Advertising Channels</div><div style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px">
-    ${['Auto Trader','eBay Motors','Car Gurus','Facebook Marketplace','Company Website','ClickDealer'].map(ch=>`<div class="checkbox-row"><input type="checkbox" id="ch_${ch.replace(/\s/g,'_')}"><label for="ch_${ch.replace(/\s/g,'_')}">${ch}</label></div>`).join('')}</div></div>
-    <div class="form-field full"><div class="form-label">Marketing Notes</div><textarea class="form-control" id="f_notes" rows="2">${v('notes')}</textarea></div>`;
-  } else {
-    f+=`<div class="form-field"><div class="form-label">Assigned To</div><select class="form-control" id="f_assignedTo"><option value="">— Select Staff —</option>${staffOpts}</select></div>
-    <div class="form-field"><div class="form-label">Estimated Cost (£)</div><input class="form-control" type="number" id="f_cost" value="${v('cost')}"></div>
-    <div class="form-field full"><div class="form-label">Notes</div><textarea class="form-control" id="f_notes" rows="4">${v('notes')}</textarea></div>`;
-  }
-  return f+'</div>';
-}
-
-function collectForm() {
-  const data = {};
-  document.querySelectorAll('#stageFormBody [id^="f_"],[id^="doc_"],[id^="v_"],[id^="ch_"]').forEach(el=>{
-    if(el.type==='checkbox') data[el.id]=el.checked;
-    else if(el.tagName==='SELECT'&&el.multiple) data[el.id]=[...el.selectedOptions].map(o=>o.value);
-    else data[el.id]=el.value;
-  });
-  return data;
-}
-
-function saveDraft() {
-  if(!currentVehicle) return;
-  const wf = getWorkflow(currentVehicle.stockNo);
-  const id = AC_WORKFLOW_STAGES[currentStageIdx].id;
-  wf[id] = {...wf[id],...collectForm(),completed:false};
-  saveWorkflow(currentVehicle.stockNo,wf);
-  showToast('Draft saved','#3b7ff5');
-}
-
-/* ── HANDOVER MODAL ── */
-function openHandoverModal() {
-  if(!currentVehicle) return;
-  const stage = AC_WORKFLOW_STAGES[currentStageIdx];
-  document.getElementById('modalStageSub').textContent = `Completing Stage ${stage.id}: ${stage.name}  →  Next: ${stage.handoverTo||'Finalised'}`;
-  document.getElementById('modalVehicleStrip').innerHTML = `
-    <span class="vs-reg">${currentVehicle.registration}</span>
-    <div><div style="font-weight:700">${currentVehicle.make} ${currentVehicle.model} ${currentVehicle.variant||''}</div>
-    <div style="font-size:12px;color:var(--muted)">${currentVehicle.stockNo} · ${currentVehicle.location||'—'}</div></div>`;
-  hoTarget=null; hoTargetType='person'; hoPriority='normal';
-  buildPersonGrid(stage); buildDeptGrid();
-  setHoTab('person');
-  document.getElementById('hoNote').value='';
-  document.querySelectorAll('.pri-opt').forEach(e=>e.className='pri-opt');
-  document.getElementById('handoverModal').style.display='flex';
-}
-function closeHandoverModal(){ document.getElementById('handoverModal').style.display='none'; }
-
-function setHoTab(tab){
-  hoTargetType=tab; hoTarget=null;
-  document.getElementById('tabPerson').classList.toggle('active',tab==='person');
-  document.getElementById('tabDept').classList.toggle('active',tab==='dept');
-  document.getElementById('panelPerson').style.display=tab==='person'?'block':'none';
-  document.getElementById('panelDept').style.display=tab==='dept'?'block':'none';
-}
-
-function buildPersonGrid(stage) {
-  const suggested = AC_STAFF.filter(s=>s.dept===stage.handoverTo);
-  const others    = AC_STAFF.filter(s=>s.dept!==stage.handoverTo);
-  const deptIcons = {Workshop:'🔧',Valeting:'🧹',Sales:'🤝',Marketing:'📢',Finance:'💰',Management:'👔',Bodyshop:'🎨',Intake:'📋'};
-  document.getElementById('personGrid').innerHTML = [...suggested,...others].map(s=>`
-    <div class="ho-card" onclick="selectHo('person','${s.name.replace(/'/g,"\\'")}',this)">
-      <div class="hc-icon">${deptIcons[s.dept]||'👤'}</div>
-      <div class="hc-name">${s.name}</div>
-      <div class="hc-role">${s.role}</div>
-      ${s.dept===stage.handoverTo?'<div class="hc-suggest">⭐ Suggested</div>':''}
-    </div>`).join('');
-}
-
-function buildDeptGrid() {
-  document.getElementById('deptGrid').innerHTML = AC_DEPARTMENTS.map(d=>`
-    <div class="ho-card" onclick="selectHo('dept','${d.name}',this)">
-      <div class="hc-icon">${d.icon}</div>
-      <div class="hc-name">${d.name}</div>
-      <div class="hc-role">Department</div>
-    </div>`).join('');
-}
-
-function selectHo(type, target, el) {
-  document.querySelectorAll('.ho-card').forEach(c=>c.classList.remove('selected'));
-  el.classList.add('selected');
-  hoTarget=target; hoTargetType=type;
-}
-
-function setPri(pri, el) {
-  hoPriority=pri;
-  document.querySelectorAll('.pri-opt').forEach(e=>e.className='pri-opt');
-  el.className=`pri-opt sel-${pri==='normal'?'low':pri==='urgent'?'med':'high'}`;
-}
-
-function confirmHandover() {
-  if(!hoTarget){ showToast('⚠ Select who to hand over to','#f97316'); return; }
-  const stage = AC_WORKFLOW_STAGES[currentStageIdx];
-  const note  = document.getElementById('hoNote').value.trim();
-  const wf    = getWorkflow(currentVehicle.stockNo);
-  const sid   = stage.id;
-  wf[sid]={...wf[sid],...collectForm(),completed:true,completedAt:new Date().toISOString()};
-  if(sid<12){if(!wf[sid+1])wf[sid+1]={};wf[sid+1].startedAt=new Date().toISOString();}
-  saveWorkflow(currentVehicle.stockNo,wf);
-  saveHandover(currentVehicle.stockNo,sid,{toName:hoTarget,toType:hoTargetType,note,priority:hoPriority,fromStage:stage.name});
-  assignTask(hoTarget,currentVehicle.stockNo,sid+1,AC_WORKFLOW_STAGES[sid]?.name||'Next Stage',note,currentVehicle);
-  closeHandoverModal();
-  const priLabels={normal:'',urgent:' 🟡 URGENT',critical:' 🔴 CRITICAL'};
-  showToast(`✓ Stage ${sid} complete · Handed to ${hoTarget}${priLabels[hoPriority]||''}`, '#22c55e');
-  if(currentStageIdx<11){currentStageIdx++;loadVehicle(currentVehicle.stockNo);}
-  renderPipeline(); refreshAlertBadge();
-}
-
-/* ── PIPELINE TABLE ── */
-function renderPipeline() {
-  const search = (document.getElementById('pipeSearch').value||'').toLowerCase();
-  const fStage = document.getElementById('pipeStageFilter').value;
-  const rows = vehicles.filter(v=>{
-    if(search&&![v.stockNo,v.registration,v.make,v.model].some(f=>f&&f.toLowerCase().includes(search))) return false;
-    if(fStage){
-      const wf=getWorkflow(v.stockNo);
-      const done=Object.keys(wf).map(Number).filter(n=>wf[n]&&wf[n].completed);
-      const cs=done.length?Math.max(...done)+1:1;
-      if(cs!=fStage) return false;
-    }
-    return true;
-  }).slice(0,60);
-
-  document.getElementById('pipelineBody').innerHTML = rows.map(v=>{
-    const wf=getWorkflow(v.stockNo);
-    const done=Object.keys(wf).map(Number).filter(n=>wf[n]&&wf[n].completed);
-    const cs=done.length?Math.min(Math.max(...done)+1,12):1;
-    const stage=AC_WORKFLOW_STAGES[cs-1];
-    const hrs=hoursInStage(v.stockNo,cs);
-    const hrsHtml=hrs>48?`<span style="color:var(--red);font-weight:700;font-size:11px">⚠ ${hrs}h</span>`:hrs>0?`<span style="color:var(--muted);font-size:11px">${hrs}h</span>`:'—';
-    const lastHo=done.length?getHandover(v.stockNo,Math.max(...done)):null;
-    const hoHtml=lastHo?`<span style="font-size:11px;color:var(--muted)">→ ${lastHo.toName}</span>`:'<span style="color:var(--muted)">—</span>';
-    return `<tr>
-      <td style="font-weight:700;color:var(--blue)">${v.stockNo}</td>
-      <td><span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;letter-spacing:1px;background:#f5c518;color:#000;padding:2px 8px;border-radius:3px">${v.registration}</span></td>
-      <td>${v.make} ${v.model}<div style="font-size:11px;color:var(--muted)">${v.fuel}·${v.gearbox}</div></td>
-      <td style="font-size:12px;color:var(--muted)">${v.location||'—'}</td>
-      <td>${v.price?formatGBP(v.price):'<span style="color:var(--muted)">—</span>'}</td>
-      <td><span class="stage-pill" style="background:${stage.color}22;color:${stage.color}">S${cs}: ${stage.name}</span></td>
-      <td>${hrsHtml}</td>
-      <td>${hoHtml}</td>
-      <td style="color:var(--muted);font-size:12px">${done.length}/12</td>
-      <td><button class="btn" style="padding:5px 12px;font-size:12px;background:var(--bg3);border:1px solid var(--border);color:var(--muted)" onclick="loadVehicle('${v.stockNo}');window.scrollTo(0,0)">Open →</button></td>
-    </tr>`;
-  }).join('')||'<tr><td colspan="10" style="text-align:center;color:var(--muted);padding:20px">No vehicles found</td></tr>';
-}
-
-function showToast(msg,bg='#22c55e'){
-  document.querySelectorAll('.toast-msg').forEach(t=>t.remove());
-  const t=document.createElement('div');
-  t.className='toast-msg';
-  t.style.cssText=`background:${bg};color:${bg==='#22c55e'||bg==='#3b7ff5'?'#fff':'#fff'}`;
-  t.innerHTML=msg; document.body.appendChild(t);
-  setTimeout(()=>t.remove(),3500);
-}
-
-init();
+buildAll();
 </script>
-
-
-
 <script>
-document.addEventListener('DOMContentLoaded',function(){
-  var b=document.getElementById('userBadge');if(b)b.textContent='AUTO CAPITAL';
-});
-function doLogout(){window.location.href='./login.html';}
+document.addEventListener("DOMContentLoaded",function(){var b=document.getElementById("userBadge");if(b)b.textContent="AUTO CAPITAL";});
+function doLogout(){window.location.href="./login.html";}
 </script>
 </body>
 </html>

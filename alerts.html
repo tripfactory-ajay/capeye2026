@@ -3,121 +3,74 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Alerts | CapeEye Auto Capital</title>
+<title>Alerts | Auto Capital</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <script src="./firebase-config.js"></script>
 <script src="./ac-data.js"></script>
 <style>
-:root{
-  --bg:#f4f6f9;--bg2:#fff;--bg3:#f0f2f6;--bg4:#eef0f5;
-  --border:#e2e6ed;--border2:#c8d0dc;
-  --red:#C8102E;--red2:#a00d24;--red-light:rgba(200,16,46,.07);
-  --blue:#003DA5;--blue2:#002d7a;--blue-light:rgba(0,61,165,.07);
-  --gold:#d4980a;--green:#1a7f37;--green-light:rgba(26,127,55,.07);
-  --orange:#d4600a;--purple:#6d28d9;
-  --text:#0f1923;--text2:#3d4d5c;--muted:#7a8fa6;
-  --shadow:0 1px 3px rgba(0,0,0,.07),0 4px 16px rgba(0,0,0,.04);
-  --shadow-md:0 4px 12px rgba(0,0,0,.1),0 12px 40px rgba(0,0,0,.07);
-  --card-radius:12px;
-}
+:root{--bg:#f4f6f9;--bg2:#fff;--bg3:#f0f2f6;--border:#e2e6ed;--border2:#c8d0dc;--red:#C8102E;--red2:#a00d24;--red-light:rgba(200,16,46,.07);--blue:#003DA5;--blue2:#002d7a;--blue-light:rgba(0,61,165,.07);--gold:#d4980a;--green:#1a7f37;--green-light:rgba(26,127,55,.07);--orange:#d4600a;--text:#0f1923;--text2:#3d4d5c;--muted:#7a8fa6;--shadow:0 1px 3px rgba(0,0,0,.07),0 4px 16px rgba(0,0,0,.04);--shadow-md:0 4px 12px rgba(0,0,0,.1),0 12px 40px rgba(0,0,0,.07);--card-radius:12px}
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased}
-.header{background:var(--blue);padding:0 32px;height:68px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;box-shadow:0 2px 16px rgba(0,61,165,.25)}
-.logo-area{display:flex;align-items:center;gap:16px}
-.logo-area img{height:42px;filter:brightness(0) invert(1)}
+body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased}
+.header{background:var(--blue);padding:0 24px;height:68px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;box-shadow:0 2px 16px rgba(0,61,165,.25)}
+.logo-area{display:flex;align-items:center;gap:14px;flex-shrink:0}
+.logo-img{height:40px;width:auto;object-fit:contain}
 .logo-divider{width:1px;height:34px;background:rgba(255,255,255,.2)}
-.system-name{font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.8)}
-.nav{display:flex;gap:2px}
-.nav a{padding:8px 13px;border-radius:7px;font-size:13px;font-weight:500;color:rgba(255,255,255,.72);text-decoration:none;transition:all .18s;display:flex;align-items:center;gap:6px}
-.nav a i{font-size:12px}
+.system-name{font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.8);white-space:nowrap}
+.nav{display:flex;gap:1px;overflow-x:auto}
+.nav a{padding:8px 11px;border-radius:7px;font-size:12px;font-weight:500;color:rgba(255,255,255,.72);text-decoration:none;transition:all .18s;display:flex;align-items:center;gap:5px;white-space:nowrap}
+.nav a i{font-size:11px}
 .nav a:hover{background:rgba(255,255,255,.13);color:#fff}
 .nav a.active{background:var(--red);color:#fff;font-weight:700}
-.header-right{display:flex;align-items:center;gap:12px}
-.user-badge{background:rgba(255,255,255,.15);color:#fff;font-weight:600;font-size:11px;padding:5px 14px;border-radius:20px;letter-spacing:1px;text-transform:uppercase;border:1px solid rgba(255,255,255,.2)}
-.btn-logout{background:transparent;border:1px solid rgba(255,255,255,.25);color:rgba(255,255,255,.8);padding:6px 12px;border-radius:7px;cursor:pointer;font-size:12px;font-family:'DM Sans',sans-serif;transition:all .2s}
-.btn-logout:hover{background:rgba(255,255,255,.1);color:#fff}
-
-
-
-
-
-
-.logo-area img{height:40px;width:auto}
-.logo-divider{width:1px;height:32px;background:var(--border)}
-
-
-
-
-.nav a.active{color:var(--gold)}
-.alert-badge{position:absolute;top:5px;right:5px;background:var(--red);color:#fff;font-size:9px;font-weight:800;min-width:16px;height:16px;border-radius:8px;display:none;align-items:center;justify-content:center;padding:0 3px}
-
-.main{max-width:1600px;margin:0 auto;padding:28px}
-.page-title{margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
-.page-title h1{font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:800;letter-spacing:1px}
-.btn{padding:9px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:none;font-family:'Barlow',sans-serif;transition:all .2s;display:inline-flex;align-items:center;gap:8px}
-.btn-ghost{background:var(--bg3);border:1px solid var(--border);color:var(--muted)}.btn-ghost:hover{color:var(--text)}
-.btn-primary{background:var(--blue);color:#fff}
-.btn-danger{background:rgba(239,68,68,.15);color:var(--red);border:1px solid rgba(239,68,68,.3)}
-/* KPIs */
-.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px}
-.kpi-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--card-radius);padding:20px;position:relative;overflow:hidden}
-.kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--kpi-color,var(--gold))}
-.kpi-label{font-size:11px;font-weight:700;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;margin-bottom:10px}
-.kpi-val{font-family:'Barlow Condensed',sans-serif;font-size:40px;font-weight:800;line-height:1}
-.kpi-sub{font-size:12px;color:var(--muted);margin-top:6px}
-.kpi-icon{position:absolute;top:16px;right:16px;font-size:22px;opacity:0.12}
-/* FILTERS */
-.filters{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap}
-.filter-btn{padding:7px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;border:1px solid var(--border);background:var(--bg3);color:var(--muted);transition:all .2s;letter-spacing:.5px}
-.filter-btn.active{border-color:var(--blue);color:var(--blue);background:rgba(59,127,245,.08)}
-/* CARDS */
-.alerts-section{margin-bottom:32px}
-.section-title{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:800;letter-spacing:1px;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
-.alert-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--card-radius);padding:0;overflow:hidden;margin-bottom:10px;transition:border-color .2s}
-.alert-card:hover{border-color:rgba(255,255,255,.12)}
-.alert-card.unread{border-left:3px solid var(--blue)}
-.alert-card.level-critical{border-left:3px solid var(--red)}
-.alert-card.level-warning{border-left:3px solid var(--orange)}
-.alert-card.level-info{border-left:3px solid var(--blue)}
-.alert-card.level-success{border-left:3px solid var(--green)}
-.ac-inner{padding:14px 18px;display:flex;align-items:flex-start;gap:14px}
-.ac-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;margin-top:2px}
-.ac-content{flex:1;min-width:0}
-.ac-title{font-size:14px;font-weight:700;margin-bottom:3px}
-.ac-body{font-size:13px;color:var(--muted);line-height:1.5}
-.ac-meta{display:flex;align-items:center;gap:12px;margin-top:6px;flex-wrap:wrap}
-.ac-time{font-size:11px;color:var(--muted)}
-.ac-badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:12px;font-size:10px;font-weight:800;letter-spacing:.5px}
-.badge-red{background:rgba(239,68,68,.15);color:var(--red)}
-.badge-orange{background:rgba(249,115,22,.15);color:var(--orange)}
-.badge-blue{background:rgba(59,127,245,.15);color:var(--blue)}
-.badge-green{background:rgba(34,197,94,.15);color:var(--green)}
-.badge-yellow{background:rgba(232,184,75,.15);color:var(--gold)}
-.ac-actions{display:flex;gap:8px;margin-left:auto;flex-shrink:0}
-.ac-btn{padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;border:1px solid var(--border);background:var(--bg3);color:var(--muted);transition:all .2s;font-family:'Barlow',sans-serif}
-.ac-btn:hover{color:var(--text);border-color:rgba(255,255,255,.2)}
-/* MOT table */
-.ac-table{width:100%;border-collapse:collapse;font-size:13px}
-.ac-table th{padding:10px 14px;text-align:left;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);font-weight:600;border-bottom:1px solid var(--border)}
-.ac-table td{padding:11px 14px;border-bottom:1px solid rgba(255,255,255,0.04)}
-.ac-table tr:hover td{background:rgba(255,255,255,.02)}
-.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--card-radius);overflow:hidden}
-.card-header{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
-.card-title{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
-.reg-plate{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:13px;letter-spacing:1px;background:#f5c518;color:#000;padding:2px 8px;border-radius:4px}
-.empty-state{text-align:center;padding:48px 20px;color:var(--muted)}
-.empty-state i{font-size:40px;margin-bottom:12px;display:block;opacity:.4}
-.empty-state p{font-size:14px}
-@media(max-width:768px){.kpi-row{grid-template-columns:1fr 1fr}}
+.header-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.user-badge{background:rgba(255,255,255,.15);color:#fff;font-weight:600;font-size:11px;padding:5px 12px;border-radius:20px;letter-spacing:1px;text-transform:uppercase;border:1px solid rgba(255,255,255,.2);white-space:nowrap}
+.btn-logout{background:transparent;border:1px solid rgba(255,255,255,.25);color:rgba(255,255,255,.8);padding:6px 10px;border-radius:7px;cursor:pointer;font-size:12px;font-family:"DM Sans",sans-serif}
+.main{max-width:1400px;margin:0 auto;padding:28px}
+.page-hdr{margin-bottom:24px;display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:14px}
+.page-hdr h1{font-size:26px;font-weight:800;letter-spacing:-.3px}
+.page-hdr h1 .r{color:var(--red)}
+.page-hdr p{color:var(--muted);font-size:13px;margin-top:3px}
+/* SUMMARY STRIP */
+.alert-strip{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:28px}
+.as-card{border-radius:var(--card-radius);padding:16px 18px;cursor:pointer;transition:all .2s;border:2px solid transparent}
+.as-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
+.as-card.active{border-color:var(--ac)}
+.as-count{font-size:32px;font-weight:800;color:var(--ac)}
+.as-label{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-top:4px;color:var(--text2)}
+.as-sub{font-size:11px;color:var(--muted);margin-top:2px}
+/* ALERT ITEMS */
+.section-hdr{display:flex;align-items:center;gap:12px;padding:16px 20px;background:var(--bg3);border-bottom:1px solid var(--border)}
+.section-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.section-title{font-size:14px;font-weight:700}
+.section-sub{font-size:12px;color:var(--muted);margin-top:1px}
+.alert-list{padding:0}
+.alert-item{display:flex;align-items:center;gap:16px;padding:14px 20px;border-bottom:1px solid var(--border);transition:background .15s}
+.alert-item:last-child{border-bottom:none}
+.alert-item:hover{background:var(--bg3)}
+.ai-left{display:flex;align-items:center;gap:12px;flex:1;min-width:0}
+.ai-icon{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.ai-body{min-width:0}
+.ai-title{font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ai-sub{font-size:12px;color:var(--muted);margin-top:2px}
+.ai-right{text-align:right;flex-shrink:0}
+.ai-val{font-size:14px;font-weight:800}
+.ai-val-sub{font-size:11px;color:var(--muted);margin-top:2px}
+.rp{font-family:"DM Mono",monospace;font-size:11px;background:#fff9db;color:#7a5c00;padding:2px 7px;border-radius:4px;border:1px solid #e6d080;letter-spacing:1.5px;margin-right:6px}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--card-radius);overflow:hidden;box-shadow:var(--shadow);margin-bottom:20px}
+.empty{text-align:center;padding:32px;color:var(--muted)}
+.empty i{font-size:28px;display:block;margin-bottom:8px;opacity:.2}
+.btn{padding:8px 16px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:none;font-family:"DM Sans",sans-serif;transition:all .2s;display:inline-flex;align-items:center;gap:6px}
+.btn-ghost{background:var(--bg3);border:1px solid var(--border);color:var(--muted)}
+.btn-ghost:hover{color:var(--text)}
+@media(max-width:900px){.alert-strip{grid-template-columns:1fr 1fr}}
 </style>
 </head>
 <body>
 <header class="header">
   <div class="logo-area">
-    <img src="./autocapital-logo.png" alt="Auto Capital" onerror="this.style.display='none'">
+    <img class="logo-img" src="./auto-capital-logo.png" alt="Auto Capital" onerror="this.style.opacity=0">
     <div class="logo-divider"></div>
-    <span class="system-name">Back Office System</span>
+    <span class="system-name">Back Office</span>
   </div>
   <nav class="nav">
     <a href="./index.html"><i class="fas fa-th-large"></i> Dashboard</a>
@@ -137,313 +90,164 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 </header>
 
 <main class="main">
-  <div class="page-title">
+  <div class="page-hdr">
     <div>
-      <h1><i class="fas fa-bell" style="color:var(--red);margin-right:10px"></i>Alerts Dashboard</h1>
-      <p style="color:var(--muted);font-size:14px;margin-top:4px">Vehicles stuck in stage 48h+, MOT warnings, handover log &amp; system events</p>
+      <h1>Vehicle <span class="r">Alerts</span></h1>
+      <p id="alertSub">Checking all vehicles for issues...</p>
     </div>
-    <div style="display:flex;gap:10px">
-      <button class="btn btn-ghost" onclick="markAllRead()"><i class="fas fa-check-double"></i> Mark All Read</button>
-      <button class="btn btn-ghost" onclick="buildAll()"><i class="fas fa-sync-alt"></i> Refresh</button>
+    <button class="btn btn-ghost" onclick="buildAlerts()"><i class="fas fa-sync-alt"></i> Refresh</button>
+  </div>
+
+  <!-- SUMMARY STRIP -->
+  <div class="alert-strip">
+    <div class="as-card" style="background:var(--red-light);--ac:var(--red)" onclick="scrollTo('sec-mot')">
+      <div class="as-count" id="sc-mot">—</div><div class="as-label"><i class="fas fa-calendar-times"></i> MOT Expiry</div><div class="as-sub">Next 30 days</div>
+    </div>
+    <div class="as-card" style="background:rgba(212,96,10,.07);--ac:var(--orange)" onclick="scrollTo('sec-blocked')">
+      <div class="as-count" id="sc-blocked">—</div><div class="as-label"><i class="fas fa-lock"></i> Blocked</div><div class="as-sub">In pipeline</div>
+    </div>
+    <div class="as-card" style="background:rgba(212,152,10,.07);--ac:var(--gold)" onclick="scrollTo('sec-aged')">
+      <div class="as-count" id="sc-aged">—</div><div class="as-label"><i class="fas fa-hourglass-end"></i> Aged Stock</div><div class="as-sub">60+ days</div>
+    </div>
+    <div class="as-card" style="background:var(--blue-light);--ac:var(--blue)" onclick="scrollTo('sec-price')">
+      <div class="as-count" id="sc-price">—</div><div class="as-label"><i class="fas fa-tag"></i> No Price</div><div class="as-sub">Unpriced vehicles</div>
+    </div>
+    <div class="as-card" style="background:var(--green-light);--ac:var(--green)" onclick="scrollTo('sec-stage')">
+      <div class="as-count" id="sc-stage">—</div><div class="as-label"><i class="fas fa-clock"></i> Stage 7d+</div><div class="as-sub">Stuck in dept</div>
     </div>
   </div>
 
-  <!-- KPIs -->
-  <div class="kpi-row">
-    <div class="kpi-card" style="--kpi-color:var(--red)">
-      <i class="fas fa-hourglass-half kpi-icon"></i>
-      <div class="kpi-label">Stuck in Stage 48h+</div>
-      <div class="kpi-val" id="kStuck">—</div>
-      <div class="kpi-sub">Vehicles overdue for progression</div>
+  <!-- MOT -->
+  <div class="card" id="sec-mot">
+    <div class="section-hdr">
+      <div class="section-icon" style="background:var(--red-light);color:var(--red)"><i class="fas fa-calendar-times"></i></div>
+      <div><div class="section-title">MOT Expiring Within 30 Days</div><div class="section-sub">Vehicles that need MOT booked urgently</div></div>
     </div>
-    <div class="kpi-card" style="--kpi-color:var(--orange)">
-      <i class="fas fa-calendar-times kpi-icon"></i>
-      <div class="kpi-label">MOT Expiring 30 Days</div>
-      <div class="kpi-val" id="kMot">—</div>
-      <div class="kpi-sub">Require immediate attention</div>
-    </div>
-    <div class="kpi-card" style="--kpi-color:var(--gold)">
-      <i class="fas fa-pound-sign kpi-icon"></i>
-      <div class="kpi-label">No Price Set</div>
-      <div class="kpi-val" id="kNoPrice">—</div>
-      <div class="kpi-sub">In-stock vehicles without a price</div>
-    </div>
-    <div class="kpi-card" style="--kpi-color:var(--blue)">
-      <i class="fas fa-exchange-alt kpi-icon"></i>
-      <div class="kpi-label">Handovers Today</div>
-      <div class="kpi-val" id="kHandovers">—</div>
-      <div class="kpi-sub">Stage completions logged</div>
-    </div>
+    <div class="alert-list" id="motList"></div>
   </div>
 
-  <!-- FILTERS -->
-  <div class="filters">
-    <button class="filter-btn active" id="f_all" onclick="setFilter('all')">All Alerts</button>
-    <button class="filter-btn" id="f_stuck" onclick="setFilter('stuck')">⚠ Stuck 48h+</button>
-    <button class="filter-btn" id="f_mot" onclick="setFilter('mot')">📅 MOT Expiry</button>
-    <button class="filter-btn" id="f_handover" onclick="setFilter('handover')">🔄 Handovers</button>
-    <button class="filter-btn" id="f_price" onclick="setFilter('price')">💰 No Price</button>
-    <button class="filter-btn" id="f_unread" onclick="setFilter('unread')">🔵 Unread Only</button>
-  </div>
-
-  <!-- STUCK VEHICLES -->
-  <div class="alerts-section" id="stuckSection">
-    <div class="section-title"><i class="fas fa-hourglass-half" style="color:var(--red)"></i> Vehicles Stuck in Stage — 48+ Hours</div>
-    <div id="stuckList"></div>
-  </div>
-
-  <!-- MOT ALERTS -->
-  <div class="alerts-section" id="motSection">
-    <div class="section-title"><i class="fas fa-calendar-times" style="color:var(--orange)"></i> MOT Expiry Alerts</div>
-    <div class="card">
-      <div class="card-header">
-        <span class="card-title">Expiring within 60 days</span>
-        <span id="motBadge" style="background:rgba(249,115,22,.15);color:var(--orange);font-size:11px;font-weight:800;padding:3px 10px;border-radius:12px">0</span>
-      </div>
-      <div style="overflow-x:auto">
-        <table class="ac-table">
-          <thead><tr><th>Reg</th><th>Stock No</th><th>Vehicle</th><th>Location</th><th>Status</th><th>MOT Expiry</th><th>Days Remaining</th><th>Action</th></tr></thead>
-          <tbody id="motTable"></tbody>
-        </table>
-      </div>
+  <!-- BLOCKED -->
+  <div class="card" id="sec-blocked">
+    <div class="section-hdr">
+      <div class="section-icon" style="background:var(--red-light);color:var(--red)"><i class="fas fa-lock"></i></div>
+      <div><div class="section-title">Blocked Vehicles</div><div class="section-sub">These vehicles have a flag — immediate action needed</div></div>
     </div>
+    <div class="alert-list" id="blockedList"></div>
   </div>
 
-  <!-- PRICE ALERTS -->
-  <div class="alerts-section" id="priceSection">
-    <div class="section-title"><i class="fas fa-pound-sign" style="color:var(--gold)"></i> In-Stock Vehicles Without a Price</div>
-    <div class="card">
-      <div style="overflow-x:auto">
-        <table class="ac-table">
-          <thead><tr><th>Reg</th><th>Stock No</th><th>Vehicle</th><th>Location</th><th>Days in Stock</th><th>Action</th></tr></thead>
-          <tbody id="priceTable"></tbody>
-        </table>
-      </div>
+  <!-- AGED -->
+  <div class="card" id="sec-aged">
+    <div class="section-hdr">
+      <div class="section-icon" style="background:rgba(212,96,10,.1);color:var(--orange)"><i class="fas fa-hourglass-end"></i></div>
+      <div><div class="section-title">Aged Stock — 60+ Days Without Sale</div><div class="section-sub">These vehicles have been in stock a long time and need attention</div></div>
     </div>
+    <div class="alert-list" id="agedList"></div>
   </div>
 
-  <!-- HANDOVER FEED -->
-  <div class="alerts-section" id="handoverSection">
-    <div class="section-title"><i class="fas fa-exchange-alt" style="color:var(--blue)"></i> Handover &amp; Activity Feed</div>
-    <div id="activityFeed"></div>
+  <!-- NO PRICE -->
+  <div class="card" id="sec-price">
+    <div class="section-hdr">
+      <div class="section-icon" style="background:var(--blue-light);color:var(--blue)"><i class="fas fa-tag"></i></div>
+      <div><div class="section-title">Vehicles Without a Retail Price</div><div class="section-sub">These cannot be advertised until priced</div></div>
+    </div>
+    <div class="alert-list" id="priceList"></div>
   </div>
 
+  <!-- STAGE 7D+ -->
+  <div class="card" id="sec-stage">
+    <div class="section-hdr">
+      <div class="section-icon" style="background:var(--green-light);color:var(--green)"><i class="fas fa-clock"></i></div>
+      <div><div class="section-title">Vehicles Stuck in Stage 7+ Days</div><div class="section-sub">These have been in the same workflow stage for over a week</div></div>
+    </div>
+    <div class="alert-list" id="stageList"></div>
+  </div>
 </main>
 
 <script>
-const vehicles = getVehicles();
-let currentFilter = 'all';
+const V=getVehicles();
 
-function motDays(str) {
-  if (!str) return null;
-  const p = str.split('/');
-  if (p.length!==3) return null;
-  return Math.ceil((new Date(p[2],p[1]-1,p[0])-Date.now())/86400000);
-}
+function motDays(s){if(!s)return null;const p=s.split("/");if(p.length!==3)return null;return Math.ceil((new Date(+p[2],+p[1]-1,+p[0]).getTime()-Date.now())/86400000);}
+function fgbp(n){return n?"£"+new Intl.NumberFormat("en-GB",{maximumFractionDigits:0}).format(n):"No price";}
 
-function buildKPIs() {
-  // Stuck 48h+
-  let stuck = 0;
-  vehicles.forEach(v => {
-    const wf = getWorkflow(v.stockNo);
-    const done = Object.keys(wf).map(Number).filter(n=>wf[n]&&wf[n].completed);
-    const cs = done.length?Math.min(Math.max(...done)+1,12):1;
-    const hrs = hoursInStage(v.stockNo, cs);
-    if (hrs>=48) stuck++;
-  });
-  document.getElementById('kStuck').textContent = stuck;
-
-  // MOT 30 days
-  const mot30 = vehicles.filter(v=>{const d=motDays(v.mot);return d!==null&&d<=30&&d>=0;}).length;
-  document.getElementById('kMot').textContent = mot30;
-
-  // No price
-  const noPrice = vehicles.filter(v=>!v.price&&v.status==='In Stock').length;
-  document.getElementById('kNoPrice').textContent = noPrice;
-
-  // Handovers today
-  const today = new Date().toDateString();
-  const todayHo = getAlerts().filter(a=>a.type==='handover'&&new Date(a.ts).toDateString()===today).length;
-  document.getElementById('kHandovers').textContent = todayHo;
-
-  // Nav badge
-  const unread = getAlerts().filter(a=>!a.read).length;
-  const badge = document.getElementById('navBadge');
-  if(unread>0){badge.style.display='flex';badge.textContent=unread>9?'9+':unread;}else{badge.style.display='none';}
-}
-
-function buildStuck() {
-  const list = document.getElementById('stuckList');
-  const stuckVehicles = [];
-  vehicles.forEach(v => {
-    const wf = getWorkflow(v.stockNo);
-    const done = Object.keys(wf).map(Number).filter(n=>wf[n]&&wf[n].completed);
-    const cs = done.length?Math.min(Math.max(...done)+1,12):1;
-    const hrs = hoursInStage(v.stockNo, cs);
-    if (hrs>=48) stuckVehicles.push({v, cs, hrs, stage:AC_WORKFLOW_STAGES[cs-1]});
-  });
-  stuckVehicles.sort((a,b)=>b.hrs-a.hrs);
-  if (!stuckVehicles.length) {
-    list.innerHTML = `<div class="empty-state"><i class="fas fa-check-circle" style="color:var(--green)"></i><p>No vehicles stuck in stage — all progressing well!</p></div>`;
-    return;
-  }
-  list.innerHTML = stuckVehicles.map(({v,cs,hrs,stage})=>{
-    const level = hrs>=120?'critical':hrs>=72?'warning':'info';
-    const lvlColors={critical:'var(--red)',warning:'var(--orange)',info:'var(--gold)'};
-    const lvlBg={critical:'rgba(239,68,68,.12)',warning:'rgba(249,115,22,.12)',info:'rgba(232,184,75,.12)'};
-    const days = Math.floor(hrs/24), remHrs = hrs%24;
-    return `<div class="alert-card level-${level}">
-      <div class="ac-inner">
-        <div class="ac-icon" style="background:${lvlBg[level]};color:${lvlColors[level]}"><i class="fas fa-hourglass-half"></i></div>
-        <div class="ac-content">
-          <div class="ac-title">
-            <span class="reg-plate" style="font-size:12px;margin-right:8px">${v.registration}</span>
-            ${v.make} ${v.model}
-            <span class="ac-badge badge-${level==='critical'?'red':level==='warning'?'orange':'yellow'}" style="margin-left:8px">${level.toUpperCase()}</span>
-          </div>
-          <div class="ac-body">${v.stockNo} · Stage ${cs}: <strong>${stage.name}</strong> · ${v.location||'—'}</div>
-          <div class="ac-meta">
-            <span class="ac-time" style="color:${lvlColors[level]};font-weight:700"><i class="fas fa-clock"></i> ${days>0?days+'d ':''} ${remHrs}h in stage</span>
-            <span class="ac-badge" style="background:${stage.color}22;color:${stage.color}">${stage.dept}</span>
-          </div>
-        </div>
-        <div class="ac-actions">
-          <button class="ac-btn" onclick="goWorkflow('${v.stockNo}')">Open Workflow →</button>
-        </div>
+function alertItem(v, icon, iconBg, iconCol, title, sub, valHtml){
+  return `<div class=alert-item>
+    <div class=ai-left>
+      <div class=ai-icon style="background:${iconBg};color:${iconCol}"><i class="fas ${icon}"></i></div>
+      <div class=ai-body>
+        <div class=ai-title><span class=rp>${v.registration}</span>${v.make} ${v.model}</div>
+        <div class=ai-sub>${sub}</div>
       </div>
-    </div>`;
-  }).join('');
+    </div>
+    <div class=ai-right>${valHtml}</div>
+  </div>`;
 }
+function empty(){return "<div class=empty><i class='fas fa-check-circle' style='color:var(--green)'></i>No issues here</div>";}
 
-function buildMOT() {
-  const soon = vehicles.map(v=>({...v,days:motDays(v.mot)}))
-    .filter(v=>v.days!==null&&v.days<=60)
-    .sort((a,b)=>a.days-b.days);
-  document.getElementById('motBadge').textContent = soon.length;
-  document.getElementById('motTable').innerHTML = soon.map(v=>{
-    const color = v.days<0?'var(--red)':v.days<14?'var(--red)':v.days<30?'var(--orange)':'var(--gold)';
-    const label = v.days<0?'EXPIRED':`${v.days}d`;
-    const badgeClass = v.days<0?'badge-red':v.days<30?'badge-orange':'badge-yellow';
-    return `<tr>
-      <td><span class="reg-plate">${v.registration}</span></td>
-      <td style="color:var(--blue);font-weight:700">${v.stockNo}</td>
-      <td>${v.make} ${v.model}<div style="font-size:11px;color:var(--muted)">${v.fuel}·${v.gearbox}</div></td>
-      <td style="font-size:12px;color:var(--muted)">${v.location||'—'}</td>
-      <td>${statusBadge(v.status)}</td>
-      <td style="font-weight:600">${v.mot||'—'}</td>
-      <td><span class="ac-badge ${badgeClass}" style="font-size:12px;padding:4px 10px">${label}</span></td>
-      <td><button class="ac-btn" onclick="goWorkflow('${v.stockNo}')">Workflow →</button></td>
-    </tr>`;
-  }).join('')||'<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:20px">No MOT alerts within 60 days</td></tr>';
-}
+window.scrollTo=function(id){document.getElementById(id).scrollIntoView({behavior:"smooth",block:"start"});}
 
-function buildPrice() {
-  const noPrice = vehicles.filter(v=>!v.price&&v.status==='In Stock');
-  document.getElementById('priceTable').innerHTML = noPrice.map(v=>{
-    const days = daysSince(v.regDate);
-    return `<tr>
-      <td><span class="reg-plate">${v.registration}</span></td>
-      <td style="color:var(--blue);font-weight:700">${v.stockNo}</td>
-      <td>${v.make} ${v.model}<div style="font-size:11px;color:var(--muted)">${v.fuel}·${v.gearbox}</div></td>
-      <td style="font-size:12px;color:var(--muted)">${v.location||'—'}</td>
-      <td style="color:${days>30?'var(--orange)':'var(--muted)'}">${days}d</td>
-      <td><button class="ac-btn" onclick="goWorkflow('${v.stockNo}')">Open →</button></td>
-    </tr>`;
-  }).join('')||'<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:20px">All in-stock vehicles have a price set ✓</td></tr>';
-}
+function buildAlerts(){
+  const mot30=V.filter(x=>{const d=motDays(x.mot);return d!==null&&d<=30;}).map(x=>({...x,motD:motDays(x.mot)})).sort((a,b)=>a.motD-b.motD);
+  const blocked=V.filter(x=>x.blocked);
+  const aged=V.filter(x=>x.daysInStock>=60).sort((a,b)=>b.daysInStock-a.daysInStock);
+  const noPrice=V.filter(x=>(!x.price||x.price===0)&&x.status!=="Sold");
+  const longStage=V.filter(x=>x.daysInStage>=7).sort((a,b)=>b.daysInStage-a.daysInStage);
+  const total=mot30.length+blocked.length+aged.length+noPrice.length+longStage.length;
 
-function buildActivity() {
-  const alerts = getAlerts();
-  const feed = document.getElementById('activityFeed');
-  if (!alerts.length) {
-    feed.innerHTML = `<div class="empty-state"><i class="fas fa-inbox"></i><p>No activity yet — handovers and system events will appear here.</p></div>`;
-    return;
-  }
-  const levelIcons = {handover:'fa-exchange-alt',stuck:'fa-hourglass-half',mot:'fa-calendar-times',info:'fa-info-circle'};
-  const levelColors = {handover:'var(--blue)',stuck:'var(--orange)',mot:'var(--red)',info:'var(--muted)'};
-  const levelBg = {handover:'rgba(59,127,245,.12)',stuck:'rgba(249,115,22,.12)',mot:'rgba(239,68,68,.12)',info:'rgba(100,116,139,.12)'};
-  feed.innerHTML = alerts.slice(0,50).map(a=>{
-    const t = a.type||'info';
-    const ts = new Date(a.ts);
-    const ago = timeAgo(ts);
-    return `<div class="alert-card ${!a.read?'unread':''} level-${a.level||'info'}" id="alert_${a.id}">
-      <div class="ac-inner">
-        <div class="ac-icon" style="background:${levelBg[t]||levelBg.info};color:${levelColors[t]||levelColors.info}">
-          <i class="fas ${levelIcons[t]||levelIcons.info}"></i>
-        </div>
-        <div class="ac-content">
-          <div class="ac-title">${a.title||'System Event'}${!a.read?'<span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--blue);margin-left:8px;vertical-align:middle"></span>':''}</div>
-          <div class="ac-body">${a.body||''}</div>
-          <div class="ac-meta">
-            <span class="ac-time"><i class="fas fa-clock"></i> ${ago} · ${ts.toLocaleString('en-GB')}</span>
-            ${a.stockNo?`<span class="ac-badge badge-blue">${a.stockNo}</span>`:''}
-          </div>
-        </div>
-        <div class="ac-actions">
-          ${!a.read?`<button class="ac-btn" onclick="markOne(${a.id})">Mark Read</button>`:''}
-          ${a.stockNo?`<button class="ac-btn" onclick="goWorkflow('${a.stockNo}')">View →</button>`:''}
-        </div>
-      </div>
-    </div>`;
-  }).join('');
-}
+  document.getElementById("alertSub").textContent=total+" active alerts across "+V.length+" vehicles · Updated "+new Date().toLocaleTimeString("en-GB");
+  document.getElementById("sc-mot").textContent=mot30.length;
+  document.getElementById("sc-blocked").textContent=blocked.length;
+  document.getElementById("sc-aged").textContent=aged.length;
+  document.getElementById("sc-price").textContent=noPrice.length;
+  document.getElementById("sc-stage").textContent=longStage.length;
 
-function setFilter(f) {
-  currentFilter = f;
-  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
-  document.getElementById('f_'+f).classList.add('active');
-  const show = (id, vis) => { const el=document.getElementById(id); if(el) el.style.display=vis?'block':'none'; };
-  const all = f==='all';
-  show('stuckSection',   all||f==='stuck'||f==='unread');
-  show('motSection',     all||f==='mot'||f==='unread');
-  show('priceSection',   all||f==='price'||f==='unread');
-  show('handoverSection',all||f==='handover'||f==='unread');
-}
+  // MOT
+  document.getElementById("motList").innerHTML=mot30.length?mot30.map(x=>{
+    const [col,lbl]=x.motD<0?["var(--red)","EXPIRED"]:x.motD<14?["var(--red)",x.motD+"d"]:["var(--orange)",x.motD+"d"];
+    return alertItem(x,"fa-calendar-times","var(--red-light)","var(--red)",
+      x.registration,
+      `MOT: ${x.mot} · ${x.location} · ${x.workflowStage}`,
+      `<div class=ai-val style="color:${col}">${lbl}</div><div class=ai-val-sub>${fgbp(x.price)}</div>`);
+  }).join(""):empty();
 
-function markAllRead() {
-  markAllAlertsRead();
-  buildActivity(); buildKPIs();
-}
-function markOne(id) {
-  markAlertRead(id);
-  buildActivity(); buildKPIs();
-}
-function goWorkflow(stockNo) {
-  window.location.href=`./workflow.html?stock=${stockNo}`;
-}
+  // BLOCKED
+  document.getElementById("blockedList").innerHTML=blocked.length?blocked.map(x=>
+    alertItem(x,"fa-lock","var(--red-light)","var(--red)",
+      x.registration,
+      `Stage: ${x.workflowStage} · Dept: ${x.workflowDept} · ${x.location}`,
+      `<div class=ai-val style="color:var(--orange)">${x.daysInStage}d in stage</div><div class=ai-val-sub>${x.daysInStock}d total</div>`)
+  ).join(""):empty();
 
-function statusBadge(s) {
-  const m={'In Stock':'badge-green','In Transit':'badge-orange','Off-site R':'badge-red','Subject to':'badge-yellow'};
-  return `<span class="ac-badge ${m[s]||''}">${s||'Unknown'}</span>`;
-}
-function timeAgo(d) {
-  const diff = Date.now()-d.getTime();
-  const mins = Math.floor(diff/60000);
-  if(mins<1) return 'Just now';
-  if(mins<60) return `${mins}m ago`;
-  const hrs = Math.floor(mins/60);
-  if(hrs<24) return `${hrs}h ago`;
-  return `${Math.floor(hrs/24)}d ago`;
-}
+  // AGED
+  document.getElementById("agedList").innerHTML=aged.length?aged.map(x=>{
+    const col=x.daysInStock>=90?"var(--red)":"var(--orange)";
+    return alertItem(x,"fa-hourglass-end","rgba(212,96,10,.1)","var(--orange)",
+      x.registration,
+      `${x.make} ${x.model} · ${x.workflowStage} · ${x.location}`,
+      `<div class=ai-val style="color:${col}">${x.daysInStock}d</div><div class=ai-val-sub>${fgbp(x.price)}</div>`);
+  }).join(""):empty();
 
-function buildAll() {
-  buildKPIs(); buildStuck(); buildMOT(); buildPrice(); buildActivity();
+  // NO PRICE
+  document.getElementById("priceList").innerHTML=noPrice.length?noPrice.map(x=>
+    alertItem(x,"fa-tag","var(--blue-light)","var(--blue)",
+      x.registration,
+      `${x.make} ${x.model} · ${x.status} · ${x.workflowStage}`,
+      `<div class=ai-val style="color:var(--blue)">${x.daysInStock}d in stock</div><div class=ai-val-sub>Needs pricing</div>`)
+  ).join(""):empty();
+
+  // STAGE 7D+
+  document.getElementById("stageList").innerHTML=longStage.length?longStage.map(x=>{
+    const col=x.daysInStage>=14?"var(--red)":"var(--orange)";
+    return alertItem(x,"fa-clock","var(--green-light)","var(--green)",
+      x.registration,
+      `${x.make} ${x.model} · Dept: ${x.workflowDept} · ${x.location}`,
+      `<div class=ai-val style="color:${col}">${x.daysInStage}d in ${x.workflowStage}</div><div class=ai-val-sub>${x.daysInStock}d total</div>`);
+  }).join(""):empty();
 }
-
-buildAll();
-setFilter('all');
-
-// Auto-refresh every 60s
-setInterval(buildAll, 60000);
+buildAlerts();
 </script>
-
-
-
 <script>
-document.addEventListener('DOMContentLoaded',function(){
-  var b=document.getElementById('userBadge');if(b)b.textContent='AUTO CAPITAL';
-});
-function doLogout(){window.location.href='./login.html';}
+document.addEventListener("DOMContentLoaded",function(){var b=document.getElementById("userBadge");if(b)b.textContent="AUTO CAPITAL";});
+function doLogout(){window.location.href="./login.html";}
 </script>
 </body>
 </html>
