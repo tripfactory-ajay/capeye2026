@@ -124,6 +124,16 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .badge{display:inline-flex;align-items:center;padding:3px 8px;border-radius:10px;font-size:10px;font-weight:700;letter-spacing:.5px}
 .loading{text-align:center;padding:40px;color:var(--muted);font-size:14px}
 @media(max-width:900px){.two-col{grid-template-columns:1fr}}
+
+/* ── TOOLBAR ── */
+.toolbar{display:flex;gap:4px;align-items:center;flex-shrink:0;border-left:1px solid var(--border);border-right:1px solid var(--border);padding:0 12px;margin:0 8px}
+.tlink{padding:6px 10px;border-radius:6px;font-size:11px;font-weight:700;color:var(--muted);text-decoration:none;transition:all .18s;display:flex;align-items:center;gap:5px;white-space:nowrap;border:1px solid transparent}
+.tlink:hover{background:var(--blue);color:#fff;border-color:var(--blue)}
+.tlink i{font-size:11px}
+.last-import{font-size:10px;color:var(--muted);background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:4px 9px;display:flex;align-items:center;gap:5px;white-space:nowrap;cursor:default}
+.last-import.fresh{color:var(--green);border-color:var(--green);background:var(--green-light)}
+.last-import.stale{color:var(--orange);border-color:var(--orange);background:rgba(212,96,10,.07)}
+
 </style>
 </head>
 <body>
@@ -134,17 +144,25 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     <span class="system-name">Back Office</span>
   </div>
   <nav class="nav">
-    <a href="./index.html"><i class="fas fa-th-large"></i> Dashboard</a>
-    <a href="./inventory.html"><i class="fas fa-car"></i> Inventory</a>
-    <a href="./workflow.html"><i class="fas fa-tasks"></i> Workflow</a>
-    <a href="./alerts.html"><i class="fas fa-bell"></i> Alerts</a>
-    <a href="./analytics.html"><i class="fas fa-chart-bar"></i> Analytics</a>
-    <a href="./marketing.html"><i class="fas fa-chart-line"></i> Marketing</a>
-    <a href="./keys.html"><i class="fas fa-key"></i> Keys</a>
-    <a href="./team.html"><i class="fas fa-users"></i> Team</a>
+    <a href="./index.html" class=""><i class="fas fa-th-large"></i> Dashboard</a>
+    <a href="./inventory.html" class=""><i class="fas fa-car"></i> Inventory</a>
+    <a href="./workflow.html" class=""><i class="fas fa-tasks"></i> Workflow</a>
+    <a href="./alerts.html" class=""><i class="fas fa-bell"></i> Alerts</a>
+    <a href="./analytics.html" class=""><i class="fas fa-chart-bar"></i> Analytics</a>
+    <a href="./marketing.html" class=""><i class="fas fa-chart-line"></i> Marketing</a>
+    <a href="./keys.html" class=""><i class="fas fa-key"></i> Keys</a>
+    <a href="./import.html" class=""><i class="fas fa-upload"></i> Import</a>
+    <a href="./team.html" class=""><i class="fas fa-users"></i> Team</a>
     <a href="./admin.html" class="active"><i class="fas fa-cog"></i> Admin</a>
   </nav>
+  <!-- QUICK LINKS TOOLBAR -->
+  <div class="toolbar">
+    <a href="https://trade.hpi.co.uk/trade/preLogin.do" target="_blank" class="tlink" title="HPI Check"><i class="fas fa-search-dollar"></i> HPI</a>
+    <a href="https://www.autocapital.co.uk/" target="_blank" class="tlink" title="Auto Capital Website"><i class="fas fa-globe"></i> Website</a>
+    <a href="https://www.autocapital.co.uk/finance.php" target="_blank" class="tlink" title="Finance Application"><i class="fas fa-file-invoice-pound"></i> Finance</a>
+  </div>
   <div class="header-right">
+    <div class="last-import" id="lastImportBadge" title="Last data import"><i class="fas fa-database"></i> <span id="lastImportTime">No import</span></div>
     <span id="userBadge" class="user-badge">Auto Capital</span>
     <button class="btn-logout" onclick="doLogout()"><i class="fas fa-sign-out-alt"></i></button>
   </div>
@@ -332,10 +350,179 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 
 
 <script>
+/* ── ADMIN PAGE ── */
+function load(k,def){try{return JSON.parse(localStorage.getItem('ac_admin_'+k))||def;}catch(e){return def;}}
+function save(k,v){localStorage.setItem('ac_admin_'+k,JSON.stringify(v));}
+
+let staff  = load('staff',  AC_STAFF.map((s,i)=>({...s,id:i+1})));
+let depts  = load('depts',  AC_DEPARTMENTS.map((d,i)=>({...d,id:i+1})));
+let locs   = load('locs',   [...AC_LOCATIONS]);
+let faults = load('faults', [...AC_FAULTS]);
+let repairs= load('repairs',[...AC_REPAIRS]);
+let parts  = load('parts',  [...AC_PARTS]);
+const DEPT_C={Management:'#64748b',Sales:'#003DA5',Workshop:'#ef4444',Valeting:'#10b981',Marketing:'#8b5cf6',Finance:'#a855f7',Bodyshop:'#f97316',Intake:'#6366f1'};
+
+/* TABS */
+function setTab(t){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.admin-tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('panel-'+t).classList.add('active');
+  if(event&&event.currentTarget)event.currentTarget.classList.add('active');
+  ({staff:renderStaff,departments:renderDepts,locations:()=>renderList('locations',locs),
+    faults:()=>renderList('faults',faults),repairs:()=>renderList('repairs',repairs),
+    parts:()=>renderList('parts',parts),workflow:renderWorkflow,system:renderSystem})[t]?.();
+}
+
+/* STAFF */
+let editingStaffId=null,avatarData=null;
+function renderStaff(){
+  const q=(document.getElementById('staffSearch').value||'').toLowerCase();
+  const filtered=staff.filter(s=>!q||`${s.name} ${s.role} ${s.dept}`.toLowerCase().includes(q));
+  document.getElementById('staffCount').textContent=filtered.length;
+  // populate dept dropdown
+  const sel=document.getElementById('staffDept');
+  sel.innerHTML=depts.map(d=>`<option value="${d.name}">${d.icon} ${d.name}</option>`).join('');
+  document.getElementById('staffGrid').innerHTML=filtered.map(s=>{
+    const col=DEPT_C[s.dept]||'#003DA5';
+    const init=s.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    return `<div class="staff-card">
+      <div class="staff-card-top">
+        <div class="staff-avatar" style="background:${col}22;color:${col}">${s.photo?`<img src="${s.photo}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`:`<span style="font-weight:800;font-size:18px">${init}</span>`}</div>
+        <div><div class="staff-name">${s.name}</div><div class="staff-role">${s.role}</div>
+        <span class="staff-dept" style="background:${col}18;color:${col}">${s.dept}</span></div>
+      </div>
+      <div class="staff-card-actions">
+        <button class="btn btn-ghost btn-sm" style="flex:1" onclick="editStaff(${s.id})"><i class="fas fa-edit"></i> Edit</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteStaff(${s.id})"><i class="fas fa-trash"></i></button>
+      </div>
+    </div>`;
+  }).join('')||'<div class="loading">No staff found</div>';
+}
+function saveStaff(){
+  const first=document.getElementById('staffFirst').value.trim(),last=document.getElementById('staffLast').value.trim();
+  if(!first||!last){toast('Enter first and last name','#C8102E');return;}
+  const s={id:editingStaffId||Date.now(),name:first+' '+last,role:document.getElementById('staffRole').value.trim()||'Staff',
+    dept:document.getElementById('staffDept').value,phone:document.getElementById('staffPhone').value.trim(),
+    email:document.getElementById('staffEmail').value.trim(),startDate:document.getElementById('staffStart').value,
+    emergency:document.getElementById('staffEmergency').value.trim(),notes:document.getElementById('staffNotes').value.trim(),photo:avatarData||null};
+  if(editingStaffId){staff=staff.map(x=>x.id===editingStaffId?s:x);toast('Staff updated','#1a7f37');}
+  else{staff.push(s);toast('Staff member added','#003DA5');}
+  save('staff',staff);clearStaffForm();renderStaff();
+}
+function editStaff(id){
+  const s=staff.find(x=>x.id===id);if(!s)return;
+  editingStaffId=id;
+  const [first,...rest]=s.name.split(' ');
+  document.getElementById('staffFirst').value=first;document.getElementById('staffLast').value=rest.join(' ');
+  document.getElementById('staffRole').value=s.role||'';document.getElementById('staffDept').value=s.dept||'';
+  document.getElementById('staffPhone').value=s.phone||'';document.getElementById('staffEmail').value=s.email||'';
+  document.getElementById('staffStart').value=s.startDate||'';document.getElementById('staffEmergency').value=s.emergency||'';
+  document.getElementById('staffNotes').value=s.notes||'';
+  if(s.photo){avatarData=s.photo;document.getElementById('avatarWrap').innerHTML=`<img src="${s.photo}" style="width:100%;height:100%;object-fit:cover;border-radius:50%"><input type="file" id="avatarFile" accept="image/*" onchange="previewAvatar(this)">`;}
+  document.getElementById('staffFormTitle').textContent='Edit Staff Member';
+  document.getElementById('staffSaveLbl').textContent='Save Changes';
+  document.getElementById('staffCancelBtn').style.display='flex';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function deleteStaff(id){if(!confirm('Remove this staff member?'))return;staff=staff.filter(s=>s.id!==id);save('staff',staff);renderStaff();toast('Removed','#C8102E');}
+function clearStaffForm(){
+  editingStaffId=null;avatarData=null;
+  ['staffFirst','staffLast','staffRole','staffPhone','staffEmail','staffStart','staffEmergency','staffNotes'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('avatarWrap').innerHTML='<i class="fas fa-camera" style="color:var(--muted);font-size:20px"></i><span style="font-size:10px;color:var(--muted);margin-top:4px">Photo</span><input type="file" id="avatarFile" accept="image/*" onchange="previewAvatar(this)">';
+  document.getElementById('staffFormTitle').textContent='Add New Staff Member';
+  document.getElementById('staffSaveLbl').textContent='Add Staff Member';
+  document.getElementById('staffCancelBtn').style.display='none';
+}
+function previewAvatar(input){const file=input.files[0];if(!file)return;const r=new FileReader();r.onload=e=>{avatarData=e.target.result;document.getElementById('avatarWrap').innerHTML=`<img src="${avatarData}" style="width:100%;height:100%;object-fit:cover;border-radius:50%"><input type="file" id="avatarFile" accept="image/*" onchange="previewAvatar(this)">`;};r.readAsDataURL(file);}
+
+/* DEPARTMENTS */
+let editingDeptId=null;
+function renderDepts(){
+  document.getElementById('deptCount').textContent=depts.length;
+  document.getElementById('deptGrid').innerHTML=depts.map(d=>`
+    <div class="dept-card">
+      <div class="dept-icon-big" style="background:${d.color}22"><span style="font-size:22px">${d.icon}</span></div>
+      <div style="flex:1"><div style="font-weight:700">${d.name}</div><div style="font-size:12px;color:var(--muted)">${staff.filter(s=>s.dept===d.name).length} staff</div></div>
+      <div style="display:flex;gap:6px">
+        <button class="btn btn-ghost btn-sm" onclick="editDept(${d.id})"><i class="fas fa-edit"></i></button>
+        <button class="del-btn" onclick="deleteDept(${d.id})"><i class="fas fa-times"></i></button>
+      </div>
+    </div>`).join('');
+}
+function saveDept(){const name=document.getElementById('deptName').value.trim();if(!name){toast('Enter name','#C8102E');return;}const d={id:editingDeptId||Date.now(),name,icon:document.getElementById('deptIcon').value||'🏢',color:document.getElementById('deptColor').value};if(editingDeptId){depts=depts.map(x=>x.id===editingDeptId?d:x);toast('Updated','#1a7f37');}else{depts.push(d);toast('Added','#003DA5');}save('depts',depts);clearDeptForm();renderDepts();}
+function editDept(id){const d=depts.find(x=>x.id===id);if(!d)return;editingDeptId=id;document.getElementById('deptName').value=d.name;document.getElementById('deptIcon').value=d.icon;document.getElementById('deptColor').value=d.color;document.getElementById('deptFormTitle').textContent='Edit Department';document.getElementById('deptSaveLbl').textContent='Save Changes';document.getElementById('deptCancelBtn').style.display='block';}
+function deleteDept(id){if(!confirm('Remove?'))return;depts=depts.filter(d=>d.id!==id);save('depts',depts);renderDepts();toast('Removed','#C8102E');}
+function clearDeptForm(){editingDeptId=null;document.getElementById('deptName').value='';document.getElementById('deptIcon').value='';document.getElementById('deptColor').value='#003DA5';document.getElementById('deptFormTitle').textContent='Add Department';document.getElementById('deptSaveLbl').textContent='Add Department';document.getElementById('deptCancelBtn').style.display='none';}
+
+/* LIST EDITOR */
+function renderList(key,arr){
+  const titles={locations:'Locations',faults:'Fault Types',repairs:'Repair Types',parts:'Parts List'};
+  const icons={locations:'fa-map-marker-alt',faults:'fa-exclamation-triangle',repairs:'fa-tools',parts:'fa-cogs'};
+  document.getElementById('list-'+key).innerHTML=`<div style="max-width:600px">
+    <div style="font-size:20px;font-weight:800;margin-bottom:14px"><i class="fas ${icons[key]||'fa-list'}" style="color:var(--blue);margin-right:8px"></i>${titles[key]||key} (${arr.length})</div>
+    <div class="list-editor">
+      ${arr.map((item,i)=>`<div class="list-item"><span>${item}</span><button class="del-btn" onclick="removeItem('${key}',${i})"><i class="fas fa-times"></i></button></div>`).join('')}
+      <div class="add-row"><input class="add-input" id="add_${key}" placeholder="Add new..." onkeydown="if(event.key==='Enter')addItem('${key}')"><button class="add-btn" onclick="addItem('${key}')"><i class="fas fa-plus"></i> Add</button></div>
+    </div></div>`;
+}
+function addItem(key){const input=document.getElementById('add_'+key);const val=input.value.trim();if(!val)return;const map={locations:locs,faults,repairs,parts};map[key].push(val);save(key,map[key]);input.value='';renderList(key,map[key]);toast('Added','#003DA5');}
+function removeItem(key,idx){const map={locations:locs,faults,repairs,parts};map[key].splice(idx,1);save(key,map[key]);renderList(key,map[key]);toast('Removed','#C8102E');}
+
+/* WORKFLOW */
+function renderWorkflow(){
+  document.getElementById('workflowStageList').innerHTML=AC_WORKFLOW_STAGES.map(s=>`
+    <div style="display:flex;align-items:center;gap:12px;padding:10px 8px;border-bottom:1px solid var(--border)">
+      <div style="width:28px;height:28px;border-radius:50%;background:${s.color};display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:800;flex-shrink:0">${s.id}</div>
+      <div style="flex:1"><div style="font-weight:700">${s.name}</div><div style="font-size:12px;color:var(--muted)">${s.dept} → ${s.handoverTo||'Complete'}</div></div>
+      <span style="font-size:11px;background:${s.color}22;color:${s.color};padding:3px 10px;border-radius:6px;font-weight:700">${s.dept}</span>
+    </div>`).join('');
+}
+
+/* SYSTEM */
+function renderSystem(){
+  const keys=Object.keys(localStorage).filter(k=>k.startsWith('ac_'));
+  const bytes=keys.reduce((s,k)=>s+(localStorage.getItem(k)||'').length,0);
+  document.getElementById('statsPanel').innerHTML=`<div style="display:grid;gap:10px">
+    <div style="display:flex;justify-content:space-between;padding:10px;background:var(--bg3);border-radius:8px"><span>localStorage keys</span><strong>${keys.length}</strong></div>
+    <div style="display:flex;justify-content:space-between;padding:10px;background:var(--bg3);border-radius:8px"><span>Data size</span><strong>${(bytes/1024).toFixed(1)} KB</strong></div>
+    <div style="display:flex;justify-content:space-between;padding:10px;background:var(--bg3);border-radius:8px"><span>Staff records</span><strong>${staff.length}</strong></div>
+    <div style="display:flex;justify-content:space-between;padding:10px;background:var(--bg3);border-radius:8px"><span>Departments</span><strong>${depts.length}</strong></div>
+    <button class="btn btn-danger" style="margin-top:8px" onclick="if(confirm('Clear ALL local data?')){localStorage.clear();location.reload();}"><i class="fas fa-trash"></i> Clear All Local Data</button>
+  </div>`;
+  document.getElementById('sessionInfo').innerHTML=`<div style="padding:10px;background:var(--bg3);border-radius:8px;font-size:13px"><strong>Mode:</strong> Review (No Auth)<br><strong>Data:</strong> localStorage<br><strong>Version:</strong> CapeEye v5</div>`;
+}
+function runSeed(){toast('Data loaded from ac-data.js — no Firestore in review mode','#7a8fa6');}
+
+function toast(msg,bg){document.querySelectorAll('.admin-toast').forEach(t=>t.remove());const t=document.createElement('div');t.className='toast admin-toast';t.style.cssText=`background:${bg};color:#fff`;t.innerHTML=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),3000);}
+
+/* INIT */
+renderStaff();
+</script>
+<script>
 document.addEventListener('DOMContentLoaded',function(){
   var b=document.getElementById('userBadge');if(b)b.textContent='AUTO CAPITAL';
 });
 function doLogout(){window.location.href='./login.html';}
 </script>
+
+/* ── LAST IMPORT BADGE ── */
+(function(){
+  try {
+    const cd = localStorage.getItem('ac_import_clickdealer_ts');
+    const et = localStorage.getItem('ac_import_etrack_ts');
+    const ts = [cd,et].filter(Boolean).map(Number).sort((a,b)=>b-a)[0];
+    const badge = document.getElementById('lastImportBadge');
+    const span  = document.getElementById('lastImportTime');
+    if(!ts||!badge||!span) return;
+    const age = (Date.now()-ts)/3600000; // hours
+    const d = new Date(ts);
+    const label = d.toLocaleDateString('en-GB',{day:'2-digit',month:'short'}) + ' ' + d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+    span.textContent = label;
+    badge.title = 'Last import: '+label;
+    if(age<24) badge.classList.add('fresh');
+    else if(age>48) badge.classList.add('stale');
+  } catch(e){}
+})();
+
 </body>
 </html>
