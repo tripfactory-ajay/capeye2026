@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Key Dashboard | CapeEye Auto Capital</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700;800&family=Barlow+Condensed:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root{--bg:#0b0e15;--bg2:#111622;--bg3:#1a2035;--border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);--accent:#e8b84b;--accent2:#3b7ff5;--green:#22c55e;--red:#ef4444;--orange:#f97316;--purple:#a855f7;--text:#f1f5f9;--muted:#64748b;--card-radius:14px;--kr:#3b7ff5;--valet:#a855f7}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.header{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 28px;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.logo-area{display:flex;align-items:center;gap:14px}
+.logo-area img{height:40px}
+.logo-divider{width:1px;height:32px;background:var(--border)}
+.system-name{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;letter-spacing:2px;color:var(--accent)}
+.nav{display:flex;gap:4px}
+.nav a{padding:8px 16px;border-radius:8px;font-size:14px;font-weight:500;color:var(--muted);text-decoration:none;transition:all .2s}
+.nav a:hover,.nav a.active{background:var(--bg3);color:var(--text)}
+.nav a.active{color:var(--accent)}
+.main{max-width:1600px;margin:0 auto;padding:28px}
+.page-hdr{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap;gap:16px}
+.page-hdr h1{font-family:'Barlow Condensed',sans-serif;font-size:36px;font-weight:900;letter-spacing:1px}
+.live-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);border-radius:20px;padding:5px 14px;font-size:12px;font-weight:700;color:var(--green);margin-left:12px;vertical-align:middle}
+.live-dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+/* KPI */
+.kpi-row{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;margin-bottom:24px}
+.kpi{background:var(--bg2);border:1px solid var(--border);border-radius:var(--card-radius);padding:18px;position:relative;overflow:hidden}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--c,var(--accent))}
+.kpi-val{font-family:'Barlow Condensed',sans-serif;font-size:42px;font-weight:900;line-height:1;color:var(--c,var(--text))}
+.kpi-label{font-size:11px;font-weight:700;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;margin-top:6px}
+.kpi-icon{position:absolute;top:14px;right:14px;font-size:22px;opacity:.1}
+/* BOX STRIP */
+.box-strip{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}
+.box-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--card-radius);padding:20px 20px 20px 24px;position:relative;overflow:hidden}
+.box-card::before{content:'';position:absolute;top:0;left:0;bottom:0;width:4px;background:var(--bc)}
+.box-title{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:800;letter-spacing:.5px;margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.box-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.box-stat-val{font-family:'Barlow Condensed',sans-serif;font-size:30px;font-weight:900}
+.box-stat-label{font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-top:2px}
+/* OVERDUE BANNER */
+.overdue-banner{background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.25);border-radius:var(--card-radius);padding:16px 22px;margin-bottom:24px;display:flex;align-items:center;gap:18px}
+.overdue-num{font-family:'Barlow Condensed',sans-serif;font-size:52px;font-weight:900;color:var(--red);line-height:1;flex-shrink:0}
+/* MAIN GRID */
+.main-grid{display:grid;grid-template-columns:1fr 360px;gap:20px;margin-bottom:20px}
+/* CARD */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--card-radius);overflow:hidden;margin-bottom:20px}
+.card:last-child{margin-bottom:0}
+.card-hdr{padding:13px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--bg3)}
+.card-title{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
+/* TABLE */
+.kt{width:100%;border-collapse:collapse;font-size:13px}
+.kt th{padding:9px 13px;text-align:left;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);font-weight:700;border-bottom:1px solid var(--border);background:var(--bg3);white-space:nowrap}
+.kt td{padding:10px 13px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:middle}
+.kt tr:last-child td{border-bottom:none}
+.kt tr:hover td{background:rgba(255,255,255,.025)}
+/* REG */
+.reg{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:13px;letter-spacing:1.5px;background:#f5c518;color:#000;padding:3px 9px;border-radius:5px;display:inline-block;white-space:nowrap}
+/* DURATION */
+.dur{display:inline-flex;align-items:center;padding:3px 9px;border-radius:10px;font-size:11px;font-weight:800;white-space:nowrap}
+.d-ok{background:rgba(34,197,94,.12);color:var(--green)}
+.d-warn{background:rgba(249,115,22,.12);color:var(--orange)}
+.d-crit{background:rgba(239,68,68,.12);color:var(--red)}
+.d-ancient{background:rgba(168,85,247,.12);color:var(--purple)}
+/* BOX BADGE */
+.bb{display:inline-flex;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:800;letter-spacing:.5px}
+.bb-kr{background:rgba(59,127,245,.12);color:var(--kr)}
+.bb-v{background:rgba(168,85,247,.12);color:var(--valet)}
+/* FILTERS */
+.filter-row{display:flex;gap:7px;padding:11px 14px;border-bottom:1px solid var(--border);flex-wrap:wrap;align-items:center}
+.fb{padding:5px 12px;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;border:1px solid var(--border);background:var(--bg3);color:var(--muted);transition:all .2s}
+.fb.active{border-color:var(--accent2);color:var(--accent2);background:rgba(59,127,245,.08)}
+.search-box{background:var(--bg3);border:1px solid var(--border);border-radius:7px;padding:5px 11px;color:var(--text);font-size:12px;font-family:'Barlow',sans-serif;outline:none;width:190px;margin-left:auto}
+.search-box::placeholder{color:var(--muted)}
+/* STAFF LIST */
+.staff-item{display:flex;align-items:center;gap:12px;padding:11px 16px;border-bottom:1px solid var(--border);transition:background .15s;cursor:pointer}
+.staff-item:last-child{border-bottom:none}
+.staff-item:hover{background:rgba(255,255,255,.025)}
+.sav{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:800;flex-shrink:0;color:#fff}
+.s-name{font-size:13px;font-weight:700}
+.s-co{font-size:11px;color:var(--muted)}
+.s-count{font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;margin-left:auto}
+/* ALERT ITEMS */
+.al-item{display:flex;align-items:flex-start;gap:11px;padding:12px 16px;border-bottom:1px solid var(--border)}
+.al-item:last-child{border-bottom:none}
+.al-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;margin-top:1px}
+.al-title{font-size:13px;font-weight:700;margin-bottom:2px}
+.al-sub{font-size:11px;color:var(--muted);line-height:1.5}
+/* AUDIT */
+.aud-item{display:flex;align-items:flex-start;gap:10px;padding:9px 14px;border-bottom:1px solid rgba(255,255,255,.04);font-size:12px}
+.aud-item:last-child{border-bottom:none}
+.aud-icon{width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;margin-top:1px}
+/* IMPORT */
+.import-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:var(--card-radius);overflow:hidden;margin-bottom:24px}
+.import-tabs{display:flex;border-bottom:1px solid var(--border);background:var(--bg3)}
+.itab{flex:1;padding:11px;text-align:center;font-size:11px;font-weight:700;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent;transition:all .2s;letter-spacing:.5px;text-transform:uppercase}
+.itab.active{color:var(--text);border-color:var(--accent2)}
+.ibody{padding:16px}
+.dz{border:2px dashed var(--border);border-radius:10px;padding:22px;text-align:center;cursor:pointer;transition:all .2s}
+.dz:hover,.dz.drag-over{border-color:var(--accent2);background:rgba(59,127,245,.04)}
+.dz i{font-size:26px;color:var(--muted);display:block;margin-bottom:8px}
+.dz p{font-size:12px;color:var(--muted);margin-bottom:10px}
+.btn{padding:8px 18px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;border:none;font-family:'Barlow',sans-serif;transition:all .2s;display:inline-flex;align-items:center;gap:7px}
+.btn-primary{background:var(--accent2);color:#fff}
+.btn-ghost{background:var(--bg3);border:1px solid var(--border);color:var(--muted)}
+.itype-label{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+/* EMPTY */
+.empty{text-align:center;padding:40px;color:var(--muted)}
+.empty i{font-size:32px;display:block;margin-bottom:10px;opacity:.3}
+.empty p{font-size:13px}
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;border-radius:10px;z-index:9999;font-size:14px;font-weight:700;padding:13px 22px;animation:su .2s ease;max-width:420px;display:flex;align-items:center;gap:10px}
+@keyframes su{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:1200px){.kpi-row{grid-template-columns:repeat(3,1fr)}.main-grid{grid-template-columns:1fr}.box-strip{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="header">
+  <div class="logo-area">
+    <img src="./autocapital-logo.png" alt="" onerror="this.style.display='none'">
+    <div class="logo-divider"></div>
+    <span class="system-name">CAPEYE</span>
+  </div>
+  <nav class="nav">
+    <a href="./index.html"><i class="fas fa-th-large"></i> Dashboard</a>
+    <a href="./inventory.html"><i class="fas fa-car"></i> Inventory</a>
+    <a href="./workflow.html"><i class="fas fa-tasks"></i> Workflow</a>
+    <a href="./keys.html" class="active"><i class="fas fa-key"></i> Keys</a>
+    <a href="./alerts.html"><i class="fas fa-bell"></i> Alerts</a>
+    <a href="./marketing.html"><i class="fas fa-chart-line"></i> Marketing</a>
+    <a href="./team.html"><i class="fas fa-users"></i> Team</a>
+    <a href="./admin.html"><i class="fas fa-cog"></i> Admin</a>
+    <a href="./import.html"><i class="fas fa-file-upload"></i> Import</a>
+  </nav>
+  <div style="font-size:12px;color:var(--muted)" id="lastUpdated">No data imported yet</div>
+</header>
+
+<main class="main">
+  <div class="page-hdr">
+    <div>
+      <h1><i class="fas fa-key" style="color:var(--accent);margin-right:10px"></i>Key Dashboard<span class="live-badge"><span class="live-dot"></span>Live Status</span></h1>
+      <p style="color:var(--muted);font-size:14px;margin-top:6px">Track all keys across Key Room &amp; Valet boxes · Import CSVs from e-Track Web to refresh</p>
+    </div>
+    <button class="btn btn-ghost" onclick="if(confirm('Clear all key data?')){localStorage.removeItem('ac_keys_v1');location.reload();}"><i class="fas fa-trash"></i> Clear Data</button>
+  </div>
+
+  <!-- OVERDUE BANNER -->
+  <div class="overdue-banner" id="overdueBanner" style="display:none">
+    <div class="overdue-num" id="overdueNum">0</div>
+    <div>
+      <div style="font-weight:800;font-size:16px;color:var(--red)">Keys out for more than 24 hours</div>
+      <div style="font-size:13px;color:var(--muted);margin-top:4px">These need to be accounted for immediately — check with the relevant staff members listed below.</div>
+    </div>
+    <i class="fas fa-exclamation-triangle" style="color:var(--red);font-size:32px;opacity:.4;margin-left:auto"></i>
+  </div>
+
+  <!-- KPIs -->
+  <div class="kpi-row">
+    <div class="kpi" style="--c:var(--red)"><i class="fas fa-key kpi-icon"></i><div class="kpi-val" id="kOut">—</div><div class="kpi-label">Keys Out Now</div></div>
+    <div class="kpi" style="--c:var(--green)"><i class="fas fa-box-open kpi-icon"></i><div class="kpi-val" id="kIn">—</div><div class="kpi-label">Keys In Box</div></div>
+    <div class="kpi" style="--c:var(--accent)"><i class="fas fa-layer-group kpi-icon"></i><div class="kpi-val" id="kTotal">—</div><div class="kpi-label">Total Keys</div></div>
+    <div class="kpi" style="--c:var(--orange)"><i class="fas fa-exclamation-triangle kpi-icon"></i><div class="kpi-val" id="kOverdue">—</div><div class="kpi-label">Overdue 24h+</div></div>
+    <div class="kpi" style="--c:var(--accent2)"><i class="fas fa-user-friends kpi-icon"></i><div class="kpi-val" id="kStaff">—</div><div class="kpi-label">Staff Holding</div></div>
+    <div class="kpi" style="--c:var(--purple)"><i class="fas fa-history kpi-icon"></i><div class="kpi-val" id="kEvents">—</div><div class="kpi-label">Events Today</div></div>
+  </div>
+
+  <!-- BOX STATS -->
+  <div class="box-strip">
+    <div class="box-card" style="--bc:var(--kr)">
+      <div class="box-title" style="color:var(--kr)"><i class="fas fa-door-closed"></i> Key Room</div>
+      <div class="box-stats">
+        <div><div class="box-stat-val" style="color:var(--red)" id="krOut">—</div><div class="box-stat-label">Out</div></div>
+        <div><div class="box-stat-val" style="color:var(--green)" id="krIn">—</div><div class="box-stat-label">In</div></div>
+        <div><div class="box-stat-val" style="color:var(--orange)" id="krOverdue">—</div><div class="box-stat-label">Overdue</div></div>
+        <div><div class="box-stat-val" style="color:var(--muted)" id="krTotal">—</div><div class="box-stat-label">Total</div></div>
+      </div>
+    </div>
+    <div class="box-card" style="--bc:var(--valet)">
+      <div class="box-title" style="color:var(--valet)"><i class="fas fa-car-side"></i> Valet Box</div>
+      <div class="box-stats">
+        <div><div class="box-stat-val" style="color:var(--red)" id="vOut">—</div><div class="box-stat-label">Out</div></div>
+        <div><div class="box-stat-val" style="color:var(--green)" id="vIn">—</div><div class="box-stat-label">In</div></div>
+        <div><div class="box-stat-val" style="color:var(--orange)" id="vOverdue">—</div><div class="box-stat-label">Overdue</div></div>
+        <div><div class="box-stat-val" style="color:var(--muted)" id="vTotal">—</div><div class="box-stat-label">Total</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- IMPORT -->
+  <div class="import-wrap">
+    <div class="import-tabs">
+      <div class="itab active" id="it-status" onclick="setTab('status')">📋 Key Status (In/Out)</div>
+      <div class="itab" id="it-staff" onclick="setTab('staff')">👤 Staff Key Counts</div>
+      <div class="itab" id="it-audit" onclick="setTab('audit')">📜 Audit Log</div>
+    </div>
+    <div class="ibody">
+      <div id="ib-status">
+        <div class="itype-label">e-Track Web (1) — Key Status export · Columns: Key Position, Key Name, Status, System, Date Added</div>
+        <div class="dz" id="dz-status" ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" ondrop="onDrop(event,'status')" onclick="document.getElementById('f-status').click()">
+          <i class="fas fa-cloud-upload-alt"></i>
+          <p>Drop <strong>e-Track Web (1)</strong> CSV · shows which keys are In or Out</p>
+          <button class="btn btn-primary" onclick="event.stopPropagation();document.getElementById('f-status').click()"><i class="fas fa-file-csv"></i> Choose File</button>
+        </div>
+        <input type="file" id="f-status" accept=".csv" style="display:none" onchange="onFile(this,'status')">
+      </div>
+      <div id="ib-staff" style="display:none">
+        <div class="itype-label">e-Track Web (3) — Staff Key Counts · Columns: Name, Username, Company, No. of Keys</div>
+        <div class="dz" id="dz-staff" ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" ondrop="onDrop(event,'staff')" onclick="document.getElementById('f-staff').click()">
+          <i class="fas fa-cloud-upload-alt"></i>
+          <p>Drop <strong>e-Track Web (3)</strong> CSV · shows how many keys each staff member holds</p>
+          <button class="btn btn-primary" onclick="event.stopPropagation();document.getElementById('f-staff').click()"><i class="fas fa-file-csv"></i> Choose File</button>
+        </div>
+        <input type="file" id="f-staff" accept=".csv" style="display:none" onchange="onFile(this,'staff')">
+      </div>
+      <div id="ib-audit" style="display:none">
+        <div class="itype-label">e-Track Web (4) — Audit Log · Columns: Date/Time, Event, User, Comments</div>
+        <div class="dz" id="dz-audit" ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" ondrop="onDrop(event,'audit')" onclick="document.getElementById('f-audit').click()">
+          <i class="fas fa-cloud-upload-alt"></i>
+          <p>Drop <strong>e-Track Web (4)</strong> CSV · full event history including fob added / deleted</p>
+          <button class="btn btn-primary" onclick="event.stopPropagation();document.getElementById('f-audit').click()"><i class="fas fa-file-csv"></i> Choose File</button>
+        </div>
+        <input type="file" id="f-audit" accept=".csv" style="display:none" onchange="onFile(this,'audit')">
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN GRID -->
+  <div class="main-grid">
+    <div>
+      <!-- KEYS OUT TABLE -->
+      <div class="card">
+        <div class="card-hdr">
+          <span class="card-title">🔑 Keys Currently Out</span>
+          <span id="keysOutCount" style="font-size:12px;color:var(--muted)">0 keys</span>
+        </div>
+        <div class="filter-row">
+          <button class="fb active" id="fb-all" onclick="setFilter('all')">All Boxes</button>
+          <button class="fb" id="fb-keyroom" onclick="setFilter('keyroom')">Key Room</button>
+          <button class="fb" id="fb-valet" onclick="setFilter('valet')">Valet</button>
+          <button class="fb" id="fb-overdue" onclick="setFilter('overdue')">⚠ Overdue 24h+</button>
+          <button class="fb" id="fb-ancient" onclick="setFilter('ancient')">🔴 30d+</button>
+          <input class="search-box" id="keySearch" placeholder="Search reg or description..." oninput="renderKeysOut()">
+        </div>
+        <div style="overflow-x:auto;max-height:500px;overflow-y:auto">
+          <table class="kt">
+            <thead><tr><th>Reg / Key Name</th><th>Description</th><th>Box</th><th>Hook</th><th>Date Out</th><th>Duration</th></tr></thead>
+            <tbody id="keysOutBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ALL KEYS TABLE -->
+      <div class="card">
+        <div class="card-hdr">
+          <span class="card-title">📦 All Keys — Full Inventory</span>
+          <span id="allKeysCount" style="font-size:12px;color:var(--muted)">0 keys</span>
+        </div>
+        <div style="overflow-x:auto;max-height:400px;overflow-y:auto">
+          <table class="kt">
+            <thead><tr><th>Reg / Key Name</th><th>Description</th><th>Box</th><th>Hook</th><th>Status</th><th>Date</th><th>Duration Out</th></tr></thead>
+            <tbody id="allKeysBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- AUDIT LOG -->
+      <div class="card">
+        <div class="card-hdr">
+          <span class="card-title">📜 Audit Log</span>
+          <span id="auditCount" style="font-size:12px;color:var(--muted)">0 events</span>
+        </div>
+        <div style="max-height:380px;overflow-y:auto" id="auditBody">
+          <div class="empty"><i class="fas fa-history"></i><p>Import the e-Track Web (4) audit log CSV</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SIDEBAR -->
+    <div>
+      <div class="card">
+        <div class="card-hdr">
+          <span class="card-title">👤 Staff Holding Keys</span>
+          <span id="staffCount" style="font-size:12px;color:var(--muted)">0 staff</span>
+        </div>
+        <div id="staffList">
+          <div class="empty"><i class="fas fa-users"></i><p>Import staff key counts CSV</p></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-hdr">
+          <span class="card-title">🚨 Alerts</span>
+          <span id="alertBadge" style="font-size:12px;color:var(--red);font-weight:700">0 alerts</span>
+        </div>
+        <div id="alertsList">
+          <div class="empty"><i class="fas fa-shield-alt"></i><p>No alerts — import data to check</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+// ── STORE ─────────────────────────────────────────────────────────────
+let S = { statusKeys:[], staffKeys:[], auditLog:[], importedAt:null };
+try { const sv=localStorage.getItem('ac_keys_v1'); if(sv){S=JSON.parse(sv);renderAll();} } catch(e){}
+
+function save(){ localStorage.setItem('ac_keys_v1', JSON.stringify(S)); }
+
+// ── CSV ───────────────────────────────────────────────────────────────
+function parseCSV(text){
+  const lines=text.trim().split('\n'); if(lines.length<2)return[];
+  function pl(line){
+    const cols=[];let cur='',inQ=false;
+    for(const c of line){
+      if(c==='"'){inQ=!inQ;}
+      else if(c===','&&!inQ){cols.push(cur.trim());cur='';}
+      else if(c!=='\r') cur+=c;
+    }
+    cols.push(cur.trim()); return cols;
+  }
+  const hdrs=pl(lines[0]).map(h=>h.replace(/^"|"$/g,'').trim());
+  return lines.slice(1).filter(l=>l.trim()).map(line=>{
+    const vals=pl(line); const obj={};
+    hdrs.forEach((h,i)=>{obj[h]=(vals[i]||'').replace(/^"|"$/g,'').trim();}); return obj;
+  });
+}
+
+// ── TABS ──────────────────────────────────────────────────────────────
+window.setTab=function(t){
+  ['status','staff','audit'].forEach(x=>{
+    document.getElementById('it-'+x).classList.toggle('active',x===t);
+    document.getElementById('ib-'+x).style.display=x===t?'block':'none';
+  });
+};
+
+// ── FILE HANDLING ─────────────────────────────────────────────────────
+window.onDrop=function(e,t){e.preventDefault();document.getElementById('dz-'+t).classList.remove('drag-over');const f=e.dataTransfer.files[0];if(f&&f.name.endsWith('.csv'))processFile(f,t);else toast('Please drop a CSV file','#f97316');};
+window.onFile=function(inp,t){if(inp.files&&inp.files[0])processFile(inp.files[0],t);};
+
+function processFile(file,type){
+  const r=new FileReader();
+  r.onload=e=>{
+    const rows=parseCSV(e.target.result);
+    if(!rows.length){toast('No data found in this CSV','#f97316');return;}
+    if(type==='status') importStatus(rows,file.name);
+    else if(type==='staff') importStaff(rows,file.name);
+    else importAudit(rows,file.name);
+  };
+  r.readAsText(file);
+}
+
+// ── IMPORT STATUS ─────────────────────────────────────────────────────
+function importStatus(rows,fname){
+  const SKIP=['test','test fob','fob'];
+  S.statusKeys=rows.map(r=>({
+    position: r['Key Position']||r['Position']||'',
+    reg:      (r['Key Name']||'').toUpperCase().trim(),
+    desc:     r['Description']||'',
+    system:   r['System']||'',
+    status:   r['Status']||'In',
+    dateStr:  r['Date Added']||''
+  })).filter(k=>k.reg&&k.reg.length>1&&!SKIP.includes(k.reg.toLowerCase())&&!/^test/i.test(k.reg));
+  S.importedAt=new Date().toISOString();
+  save(); renderAll();
+  toast('✓ '+S.statusKeys.length+' keys loaded from '+fname);
+}
+
+// ── IMPORT STAFF ──────────────────────────────────────────────────────
+function importStaff(rows,fname){
+  S.staffKeys=rows.map(r=>({
+    name:     r['Name']||'',
+    username: r['Username']||'',
+    company:  r['Company']||'',
+    keyCount: parseInt(r['No. of Keys']||'0')||0
+  })).filter(s=>s.name&&s.keyCount>0).sort((a,b)=>b.keyCount-a.keyCount);
+  save(); renderStaff(); renderKPIs();
+  toast('✓ '+S.staffKeys.length+' staff loaded from '+fname);
+}
+
+// ── IMPORT AUDIT ──────────────────────────────────────────────────────
+function importAudit(rows,fname){
+  S.auditLog=rows.map(r=>{
+    // Fix mangled date: "177194863824/02/2026 15:57" → strip leading digits
+    const raw=r['Date/Time']||'';
+    const dateStr=raw.replace(/^\d+(?=\d{2}\/\d{2}\/\d{4})/,'').trim();
+    const event=r['Event']||'';
+    const user=r['User']||'';
+    const comment=r['Comments']||'';
+    // Extract reg from comments
+    let reg='';
+    const addM=comment.match(/Key:\s*([A-Z0-9]+)\s*\|/i);
+    const delM=comment.match(/Key Deleted\s*[-–]\s*([A-Z0-9]+)/i);
+    if(addM) reg=addM[1].toUpperCase();
+    if(delM) reg=delM[1].toUpperCase();
+    return {dateStr,event,user,comment,reg,ts:parseDate(dateStr)};
+  }).filter(r=>r.event&&r.event!=='Event');
+  save(); renderAudit(); renderKPIs();
+  toast('✓ '+S.auditLog.length+' events loaded from '+fname);
+}
+
+// ── DATE UTILS ────────────────────────────────────────────────────────
+function parseDate(str){
+  if(!str)return null;
+  const m=str.match(/(\d{2})\/(\d{2})\/(\d{4})\s+(\d{2}):(\d{2})/);
+  if(!m)return null;
+  return new Date(+m[3],+m[2]-1,+m[1],+m[4],+m[5]);
+}
+function hoursAgo(dateStr){
+  const d=parseDate(dateStr); if(!d)return null;
+  return(Date.now()-d.getTime())/3600000;
+}
+function fmtDur(h){
+  if(h===null||h<0)return'—';
+  if(h<1)return Math.round(h*60)+'min';
+  if(h<24)return Math.round(h)+'h';
+  const days=Math.floor(h/24),remH=Math.round(h%24);
+  return days+'d'+(remH>0?' '+remH+'h':'');
+}
+function durClass(h){
+  if(h===null)return'd-ok';
+  if(h>24*30)return'd-ancient';
+  if(h>24)return'd-crit';
+  if(h>8)return'd-warn';
+  return'd-ok';
+}
+function fmtDate(str){
+  const d=parseDate(str); if(!d)return str||'—';
+  return d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'2-digit'})+' '+d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+}
+
+// ── FILTER ────────────────────────────────────────────────────────────
+let activeFilter='all';
+window.setFilter=function(f){
+  activeFilter=f;
+  document.querySelectorAll('.fb').forEach(b=>b.classList.remove('active'));
+  document.getElementById('fb-'+f).classList.add('active');
+  renderKeysOut();
+};
+
+// ── AVATAR COLOURS ────────────────────────────────────────────────────
+const COLORS=['#3b7ff5','#a855f7','#22c55e','#f97316','#e8b84b','#ef4444','#06b6d4','#ec4899'];
+function avatarColor(name){let h=0;for(const c of name)h=(h+c.charCodeAt(0))%COLORS.length;return COLORS[h];}
+function initials(name){return name.split(' ').map(n=>n[0]||'').join('').slice(0,2).toUpperCase();}
+
+// ── RENDER ALL ────────────────────────────────────────────────────────
+function renderAll(){renderKPIs();renderBoxStats();renderKeysOut();renderAllKeys();renderStaff();renderAudit();renderAlerts();
+  if(S.importedAt){document.getElementById('lastUpdated').textContent='Last import: '+new Date(S.importedAt).toLocaleString('en-GB');}
+}
+
+function renderKPIs(){
+  const keys=S.statusKeys;
+  const out=keys.filter(k=>k.status==='Out');
+  const inB=keys.filter(k=>k.status==='In');
+  const overdue=out.filter(k=>{const h=hoursAgo(k.dateStr);return h!==null&&h>24;});
+  const staffH=S.staffKeys.filter(s=>s.keyCount>0).length;
+  const today=new Date().toLocaleDateString('en-GB');
+  const todayEv=S.auditLog.filter(a=>{const d=parseDate(a.dateStr);return d&&d.toLocaleDateString('en-GB')===today;}).length;
+  document.getElementById('kOut').textContent=out.length||'—';
+  document.getElementById('kIn').textContent=inB.length||'—';
+  document.getElementById('kTotal').textContent=keys.length||'—';
+  document.getElementById('kOverdue').textContent=overdue.length||'—';
+  document.getElementById('kStaff').textContent=staffH||'—';
+  document.getElementById('kEvents').textContent=todayEv||'—';
+  if(overdue.length>0){document.getElementById('overdueBanner').style.display='flex';document.getElementById('overdueNum').textContent=overdue.length;}
+  else document.getElementById('overdueBanner').style.display='none';
+}
+
+function renderBoxStats(){
+  const kr=S.statusKeys.filter(k=>k.system==='Key Room');
+  const vl=S.statusKeys.filter(k=>k.system==='Valet');
+  const krOut=kr.filter(k=>k.status==='Out'),krIn=kr.filter(k=>k.status==='In');
+  const vOut=vl.filter(k=>k.status==='Out'),vIn=vl.filter(k=>k.status==='In');
+  const krOD=krOut.filter(k=>{const h=hoursAgo(k.dateStr);return h!==null&&h>24;});
+  const vOD=vOut.filter(k=>{const h=hoursAgo(k.dateStr);return h!==null&&h>24;});
+  document.getElementById('krOut').textContent=krOut.length;document.getElementById('krIn').textContent=krIn.length;
+  document.getElementById('krOverdue').textContent=krOD.length;document.getElementById('krTotal').textContent=kr.length;
+  document.getElementById('vOut').textContent=vOut.length;document.getElementById('vIn').textContent=vIn.length;
+  document.getElementById('vOverdue').textContent=vOD.length;document.getElementById('vTotal').textContent=vl.length;
+}
+
+function renderKeysOut(){
+  const search=(document.getElementById('keySearch').value||'').toLowerCase();
+  let keys=S.statusKeys.filter(k=>k.status==='Out');
+  if(activeFilter==='keyroom') keys=keys.filter(k=>k.system==='Key Room');
+  else if(activeFilter==='valet') keys=keys.filter(k=>k.system==='Valet');
+  else if(activeFilter==='overdue') keys=keys.filter(k=>{const h=hoursAgo(k.dateStr);return h!==null&&h>24;});
+  else if(activeFilter==='ancient') keys=keys.filter(k=>{const h=hoursAgo(k.dateStr);return h!==null&&h>24*30;});
+  if(search) keys=keys.filter(k=>(k.reg+k.desc).toLowerCase().includes(search));
+  // Sort by duration descending (longest out first)
+  keys.sort((a,b)=>(hoursAgo(b.dateStr)||0)-(hoursAgo(a.dateStr)||0));
+  document.getElementById('keysOutCount').textContent=keys.length+' keys out';
+  document.getElementById('keysOutBody').innerHTML=keys.length?keys.map(k=>{
+    const h=hoursAgo(k.dateStr);
+    const dc=durClass(h);
+    const bb=k.system==='Key Room'?'<span class="bb bb-kr">Key Room</span>':'<span class="bb bb-v">Valet</span>';
+    return`<tr>
+      <td><span class="reg">${k.reg}</span></td>
+      <td style="color:var(--muted);font-size:12px">${k.desc||'—'}</td>
+      <td>${bb}</td>
+      <td style="color:var(--muted);font-size:12px">${k.position||'—'}</td>
+      <td style="font-size:12px;color:var(--muted)">${fmtDate(k.dateStr)}</td>
+      <td><span class="dur ${dc}"><i class="fas fa-clock" style="font-size:9px;margin-right:4px"></i>${fmtDur(h)}</span></td>
+    </tr>`;
+  }).join(''):`<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--muted)"><i class="fas fa-check-circle" style="color:var(--green);font-size:20px;display:block;margin-bottom:8px"></i>No keys out matching this filter</td></tr>`;
+}
+
+function renderAllKeys(){
+  const keys=[...S.statusKeys].sort((a,b)=>{
+    if(a.status==='Out'&&b.status==='In')return-1;
+    if(a.status==='In'&&b.status==='Out')return 1;
+    return 0;
+  });
+  document.getElementById('allKeysCount').textContent=keys.length+' total';
+  document.getElementById('allKeysBody').innerHTML=keys.length?keys.map(k=>{
+    const h=k.status==='Out'?hoursAgo(k.dateStr):null;
+    const dc=k.status==='Out'?durClass(h):'d-ok';
+    const statusEl=k.status==='Out'?'<span style="color:var(--red);font-weight:700;font-size:12px">OUT</span>':'<span style="color:var(--green);font-weight:700;font-size:12px">IN</span>';
+    const bb=k.system==='Key Room'?'<span class="bb bb-kr">Key Room</span>':'<span class="bb bb-v">Valet</span>';
+    return`<tr style="${k.status==='In'?'opacity:.55':''}">
+      <td><span class="reg">${k.reg}</span></td>
+      <td style="color:var(--muted);font-size:12px">${k.desc||'—'}</td>
+      <td>${bb}</td>
+      <td style="color:var(--muted);font-size:12px">${k.position||'—'}</td>
+      <td>${statusEl}</td>
+      <td style="font-size:11px;color:var(--muted)">${fmtDate(k.dateStr)}</td>
+      <td>${k.status==='Out'?`<span class="dur ${dc}">${fmtDur(h)}</span>`:'—'}</td>
+    </tr>`;
+  }).join(''):`<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--muted)">No key data — import the status CSV above</td></tr>`;
+}
+
+function renderStaff(){
+  const list=S.staffKeys;
+  document.getElementById('staffCount').textContent=list.length+' staff';
+  document.getElementById('staffList').innerHTML=list.length?list.map(s=>{
+    const col=avatarColor(s.name);
+    const warn=s.keyCount>=10?'color:var(--red)':s.keyCount>=5?'color:var(--orange)':'color:var(--green)';
+    return`<div class="staff-item">
+      <div class="sav" style="background:${col}">${initials(s.name)}</div>
+      <div style="flex:1;min-width:0">
+        <div class="s-name">${s.name}</div>
+        <div class="s-co">${s.company||s.username||'—'}</div>
+      </div>
+      <div class="s-count" style="${warn}">${s.keyCount}</div>
+    </div>`;
+  }).join(''):`<div class="empty"><i class="fas fa-users"></i><p>Import staff key counts CSV</p></div>`;
+}
+
+function renderAudit(){
+  const log=S.auditLog;
+  document.getElementById('auditCount').textContent=log.length+' events';
+  const iconMap={
+    'Fob Added':   {bg:'rgba(34,197,94,.12)',color:'var(--green)',icon:'fa-plus'},
+    'Fob Deleted': {bg:'rgba(239,68,68,.12)',color:'var(--red)',icon:'fa-times'},
+    'User Login (Web)':{bg:'rgba(59,127,245,.12)',color:'var(--accent2)',icon:'fa-sign-in-alt'},
+    'User Logout': {bg:'rgba(100,116,139,.12)',color:'var(--muted)',icon:'fa-sign-out-alt'},
+    'User Group Edited':{bg:'rgba(232,184,75,.12)',color:'var(--accent)',icon:'fa-edit'}
+  };
+  document.getElementById('auditBody').innerHTML=log.length?log.map(a=>{
+    const ic=iconMap[a.event]||{bg:'rgba(100,116,139,.12)',color:'var(--muted)',icon:'fa-circle'};
+    // Clean username — strip email from "Keith Hardy (keith@...)"
+    const user=a.user.replace(/\s*\([^)]+\)/,'').trim();
+    return`<div class="aud-item">
+      <div class="aud-icon" style="background:${ic.bg};color:${ic.color}"><i class="fas ${ic.icon}"></i></div>
+      <div style="flex:1;min-width:0">
+        <div style="font-weight:700;font-size:12px">${a.event}${a.reg?` — <span class="reg" style="font-size:10px;padding:1px 6px">${a.reg}</span>`:''}</div>
+        <div style="color:var(--muted);font-size:11px;margin-top:2px">${user||'System'}${a.reg&&a.event.includes('Fob')?' · Reg: '+a.reg:''}</div>
+      </div>
+      <div class="aud-time" style="color:var(--muted);font-size:10px;flex-shrink:0;margin-left:8px">${a.dateStr}</div>
+    </div>`;
+  }).join(''):`<div class="empty"><i class="fas fa-history"></i><p>Import the e-Track Web (4) audit log CSV</p></div>`;
+}
+
+function renderAlerts(){
+  const alerts=[];
+  const keys=S.statusKeys;
+  // Keys out > 24h
+  const overdue=keys.filter(k=>k.status==='Out'&&hoursAgo(k.dateStr)!==null&&hoursAgo(k.dateStr)>24);
+  if(overdue.length){
+    alerts.push({level:'red',icon:'fa-exclamation-triangle',
+      title:overdue.length+' key'+(overdue.length>1?'s':'')+' out more than 24 hours',
+      sub:overdue.slice(0,3).map(k=>k.reg).join(', ')+(overdue.length>3?' +more':'')});
+  }
+  // Keys out > 30 days
+  const ancient=keys.filter(k=>k.status==='Out'&&hoursAgo(k.dateStr)!==null&&hoursAgo(k.dateStr)>24*30);
+  if(ancient.length){
+    alerts.push({level:'purple',icon:'fa-skull-crossbones',
+      title:ancient.length+' key'+(ancient.length>1?'s':'')+' out for 30+ days',
+      sub:'Possible loss — '+ancient.slice(0,2).map(k=>k.reg).join(', ')+(ancient.length>2?' +more':'')});
+  }
+  // Staff holding 10+ keys
+  const heavy=S.staffKeys.filter(s=>s.keyCount>=10);
+  heavy.forEach(s=>{
+    alerts.push({level:'orange',icon:'fa-user-clock',
+      title:s.name+' holding '+s.keyCount+' keys',
+      sub:'Above recommended threshold — please review'});
+  });
+  // No data
+  if(!keys.length&&!S.auditLog.length){
+    alerts.push({level:'blue',icon:'fa-info-circle',title:'No data imported yet',sub:'Use the import section above to load your e-Track CSV exports'});
+  }
+  document.getElementById('alertBadge').textContent=alerts.filter(a=>a.level!=='blue').length+' alerts';
+  const colors={red:'var(--red)',orange:'var(--orange)',purple:'var(--purple)',blue:'var(--accent2)'};
+  const bgs={red:'rgba(239,68,68,.1)',orange:'rgba(249,115,22,.1)',purple:'rgba(168,85,247,.1)',blue:'rgba(59,127,245,.1)'};
+  document.getElementById('alertsList').innerHTML=alerts.length?alerts.map(a=>`
+    <div class="al-item">
+      <div class="al-icon" style="background:${bgs[a.level]};color:${colors[a.level]}"><i class="fas ${a.icon}"></i></div>
+      <div>
+        <div class="al-title">${a.title}</div>
+        <div class="al-sub">${a.sub}</div>
+      </div>
+    </div>`).join(''):`<div class="empty"><i class="fas fa-shield-alt" style="color:var(--green)"></i><p>All clear — no alerts</p></div>`;
+}
+
+function toast(msg,bg='#22c55e'){
+  document.querySelectorAll('.toast').forEach(t=>t.remove());
+  const t=document.createElement('div');t.className='toast';
+  t.style.cssText=`background:${bg};color:${bg==='#22c55e'?'#000':'#fff'}`;
+  t.innerHTML=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),4000);
+}
+</script>
+</body>
+</html>

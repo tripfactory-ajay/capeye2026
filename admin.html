@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin | CapeEye Auto Capital</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700;800&family=Barlow+Condensed:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="./firebase-config.js"></script>
+<script src="./ac-data.js"></script>
+<style>
+:root{--bg:#0b0e15;--bg2:#111622;--bg3:#1a2035;--border:rgba(255,255,255,0.07);--accent:#e8b84b;--accent2:#3b7ff5;--green:#22c55e;--red:#ef4444;--orange:#f97316;--text:#f1f5f9;--muted:#64748b;--card-radius:12px}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.header{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 28px;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.logo-area{display:flex;align-items:center;gap:14px}
+.logo-area img{height:40px;width:auto}
+.logo-divider{width:1px;height:32px;background:var(--border)}
+.system-name{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;letter-spacing:2px;color:var(--accent)}
+.nav{display:flex;gap:4px}
+.nav a{padding:8px 16px;border-radius:8px;font-size:14px;font-weight:500;color:var(--muted);text-decoration:none;transition:all .2s;position:relative}
+.nav a:hover,.nav a.active{background:var(--bg3);color:var(--text)}
+.nav a.active{color:var(--accent)}
+.user-info{display:flex;align-items:center;gap:10px}
+.user-badge{background:var(--accent);color:#000;font-weight:700;font-size:12px;padding:4px 12px;border-radius:20px;letter-spacing:1px}
+.btn-sm{padding:6px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:none;font-family:'Barlow',sans-serif;transition:all .2s}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--muted)}.btn-ghost:hover{color:var(--text)}
+.main{max-width:1400px;margin:0 auto;padding:28px}
+.page-title{margin-bottom:28px}
+.page-title h1{font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:800;letter-spacing:1px}
+.page-title p{color:var(--muted);font-size:14px;margin-top:4px}
+/* TABS */
+.admin-tabs{display:flex;gap:6px;margin-bottom:28px;flex-wrap:wrap}
+.admin-tab{padding:10px 20px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;border:1px solid var(--border);background:var(--bg2);color:var(--muted);transition:all .2s;display:flex;align-items:center;gap:8px}
+.admin-tab.active{background:var(--accent);color:#000;border-color:var(--accent)}
+.admin-tab:hover:not(.active){color:var(--text)}
+/* PANELS */
+.panel{display:none}
+.panel.active{display:block}
+/* LAYOUT */
+.two-col{display:grid;grid-template-columns:380px 1fr;gap:24px;align-items:start}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--card-radius);overflow:hidden}
+.card-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--bg3)}
+.card-title{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
+.card-body{padding:20px}
+/* FORM */
+.form-field{margin-bottom:16px}
+.form-label{font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);margin-bottom:7px;display:block}
+.form-control{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--text);font-size:14px;font-family:'Barlow',sans-serif;outline:none;transition:border-color .2s}
+.form-control:focus{border-color:var(--accent2)}
+.form-control::placeholder{color:var(--muted)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.btn{padding:10px 20px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;border:none;font-family:'Barlow',sans-serif;transition:all .2s;display:inline-flex;align-items:center;gap:8px}
+.btn-primary{background:var(--accent2);color:#fff}.btn-primary:hover{background:#2563eb}
+.btn-accent{background:var(--accent);color:#000}.btn-accent:hover{opacity:.9}
+.btn-danger{background:rgba(239,68,68,.15);color:var(--red);border:1px solid rgba(239,68,68,.3)}.btn-danger:hover{background:rgba(239,68,68,.3)}
+.btn-success{background:rgba(34,197,94,.15);color:var(--green);border:1px solid rgba(34,197,94,.3)}
+.btn-block{width:100%;justify-content:center;margin-top:4px}
+/* STAFF CARDS */
+.staff-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+.staff-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--card-radius);overflow:hidden;transition:border-color .2s}
+.staff-card:hover{border-color:rgba(255,255,255,.15)}
+.staff-card-top{padding:20px;display:flex;align-items:center;gap:14px}
+.staff-avatar{width:52px;height:52px;border-radius:50%;object-fit:cover;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:800;color:var(--accent);flex-shrink:0;border:2px solid var(--border)}
+.staff-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.staff-name{font-size:15px;font-weight:700}
+.staff-role{font-size:12px;color:var(--muted);margin-top:2px}
+.staff-dept{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:10px;font-size:10px;font-weight:800;margin-top:4px;letter-spacing:.5px}
+.staff-card-actions{padding:10px 16px;border-top:1px solid var(--border);display:flex;gap:8px;background:var(--bg3)}
+/* DEPT CARDS */
+.dept-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+.dept-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--card-radius);padding:16px;display:flex;align-items:center;gap:14px}
+.dept-icon-big{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+/* LIST EDITOR */
+.list-editor{background:var(--bg2);border:1px solid var(--border);border-radius:var(--card-radius);overflow:hidden}
+.list-item{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--border);font-size:13px}
+.list-item:last-child{border-bottom:none}
+.list-item:hover{background:rgba(255,255,255,.02)}
+.del-btn{width:28px;height:28px;border-radius:6px;background:rgba(239,68,68,.1);color:var(--red);border:1px solid rgba(239,68,68,.2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px;transition:all .2s;flex-shrink:0}
+.del-btn:hover{background:rgba(239,68,68,.3)}
+.add-row{display:flex;gap:8px;padding:12px}
+.add-input{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:9px 12px;color:var(--text);font-size:13px;font-family:'Barlow',sans-serif;outline:none}
+.add-input:focus{border-color:var(--accent2)}
+.add-btn{padding:9px 16px;border-radius:8px;background:var(--accent2);color:#fff;border:none;cursor:pointer;font-size:13px;font-weight:700;font-family:'Barlow',sans-serif;white-space:nowrap}
+/* PHOTO UPLOAD */
+.avatar-upload{width:80px;height:80px;border-radius:50%;background:var(--bg3);border:2px dashed var(--border);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:24px;position:relative;overflow:hidden;transition:border-color .2s;margin:0 auto 16px}
+.avatar-upload:hover{border-color:var(--accent2)}
+.avatar-upload img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
+.avatar-upload input{display:none}
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;border-radius:10px;z-index:9999;font-size:14px;font-weight:700;padding:13px 22px;display:flex;align-items:center;gap:10px;animation:slideUp .2s ease;max-width:360px}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.badge{display:inline-flex;align-items:center;padding:3px 8px;border-radius:10px;font-size:10px;font-weight:700;letter-spacing:.5px}
+.loading{text-align:center;padding:40px;color:var(--muted);font-size:14px}
+@media(max-width:900px){.two-col{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="header">
+  <div class="logo-area">
+    <img src="./autocapital-logo.png" alt="Auto Capital" onerror="this.style.display='none'">
+    <div class="logo-divider"></div>
+    <span class="system-name">CAPEYE</span>
+  </div>
+    <nav class="nav">
+    <a href="./index.html"><i class="fas fa-th-large"></i> Dashboard</a>
+    <a href="./inventory.html"><i class="fas fa-car"></i> Inventory</a>
+    <a href="./workflow.html"><i class="fas fa-tasks"></i> Workflow</a>
+    <a href="./keys.html"><i class="fas fa-key"></i> Keys</a>
+    <a href="./alerts.html"><i class="fas fa-bell"></i> Alerts</a>
+    <a href="./marketing.html"><i class="fas fa-chart-line"></i> Marketing</a>
+    <a href="./team.html"><i class="fas fa-users"></i> Team</a>
+    <a href="./admin.html" class="active"><i class="fas fa-cog"></i> Admin</a>
+    <a href="./import.html"><i class="fas fa-file-upload"></i> Import</a>
+  </nav>
+  <div class="user-info">
+    <span id="userEmail" class="user-badge">ADMIN</span>
+    <button class="btn-sm btn-ghost" onclick="CE.logoutUser().then(()=>location.href='./login.html')"><i class="fas fa-sign-out-alt"></i></button>
+  </div>
+</header>
+
+<main class="main">
+  <div class="page-title">
+    <h1><i class="fas fa-cog" style="color:var(--accent);margin-right:10px"></i>Admin Panel</h1>
+    <p>Manage staff, departments, dropdown lists and system configuration</p>
+  </div>
+
+  <!-- TABS -->
+  <div class="admin-tabs">
+    <div class="admin-tab active" onclick="setTab('staff')"><i class="fas fa-users"></i> Staff</div>
+    <div class="admin-tab" onclick="setTab('departments')"><i class="fas fa-building"></i> Departments</div>
+    <div class="admin-tab" onclick="setTab('locations')"><i class="fas fa-map-marker-alt"></i> Locations</div>
+    <div class="admin-tab" onclick="setTab('faults')"><i class="fas fa-exclamation-triangle"></i> Fault Types</div>
+    <div class="admin-tab" onclick="setTab('repairs')"><i class="fas fa-tools"></i> Repair Types</div>
+    <div class="admin-tab" onclick="setTab('parts')"><i class="fas fa-cogs"></i> Parts List</div>
+    <div class="admin-tab" onclick="setTab('workflow')"><i class="fas fa-tasks"></i> Workflow Stages</div>
+    <div class="admin-tab" onclick="setTab('system')"><i class="fas fa-database"></i> System</div>
+  </div>
+
+  <!-- ══ STAFF PANEL ══ -->
+  <div class="panel active" id="panel-staff">
+    <div class="two-col">
+      <!-- Add / Edit form -->
+      <div class="card" style="position:sticky;top:84px">
+        <div class="card-header">
+          <span class="card-title" id="staffFormTitle">Add New Staff Member</span>
+        </div>
+        <div class="card-body">
+          <input type="hidden" id="editStaffId">
+          <div class="avatar-upload" onclick="document.getElementById('avatarFile').click()" id="avatarWrap">
+            <i class="fas fa-camera" style="color:var(--muted);font-size:20px"></i>
+            <span style="font-size:10px;color:var(--muted);margin-top:4px">Photo</span>
+            <input type="file" id="avatarFile" accept="image/*" onchange="previewAvatar(this)">
+          </div>
+          <div class="form-row">
+            <div class="form-field">
+              <label class="form-label">First Name</label>
+              <input class="form-control" id="staffFirst" placeholder="e.g. Keith">
+            </div>
+            <div class="form-field">
+              <label class="form-label">Last Name</label>
+              <input class="form-control" id="staffLast" placeholder="e.g. Hardy">
+            </div>
+          </div>
+          <div class="form-field">
+            <label class="form-label">Job Role / Title</label>
+            <input class="form-control" id="staffRole" placeholder="e.g. General Manager">
+          </div>
+          <div class="form-field">
+            <label class="form-label">Department</label>
+            <select class="form-control" id="staffDept"></select>
+          </div>
+          <div class="form-row">
+            <div class="form-field">
+              <label class="form-label">Phone Number</label>
+              <input class="form-control" id="staffPhone" placeholder="07700 000000">
+            </div>
+            <div class="form-field">
+              <label class="form-label">Email Address</label>
+              <input class="form-control" id="staffEmail" placeholder="name@autocapital.co.uk" type="email">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-field">
+              <label class="form-label">Start Date</label>
+              <input class="form-control" id="staffStart" type="date">
+            </div>
+            <div class="form-field">
+              <label class="form-label">Emergency Contact</label>
+              <input class="form-control" id="staffEmergency" placeholder="Name & number">
+            </div>
+          </div>
+          <div class="form-field">
+            <label class="form-label">Notes</label>
+            <textarea class="form-control" id="staffNotes" rows="2" placeholder="Any additional info..."></textarea>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:4px">
+            <button class="btn btn-accent btn-block" onclick="saveStaff()" style="flex:1"><i class="fas fa-save"></i> <span id="staffSaveLbl">Add Staff Member</span></button>
+            <button class="btn btn-ghost" onclick="clearStaffForm()" id="staffCancelBtn" style="display:none"><i class="fas fa-times"></i></button>
+          </div>
+        </div>
+      </div>
+      <!-- Staff list -->
+      <div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:800;letter-spacing:.5px">Current Staff (<span id="staffCount">0</span>)</div>
+          <input id="staffSearch" placeholder="Search..." style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-size:13px;font-family:'Barlow',sans-serif;outline:none;width:200px" oninput="renderStaff()">
+        </div>
+        <div class="staff-grid" id="staffGrid"><div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ DEPARTMENTS PANEL ══ -->
+  <div class="panel" id="panel-departments">
+    <div class="two-col">
+      <div class="card" style="position:sticky;top:84px">
+        <div class="card-header"><span class="card-title" id="deptFormTitle">Add Department</span></div>
+        <div class="card-body">
+          <input type="hidden" id="editDeptId">
+          <div class="form-field">
+            <label class="form-label">Department Name</label>
+            <input class="form-control" id="deptName" placeholder="e.g. Bodyshop">
+          </div>
+          <div class="form-row">
+            <div class="form-field">
+              <label class="form-label">Icon (emoji)</label>
+              <input class="form-control" id="deptIcon" placeholder="🎨" maxlength="4" style="font-size:22px;text-align:center">
+            </div>
+            <div class="form-field">
+              <label class="form-label">Colour</label>
+              <input class="form-control" id="deptColor" type="color" value="#3b7ff5" style="height:42px;padding:4px 8px;cursor:pointer">
+            </div>
+          </div>
+          <button class="btn btn-accent btn-block" onclick="saveDept()"><i class="fas fa-save"></i> <span id="deptSaveLbl">Add Department</span></button>
+          <button class="btn btn-ghost btn-block" onclick="clearDeptForm()" id="deptCancelBtn" style="display:none;margin-top:8px"><i class="fas fa-times"></i> Cancel Edit</button>
+        </div>
+      </div>
+      <div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:800;letter-spacing:.5px;margin-bottom:14px">Departments (<span id="deptCount">0</span>)</div>
+        <div class="dept-grid" id="deptGrid"><div class="loading"><i class="fas fa-spinner fa-spin"></i></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ LIST PANELS (Locations, Faults, Repairs, Parts) ══ -->
+  <div class="panel" id="panel-locations"><div id="list-locations"></div></div>
+  <div class="panel" id="panel-faults"><div id="list-faults"></div></div>
+  <div class="panel" id="panel-repairs"><div id="list-repairs"></div></div>
+  <div class="panel" id="panel-parts"><div id="list-parts"></div></div>
+
+  <!-- ══ WORKFLOW STAGES PANEL ══ -->
+  <div class="panel" id="panel-workflow">
+    <div class="card">
+      <div class="card-header"><span class="card-title">Workflow Stage Order</span><span style="font-size:12px;color:var(--muted)">Drag to reorder · Click to edit</span></div>
+      <div id="workflowStageList" style="padding:12px"></div>
+    </div>
+  </div>
+
+  <!-- ══ SYSTEM PANEL ══ -->
+  <div class="panel" id="panel-system">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+      <div class="card">
+        <div class="card-header"><span class="card-title">🗄️ Database</span></div>
+        <div class="card-body" style="display:flex;flex-direction:column;gap:12px">
+          <div style="font-size:13px;color:var(--muted);line-height:1.6">Seed Firestore with the default vehicle, staff and list data from <code>ac-data.js</code>. Only run this once when setting up a new system.</div>
+          <button class="btn btn-primary" onclick="runSeed()"><i class="fas fa-database"></i> Seed Firestore with Default Data</button>
+          <div style="font-size:12px;color:var(--muted)">⚠ This will not overwrite existing records.</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">👤 User Accounts</span></div>
+        <div class="card-body">
+          <div style="font-size:13px;color:var(--muted);margin-bottom:12px;line-height:1.6">User accounts (logins) are managed in the Firebase Console. To add a new user:</div>
+          <ol style="font-size:13px;color:var(--muted);line-height:2;padding-left:18px">
+            <li>Go to <strong style="color:var(--text)">firebase.google.com</strong></li>
+            <li>Open your project → <strong style="color:var(--text)">Authentication</strong></li>
+            <li>Click <strong style="color:var(--text)">Add User</strong></li>
+            <li>Enter their email and a temporary password</li>
+          </ol>
+          <a href="https://console.firebase.google.com" target="_blank" class="btn btn-ghost" style="margin-top:12px;display:inline-flex"><i class="fas fa-external-link-alt"></i> Open Firebase Console</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">📊 Storage Stats</span></div>
+        <div class="card-body" id="statsPanel"><div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</div></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">🔑 Session</span></div>
+        <div class="card-body">
+          <div id="sessionInfo" style="font-size:13px;color:var(--muted);line-height:2"></div>
+          <button class="btn btn-danger" onclick="CE.logoutUser().then(()=>location.href='./login.html')" style="margin-top:14px"><i class="fas fa-sign-out-alt"></i> Sign Out</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getFirestore, collection, doc, getDoc, getDocs, setDoc, deleteDoc,
+         addDoc, serverTimestamp, writeBatch, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const app  = initializeApp(FIREBASE_CONFIG);
+const auth = getAuth(app);
+const db   = getFirestore(app);
+
+let staffList = [], deptList = [], lists = {}, currentAvatar = null;
+let activeTab = 'staff';
+
+// ── Auth guard ──
+onAuthStateChanged(auth, user => {
+  if (!user) { window.location.href = './login.html'; return; }
+  document.getElementById('userEmail').textContent = user.email.split('@')[0].toUpperCase();
+  initAdmin();
+});
+
+async function initAdmin() {
+  await Promise.all([loadStaff(), loadDepts(), loadLists()]);
+  renderDeptOptions();
+  renderStaff();
+  renderDepts();
+  renderAllLists();
+  renderWorkflowStages();
+  loadStats();
+  loadSessionInfo();
+}
+
+// ── TAB ──
+window.setTab = function(tab) {
+  activeTab = tab;
+  document.querySelectorAll('.admin-tab').forEach((el,i) => el.classList.toggle('active', el.textContent.toLowerCase().includes(tab.toLowerCase())||el.onclick?.toString().includes(tab)));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  const p = document.getElementById('panel-'+tab);
+  if(p) p.classList.add('active');
+};
+
+// ── STAFF ──
+async function loadStaff() {
+  const snap = await getDocs(collection(db,'staff'));
+  staffList = snap.docs.length ? snap.docs.map(d=>({id:d.id,...d.data()})) : AC_STAFF.map(s=>({...s,id:s.name.replace(/\s+/g,'_')}));
+}
+
+window.renderStaff = function() {
+  const search = (document.getElementById('staffSearch').value||'').toLowerCase();
+  const filtered = staffList.filter(s => !search || s.name?.toLowerCase().includes(search) || s.role?.toLowerCase().includes(search) || s.dept?.toLowerCase().includes(search));
+  document.getElementById('staffCount').textContent = staffList.length;
+  const deptColors = {};
+  deptList.forEach(d => deptColors[d.name] = d.color||'#64748b');
+
+  document.getElementById('staffGrid').innerHTML = filtered.map(s => {
+    const initials = (s.name||'?').split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase();
+    const deptColor = deptColors[s.dept]||'#64748b';
+    return `<div class="staff-card">
+      <div class="staff-card-top">
+        <div class="staff-avatar" style="background:${deptColor}22;color:${deptColor}">
+          ${s.photoUrl ? `<img src="${s.photoUrl}">` : initials}
+        </div>
+        <div style="flex:1;min-width:0">
+          <div class="staff-name">${s.name||'—'}</div>
+          <div class="staff-role">${s.role||'—'}</div>
+          <div class="staff-dept" style="background:${deptColor}22;color:${deptColor}">${s.dept||'—'}</div>
+          ${s.phone?`<div style="font-size:11px;color:var(--muted);margin-top:4px"><i class="fas fa-phone" style="font-size:9px"></i> ${s.phone}</div>`:''}
+        </div>
+      </div>
+      <div class="staff-card-actions">
+        <button class="btn" style="flex:1;padding:6px;font-size:11px;background:rgba(59,127,245,.1);color:var(--accent2);border:none;cursor:pointer;border-radius:6px" onclick="editStaff('${s.id}')"><i class="fas fa-edit"></i> Edit</button>
+        <button class="btn" style="padding:6px 10px;font-size:11px;background:rgba(239,68,68,.1);color:var(--red);border:1px solid rgba(239,68,68,.2);cursor:pointer;border-radius:6px" onclick="deleteStaff('${s.id}','${s.name}')"><i class="fas fa-trash"></i></button>
+      </div>
+    </div>`;
+  }).join('') || '<div style="color:var(--muted);font-size:14px;padding:20px">No staff found.</div>';
+};
+
+window.editStaff = function(id) {
+  const s = staffList.find(x=>x.id===id);
+  if(!s) return;
+  document.getElementById('editStaffId').value = id;
+  const nameParts = (s.name||'').split(' ');
+  document.getElementById('staffFirst').value = nameParts[0]||'';
+  document.getElementById('staffLast').value  = nameParts.slice(1).join(' ')||'';
+  document.getElementById('staffRole').value  = s.role||'';
+  document.getElementById('staffDept').value  = s.dept||'';
+  document.getElementById('staffPhone').value = s.phone||'';
+  document.getElementById('staffEmail').value = s.email||'';
+  document.getElementById('staffStart').value = s.startDate||'';
+  document.getElementById('staffEmergency').value = s.emergency||'';
+  document.getElementById('staffNotes').value = s.notes||'';
+  currentAvatar = s.photoUrl||null;
+  if(s.photoUrl){
+    document.getElementById('avatarWrap').innerHTML=`<img src="${s.photoUrl}" style="width:100%;height:100%;object-fit:cover;border-radius:50%"><input type="file" id="avatarFile" accept="image/*" onchange="previewAvatar(this)">`;
+  }
+  document.getElementById('staffFormTitle').textContent = 'Edit Staff Member';
+  document.getElementById('staffSaveLbl').textContent   = 'Save Changes';
+  document.getElementById('staffCancelBtn').style.display = '';
+  document.querySelector('#panel-staff .card').scrollIntoView({behavior:'smooth',block:'start'});
+};
+
+window.saveStaff = async function() {
+  const id    = document.getElementById('editStaffId').value;
+  const first = document.getElementById('staffFirst').value.trim();
+  const last  = document.getElementById('staffLast').value.trim();
+  if(!first){ showToast('Please enter a first name','#f97316'); return; }
+  const member = {
+    id: id || `${first}_${last}`.replace(/\s+/g,'_'),
+    name: `${first} ${last}`.trim(),
+    role: document.getElementById('staffRole').value.trim(),
+    dept: document.getElementById('staffDept').value,
+    phone: document.getElementById('staffPhone').value.trim(),
+    email: document.getElementById('staffEmail').value.trim(),
+    startDate: document.getElementById('staffStart').value,
+    emergency: document.getElementById('staffEmergency').value.trim(),
+    notes: document.getElementById('staffNotes').value.trim(),
+    photoUrl: currentAvatar || null
+  };
+  await setDoc(doc(db,'staff',member.id), {...member, _updatedAt: serverTimestamp()}, {merge:true});
+  const idx = staffList.findIndex(s=>s.id===member.id);
+  if(idx>=0) staffList[idx]=member; else staffList.push(member);
+  clearStaffForm(); renderStaff();
+  showToast(id ? 'Staff member updated ✓' : 'Staff member added ✓');
+};
+
+window.deleteStaff = async function(id, name) {
+  if(!confirm(`Delete ${name}? This cannot be undone.`)) return;
+  await deleteDoc(doc(db,'staff',id));
+  staffList = staffList.filter(s=>s.id!==id);
+  renderStaff(); showToast('Staff member removed');
+};
+
+window.clearStaffForm = function() {
+  document.getElementById('editStaffId').value='';
+  ['staffFirst','staffLast','staffRole','staffPhone','staffEmail','staffStart','staffEmergency','staffNotes'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('staffDept').selectedIndex=0;
+  currentAvatar=null;
+  document.getElementById('avatarWrap').innerHTML=`<i class="fas fa-camera" style="color:var(--muted);font-size:20px"></i><span style="font-size:10px;color:var(--muted);margin-top:4px">Photo</span><input type="file" id="avatarFile" accept="image/*" onchange="previewAvatar(this)">`;
+  document.getElementById('staffFormTitle').textContent='Add New Staff Member';
+  document.getElementById('staffSaveLbl').textContent='Add Staff Member';
+  document.getElementById('staffCancelBtn').style.display='none';
+};
+
+window.previewAvatar = function(input) {
+  if(!input.files||!input.files[0]) return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    currentAvatar=e.target.result;
+    document.getElementById('avatarWrap').innerHTML=`<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;border-radius:50%"><input type="file" id="avatarFile" accept="image/*" onchange="previewAvatar(this)">`;
+  };
+  reader.readAsDataURL(input.files[0]);
+};
+
+// ── DEPARTMENTS ──
+async function loadDepts() {
+  const snap = await getDocs(collection(db,'departments'));
+  deptList = snap.docs.length ? snap.docs.map(d=>({id:d.id,...d.data()})) : AC_DEPARTMENTS.map(d=>({...d,id:d.name.replace(/\s+/g,'_')}));
+}
+
+function renderDeptOptions() {
+  const sel = document.getElementById('staffDept');
+  sel.innerHTML = deptList.map(d=>`<option value="${d.name}">${d.icon||''} ${d.name}</option>`).join('');
+}
+
+window.renderDepts = function() {
+  document.getElementById('deptCount').textContent = deptList.length;
+  document.getElementById('deptGrid').innerHTML = deptList.map(d=>`
+    <div class="dept-card">
+      <div class="dept-icon-big" style="background:${d.color||'#64748b'}22;color:${d.color||'#64748b'}">${d.icon||'🏢'}</div>
+      <div style="flex:1">
+        <div style="font-weight:700;font-size:14px">${d.name}</div>
+        <div style="font-size:11px;color:var(--muted)">${staffList.filter(s=>s.dept===d.name).length} staff</div>
+      </div>
+      <div style="display:flex;gap:6px">
+        <button class="btn" style="padding:5px 10px;font-size:11px;background:rgba(59,127,245,.1);color:var(--accent2);border:none;cursor:pointer;border-radius:6px" onclick="editDept('${d.id}')"><i class="fas fa-edit"></i></button>
+        <button class="del-btn" onclick="deleteDept('${d.id}','${d.name}')"><i class="fas fa-trash"></i></button>
+      </div>
+    </div>`).join('');
+};
+
+window.editDept = function(id) {
+  const d=deptList.find(x=>x.id===id); if(!d) return;
+  document.getElementById('editDeptId').value=id;
+  document.getElementById('deptName').value=d.name;
+  document.getElementById('deptIcon').value=d.icon||'';
+  document.getElementById('deptColor').value=d.color||'#3b7ff5';
+  document.getElementById('deptFormTitle').textContent='Edit Department';
+  document.getElementById('deptSaveLbl').textContent='Save Changes';
+  document.getElementById('deptCancelBtn').style.display='';
+};
+window.saveDept = async function() {
+  const id   = document.getElementById('editDeptId').value;
+  const name = document.getElementById('deptName').value.trim();
+  if(!name){showToast('Enter a department name','#f97316');return;}
+  const dept = {id:id||name.replace(/\s+/g,'_'),name,icon:document.getElementById('deptIcon').value.trim(),color:document.getElementById('deptColor').value};
+  await setDoc(doc(db,'departments',dept.id),{...dept,_updatedAt:serverTimestamp()},{merge:true});
+  const idx=deptList.findIndex(d=>d.id===dept.id);
+  if(idx>=0)deptList[idx]=dept;else deptList.push(dept);
+  clearDeptForm(); renderDepts(); renderDeptOptions();
+  showToast(id?'Department updated ✓':'Department added ✓');
+};
+window.deleteDept = async function(id,name) {
+  if(!confirm(`Delete department "${name}"?`))return;
+  await deleteDoc(doc(db,'departments',id));
+  deptList=deptList.filter(d=>d.id!==id);
+  renderDepts(); renderDeptOptions(); showToast('Department removed');
+};
+window.clearDeptForm = function() {
+  document.getElementById('editDeptId').value='';
+  document.getElementById('deptName').value='';
+  document.getElementById('deptIcon').value='';
+  document.getElementById('deptColor').value='#3b7ff5';
+  document.getElementById('deptFormTitle').textContent='Add Department';
+  document.getElementById('deptSaveLbl').textContent='Add Department';
+  document.getElementById('deptCancelBtn').style.display='none';
+};
+
+// ── LISTS ──
+async function loadLists() {
+  const d = await getDoc(doc(db,'lists','main'));
+  lists = d.exists() ? d.data() : {faults:AC_FAULTS,repairs:AC_REPAIRS,parts:AC_PARTS,locations:AC_LOCATIONS};
+}
+async function saveListsToDb() {
+  await setDoc(doc(db,'lists','main'),{...lists,_updatedAt:serverTimestamp()},{merge:true});
+}
+
+function renderAllLists() {
+  renderList('locations','Locations',lists.locations||AC_LOCATIONS);
+  renderList('faults','Fault Types',lists.faults||AC_FAULTS);
+  renderList('repairs','Repair Types',lists.repairs||AC_REPAIRS);
+  renderList('parts','Parts List',lists.parts||AC_PARTS);
+}
+
+function renderList(key, title, items) {
+  const container = document.getElementById('list-'+key);
+  container.innerHTML = `
+    <div style="max-width:700px">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:800;margin-bottom:14px">${title} (${items.length})</div>
+      <div class="list-editor" id="le-${key}">
+        ${items.map((item,i)=>`
+        <div class="list-item" id="li-${key}-${i}">
+          <span style="flex:1">${item}</span>
+          <input style="flex:2;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:5px 10px;color:var(--text);font-size:12px;font-family:'Barlow',sans-serif;outline:none;margin:0 8px" value="${item}" onchange="updateListItem('${key}',${i},this.value)">
+          <button class="del-btn" onclick="removeListItem('${key}',${i})"><i class="fas fa-times"></i></button>
+        </div>`).join('')}
+      </div>
+      <div class="add-row">
+        <input class="add-input" id="add-${key}" placeholder="Add new ${title.toLowerCase().replace(' list','')} item...">
+        <button class="add-btn" onclick="addListItem('${key}')"><i class="fas fa-plus"></i> Add</button>
+      </div>
+    </div>`;
+}
+
+window.addListItem = async function(key) {
+  const input = document.getElementById('add-'+key);
+  const val = input.value.trim();
+  if(!val) return;
+  if(!lists[key]) lists[key]=[];
+  lists[key].push(val);
+  input.value='';
+  await saveListsToDb();
+  renderAllLists();
+  showToast('Item added ✓');
+};
+window.removeListItem = async function(key,idx) {
+  if(!confirm('Remove this item?')) return;
+  lists[key].splice(idx,1);
+  await saveListsToDb();
+  renderAllLists();
+  showToast('Item removed');
+};
+window.updateListItem = async function(key,idx,val) {
+  lists[key][idx]=val;
+  await saveListsToDb();
+  showToast('Updated ✓');
+};
+
+// ── WORKFLOW STAGES ──
+function renderWorkflowStages() {
+  document.getElementById('workflowStageList').innerHTML = AC_WORKFLOW_STAGES.map((s,i)=>`
+    <div style="display:flex;align-items:center;gap:14px;padding:12px 8px;border-bottom:1px solid var(--border);${i===AC_WORKFLOW_STAGES.length-1?'border-bottom:none':''}">
+      <div style="width:28px;height:28px;border-radius:50%;background:${s.color};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;flex-shrink:0">${s.id}</div>
+      <div style="flex:1">
+        <div style="font-weight:700">${s.name}</div>
+        <div style="font-size:12px;color:var(--muted)">${s.dept} → ${s.handoverTo||'Complete'}</div>
+      </div>
+      <div style="display:inline-flex;padding:3px 10px;border-radius:8px;font-size:11px;font-weight:700;background:${s.color}22;color:${s.color}">${s.dept}</div>
+    </div>`).join('');
+}
+
+// ── SYSTEM ──
+async function loadStats() {
+  const counts = await Promise.all([
+    getDocs(collection(db,'vehicles')),
+    getDocs(collection(db,'staff')),
+    getDocs(collection(db,'workflow')),
+    getDocs(collection(db,'alerts')),
+    getDocs(collection(db,'marketing'))
+  ]);
+  const [v,s,w,a,m]=counts.map(c=>c.size);
+  document.getElementById('statsPanel').innerHTML=`
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      ${[['Vehicles',v,'fas fa-car','var(--accent2)'],['Staff',s,'fas fa-users','var(--green)'],['Workflow Records',w,'fas fa-tasks','var(--accent)'],['Alerts',a,'fas fa-bell','var(--orange)'],['Marketing Imports',m,'fas fa-chart-bar','#8b5cf6']].map(([label,count,icon,color])=>`
+      <div style="background:var(--bg3);border-radius:8px;padding:12px;text-align:center">
+        <i class="${icon}" style="color:${color};margin-bottom:6px;display:block"></i>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:800">${count}</div>
+        <div style="font-size:11px;color:var(--muted)">${label}</div>
+      </div>`).join('')}
+    </div>`;
+}
+function loadSessionInfo() {
+  const user=auth.currentUser;
+  if(!user) return;
+  document.getElementById('sessionInfo').innerHTML=`
+    <div>Signed in as: <strong style="color:var(--text)">${user.email}</strong></div>
+    <div>User ID: <code style="font-size:11px;color:var(--muted)">${user.uid}</code></div>
+    <div>Session started: ${new Date(user.metadata.lastSignInTime).toLocaleString('en-GB')}</div>`;
+}
+
+window.runSeed = async function() {
+  if(!confirm('Seed Firestore with default data? Existing records will not be overwritten.')) return;
+  showToast('Seeding... this may take a moment','#3b7ff5');
+  const batch=writeBatch(db);
+  AC_VEHICLES.forEach(v=>batch.set(doc(db,'vehicles',v.stockNo),{...v,_updatedAt:serverTimestamp()},{merge:true}));
+  await batch.commit();
+  for(const s of AC_STAFF) await setDoc(doc(db,'staff',s.name.replace(/\s+/g,'_')),{...s,_updatedAt:serverTimestamp()},{merge:true});
+  for(const d of AC_DEPARTMENTS) await setDoc(doc(db,'departments',d.name.replace(/\s+/g,'_')),{...d,_updatedAt:serverTimestamp()},{merge:true});
+  await setDoc(doc(db,'lists','main'),{faults:AC_FAULTS,repairs:AC_REPAIRS,parts:AC_PARTS,locations:AC_LOCATIONS,_updatedAt:serverTimestamp()});
+  showToast('✓ Firestore seeded successfully!','#22c55e');
+  loadStats();
+};
+
+function showToast(msg,bg='#22c55e'){
+  document.querySelectorAll('.toast').forEach(t=>t.remove());
+  const t=document.createElement('div');t.className='toast';
+  t.style.cssText=`background:${bg};color:${bg==='#22c55e'?'#000':'#fff'}`;
+  t.innerHTML=msg;document.body.appendChild(t);
+  setTimeout(()=>t.remove(),3000);
+}
+</script>
+</body>
+</html>

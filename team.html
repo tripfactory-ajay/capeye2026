@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Team | CapeEye Auto Capital</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700;800&family=Barlow+Condensed:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="./firebase-config.js"></script>
+<script src="./ac-data.js"></script>
+<style>
+:root{--bg:#0b0e15;--bg2:#111622;--bg3:#1a2035;--border:rgba(255,255,255,0.07);--accent:#e8b84b;--accent2:#3b7ff5;--green:#22c55e;--red:#ef4444;--orange:#f97316;--text:#f1f5f9;--muted:#64748b;--card-radius:12px}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.header{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 28px;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.logo-area{display:flex;align-items:center;gap:14px}
+.logo-area img{height:40px;width:auto}
+.logo-divider{width:1px;height:32px;background:var(--border)}
+.system-name{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;letter-spacing:2px;color:var(--accent)}
+.nav{display:flex;gap:4px}
+.nav a{padding:8px 16px;border-radius:8px;font-size:14px;font-weight:500;color:var(--muted);text-decoration:none;transition:all .2s;position:relative}
+.nav a:hover,.nav a.active{background:var(--bg3);color:var(--text)}
+.nav a.active{color:var(--accent)}
+.user-info{display:flex;align-items:center;gap:10px}
+.user-badge{background:var(--accent);color:#000;font-weight:700;font-size:12px;padding:4px 12px;border-radius:20px;letter-spacing:1px}
+.btn-sm{padding:6px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:none;font-family:'Barlow',sans-serif}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--muted)}.btn-ghost:hover{color:var(--text)}
+.main{max-width:1400px;margin:0 auto;padding:28px}
+.page-title{margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.page-title h1{font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:800;letter-spacing:1px}
+.filters-row{display:flex;gap:10px;margin-bottom:24px;flex-wrap:wrap;align-items:center}
+.search-box{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:9px 14px;color:var(--text);font-size:13px;font-family:'Barlow',sans-serif;outline:none;width:240px}
+.search-box::placeholder{color:var(--muted)}
+.filter-btn{padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;border:1px solid var(--border);background:var(--bg2);color:var(--muted);transition:all .2s}
+.filter-btn.active{color:var(--text);background:var(--bg3);border-color:rgba(255,255,255,.2)}
+/* STAFF GRID */
+.team-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px}
+.team-card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:all .25s;cursor:pointer}
+.team-card:hover{border-color:rgba(255,255,255,.18);transform:translateY(-3px);box-shadow:0 16px 40px rgba(0,0,0,.3)}
+.card-banner{height:80px;position:relative}
+.card-avatar{width:72px;height:72px;border-radius:50%;border:3px solid var(--bg2);position:absolute;bottom:-36px;left:20px;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:800;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,.3)}
+.card-avatar img{width:100%;height:100%;object-fit:cover}
+.card-body{padding:48px 20px 20px}
+.card-name{font-size:18px;font-weight:800;margin-bottom:3px}
+.card-role{font-size:13px;color:var(--muted);margin-bottom:10px}
+.dept-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:800;letter-spacing:.5px;margin-bottom:14px}
+.contact-row{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);margin-bottom:6px}
+.contact-row i{width:14px;text-align:center;flex-shrink:0}
+.contact-row a{color:var(--muted);text-decoration:none}.contact-row a:hover{color:var(--text)}
+.stats-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}
+.stat-box{text-align:center}
+.stat-val{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:800}
+.stat-label{font-size:10px;color:var(--muted);font-weight:600;letter-spacing:.5px;text-transform:uppercase;margin-top:2px}
+/* PROFILE MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:1000;display:flex;align-items:flex-start;justify-content:center;padding:40px 20px;overflow-y:auto;backdrop-filter:blur(6px)}
+.modal{background:var(--bg2);border:1px solid rgba(255,255,255,.1);border-radius:20px;width:100%;max-width:680px;animation:popIn .25s ease}
+@keyframes popIn{from{transform:scale(.94) translateY(20px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}
+.modal-banner{height:120px;position:relative;border-radius:20px 20px 0 0;overflow:hidden}
+.modal-avatar{width:96px;height:96px;border-radius:50%;border:4px solid var(--bg2);position:absolute;bottom:-48px;left:28px;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-size:36px;font-weight:800;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.4)}
+.modal-avatar img{width:100%;height:100%;object-fit:cover}
+.modal-close{position:absolute;top:12px;right:12px;width:32px;height:32px;border-radius:50%;background:rgba(0,0,0,.4);color:#fff;border:none;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center}
+.modal-body{padding:64px 28px 28px}
+.modal-name{font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:800;letter-spacing:.5px}
+.modal-role{font-size:14px;color:var(--muted);margin-top:4px;margin-bottom:14px}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px}
+.info-field{background:var(--bg3);border-radius:10px;padding:12px 14px}
+.info-label{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.info-val{font-size:14px;font-weight:600}
+.task-list-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px}
+.task-list-item:last-child{border-bottom:none}
+.task-done{color:var(--green)}.task-pending{color:var(--orange)}
+.loading{text-align:center;padding:60px;color:var(--muted)}
+</style>
+</head>
+<body>
+<header class="header">
+  <div class="logo-area">
+    <img src="./autocapital-logo.png" alt="Auto Capital" onerror="this.style.display='none'">
+    <div class="logo-divider"></div>
+    <span class="system-name">CAPEYE</span>
+  </div>
+    <nav class="nav">
+    <a href="./index.html"><i class="fas fa-th-large"></i> Dashboard</a>
+    <a href="./inventory.html"><i class="fas fa-car"></i> Inventory</a>
+    <a href="./workflow.html"><i class="fas fa-tasks"></i> Workflow</a>
+    <a href="./keys.html"><i class="fas fa-key"></i> Keys</a>
+    <a href="./alerts.html"><i class="fas fa-bell"></i> Alerts</a>
+    <a href="./marketing.html"><i class="fas fa-chart-line"></i> Marketing</a>
+    <a href="./team.html" class="active"><i class="fas fa-users"></i> Team</a>
+    <a href="./admin.html"><i class="fas fa-cog"></i> Admin</a>
+    <a href="./import.html"><i class="fas fa-file-upload"></i> Import</a>
+  </nav>
+  <div class="user-info">
+    <span id="userBadge" class="user-badge">AUTO CAPITAL</span>
+    <button class="btn-sm btn-ghost" onclick="doLogout()"><i class="fas fa-sign-out-alt"></i></button>
+  </div>
+</header>
+
+<main class="main">
+  <div class="page-title">
+    <div>
+      <h1><i class="fas fa-users" style="color:var(--accent);margin-right:10px"></i>Our Team</h1>
+      <p style="color:var(--muted);font-size:14px;margin-top:4px">Staff directory — click any card for full profile</p>
+    </div>
+    <a href="./admin.html" style="padding:9px 18px;border-radius:8px;background:var(--bg3);border:1px solid var(--border);color:var(--muted);text-decoration:none;font-size:13px;font-weight:600;display:inline-flex;align-items:center;gap:8px"><i class="fas fa-user-plus"></i> Manage Staff</a>
+  </div>
+
+  <!-- FILTERS -->
+  <div class="filters-row">
+    <input class="search-box" id="teamSearch" placeholder="🔍 Search staff..." oninput="renderTeam()">
+    <div id="deptFilters" style="display:flex;gap:6px;flex-wrap:wrap"></div>
+  </div>
+
+  <!-- TEAM GRID -->
+  <div class="team-grid" id="teamGrid">
+    <div class="loading"><i class="fas fa-spinner fa-spin" style="font-size:24px"></i><div style="margin-top:12px">Loading team...</div></div>
+  </div>
+</main>
+
+<!-- PROFILE MODAL -->
+<div class="modal-overlay" id="profileModal" style="display:none" onclick="if(event.target===this)closeProfile()">
+  <div class="modal" id="profileContent"></div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getFirestore, collection, getDocs, query, where, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const app  = initializeApp(FIREBASE_CONFIG);
+const auth = getAuth(app);
+const db   = getFirestore(app);
+
+let staffList=[], deptList=[], taskData={}, activeDeptFilter='all';
+
+window.doLogout = ()=> signOut(auth).then(()=>location.href='./login.html');
+
+onAuthStateChanged(auth, user => {
+  if (!user) { location.href='./login.html'; return; }
+  document.getElementById('userBadge').textContent = user.email.split('@')[0].toUpperCase();
+  loadAll();
+});
+
+async function loadAll() {
+  const [staffSnap, deptSnap, taskSnap] = await Promise.all([
+    getDocs(collection(db,'staff')),
+    getDocs(collection(db,'departments')),
+    getDocs(collection(db,'tasks'))
+  ]);
+  staffList = staffSnap.docs.length ? staffSnap.docs.map(d=>({id:d.id,...d.data()}))
+                                     : AC_STAFF.map(s=>({...s,id:s.name.replace(/\s+/g,'_')}));
+  deptList  = deptSnap.docs.length  ? deptSnap.docs.map(d=>({id:d.id,...d.data()}))
+                                     : AC_DEPARTMENTS.map(d=>({...d,id:d.name.replace(/\s+/g,'_')}));
+  // Build task stats per staff
+  taskSnap.docs.forEach(d => {
+    const t = d.data();
+    if (!taskData[t.staffName]) taskData[t.staffName] = {total:0,done:0,pending:0,recentTasks:[]};
+    taskData[t.staffName].total++;
+    if(t.status==='done') taskData[t.staffName].done++;
+    else taskData[t.staffName].pending++;
+    taskData[t.staffName].recentTasks.push({...t,id:d.id});
+  });
+  buildDeptFilters();
+  renderTeam();
+}
+
+function buildDeptFilters() {
+  const depts = ['all',...new Set(staffList.map(s=>s.dept).filter(Boolean))];
+  document.getElementById('deptFilters').innerHTML = depts.map(d=>`
+    <div class="filter-btn ${d==='all'?'active':''}" id="df_${d.replace(/\s/g,'_')}" onclick="setDeptFilter('${d}')">${d==='all'?'All Departments':d}</div>`).join('');
+}
+
+window.setDeptFilter = function(dept) {
+  activeDeptFilter=dept;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  const el=document.getElementById('df_'+dept.replace(/\s/g,'_'));
+  if(el) el.classList.add('active');
+  renderTeam();
+};
+
+window.renderTeam = function() {
+  const search=(document.getElementById('teamSearch').value||'').toLowerCase();
+  const deptColors={};
+  deptList.forEach(d=>deptColors[d.name]=d.color||'#64748b');
+  const deptIcons={};
+  deptList.forEach(d=>deptIcons[d.name]=d.icon||'👤');
+
+  const filtered=staffList.filter(s=>{
+    if(activeDeptFilter!=='all'&&s.dept!==activeDeptFilter) return false;
+    if(search&&![s.name,s.role,s.dept].some(f=>f&&f.toLowerCase().includes(search))) return false;
+    return true;
+  });
+
+  document.getElementById('teamGrid').innerHTML = filtered.map(s=>{
+    const color   = deptColors[s.dept]||'#64748b';
+    const initials= (s.name||'?').split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase();
+    const stats   = taskData[s.name]||{total:0,done:0,pending:0};
+    const tenure  = s.startDate ? tenureStr(s.startDate) : '—';
+    return `<div class="team-card" onclick="openProfile('${s.id}')">
+      <div class="card-banner" style="background:linear-gradient(135deg,${color}44,${color}11)">
+        <div class="card-avatar" style="background:${color}33;color:${color}">
+          ${s.photoUrl?`<img src="${s.photoUrl}" alt="${s.name}">`:`${initials}`}
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">${s.name||'—'}</div>
+        <div class="card-role">${s.role||'—'}</div>
+        <div class="dept-badge" style="background:${color}22;color:${color}">${deptIcons[s.dept]||''} ${s.dept||'—'}</div>
+        ${s.phone?`<div class="contact-row"><i class="fas fa-phone"></i><a href="tel:${s.phone}">${s.phone}</a></div>`:''}
+        ${s.email?`<div class="contact-row"><i class="fas fa-envelope"></i><a href="mailto:${s.email}">${s.email}</a></div>`:''}
+        <div class="contact-row"><i class="fas fa-calendar"></i>${tenure}</div>
+        <div class="stats-row">
+          <div class="stat-box"><div class="stat-val" style="color:var(--accent2)">${stats.total}</div><div class="stat-label">Tasks</div></div>
+          <div class="stat-box"><div class="stat-val" style="color:var(--green)">${stats.done}</div><div class="stat-label">Done</div></div>
+          <div class="stat-box"><div class="stat-val" style="color:${stats.pending>0?'var(--orange)':'var(--muted)'}">${stats.pending}</div><div class="stat-label">Pending</div></div>
+        </div>
+      </div>
+    </div>`;
+  }).join('')||'<div style="color:var(--muted);font-size:14px;padding:20px;grid-column:1/-1">No staff found.</div>';
+};
+
+window.openProfile = function(id) {
+  const s = staffList.find(x=>x.id===id);
+  if(!s) return;
+  const deptList2 = deptList;
+  const deptEntry = deptList2.find(d=>d.name===s.dept);
+  const color  = deptEntry?.color||'#64748b';
+  const icon   = deptEntry?.icon||'👤';
+  const initials=(s.name||'?').split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase();
+  const stats  = taskData[s.name]||{total:0,done:0,pending:0,recentTasks:[]};
+  const tenure = s.startDate ? tenureStr(s.startDate) : '—';
+  const recentTasks = (stats.recentTasks||[]).slice(0,5);
+
+  document.getElementById('profileContent').innerHTML = `
+    <div class="modal-banner" style="background:linear-gradient(135deg,${color}55,${color}22)">
+      <div class="modal-avatar" style="background:${color}33;color:${color}">
+        ${s.photoUrl?`<img src="${s.photoUrl}" alt="${s.name}">`:`${initials}`}
+      </div>
+      <button class="modal-close" onclick="closeProfile()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-name">${s.name||'—'}</div>
+      <div class="modal-role">${s.role||'—'}</div>
+      <div class="dept-badge" style="background:${color}22;color:${color};display:inline-flex">${icon} ${s.dept||'—'}</div>
+
+      <div class="info-grid">
+        ${s.phone?`<div class="info-field"><div class="info-label">Phone</div><div class="info-val"><a href="tel:${s.phone}" style="color:var(--text);text-decoration:none">${s.phone}</a></div></div>`:''}
+        ${s.email?`<div class="info-field"><div class="info-label">Email</div><div class="info-val"><a href="mailto:${s.email}" style="color:var(--text);text-decoration:none;font-size:12px">${s.email}</a></div></div>`:''}
+        ${s.startDate?`<div class="info-field"><div class="info-label">Start Date</div><div class="info-val">${formatDate(s.startDate)}</div></div>`:''}
+        ${s.startDate?`<div class="info-field"><div class="info-label">Tenure</div><div class="info-val">${tenure}</div></div>`:''}
+        ${s.emergency?`<div class="info-field" style="grid-column:1/-1"><div class="info-label"><i class="fas fa-exclamation-circle" style="color:var(--red)"></i> Emergency Contact</div><div class="info-val">${s.emergency}</div></div>`:''}
+        ${s.notes?`<div class="info-field" style="grid-column:1/-1"><div class="info-label">Notes</div><div class="info-val" style="font-size:13px;color:var(--muted)">${s.notes}</div></div>`:''}
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:20px">
+        <div style="background:var(--bg3);border-radius:10px;padding:14px;text-align:center">
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:800;color:var(--accent2)">${stats.total}</div>
+          <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Total Tasks</div>
+        </div>
+        <div style="background:var(--bg3);border-radius:10px;padding:14px;text-align:center">
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:800;color:var(--green)">${stats.done}</div>
+          <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Completed</div>
+        </div>
+        <div style="background:var(--bg3);border-radius:10px;padding:14px;text-align:center">
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:800;color:${stats.pending>0?'var(--orange)':'var(--muted)'}">${stats.pending}</div>
+          <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Pending</div>
+        </div>
+      </div>
+
+      ${recentTasks.length?`
+      <div style="margin-top:20px">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted)">Recent Tasks</div>
+        ${recentTasks.map(t=>`
+        <div class="task-list-item">
+          <i class="fas fa-${t.status==='done'?'check-circle task-done':'clock task-pending'}"></i>
+          <div style="flex:1">
+            <div style="font-weight:600">${t.vehicle?.registration||t.stockNo} — Stage ${t.stageId}: ${t.stageName}</div>
+            ${t.note?`<div style="font-size:11px;color:var(--muted)">"${t.note}"</div>`:''}
+          </div>
+          <div style="font-size:11px;color:var(--muted)">${t.status==='done'?'✓ Done':'Pending'}</div>
+        </div>`).join('')}
+      </div>`:''}
+
+      <div style="display:flex;gap:10px;margin-top:20px">
+        ${s.phone?`<a href="tel:${s.phone}" style="flex:1;padding:12px;border-radius:10px;background:rgba(34,197,94,.1);color:var(--green);text-decoration:none;text-align:center;font-weight:700;font-size:13px"><i class="fas fa-phone"></i> Call</a>`:''}
+        ${s.email?`<a href="mailto:${s.email}" style="flex:1;padding:12px;border-radius:10px;background:rgba(59,127,245,.1);color:var(--accent2);text-decoration:none;text-align:center;font-weight:700;font-size:13px"><i class="fas fa-envelope"></i> Email</a>`:''}
+        <a href="./admin.html" style="flex:1;padding:12px;border-radius:10px;background:rgba(232,184,75,.1);color:var(--accent);text-decoration:none;text-align:center;font-weight:700;font-size:13px"><i class="fas fa-edit"></i> Edit Profile</a>
+      </div>
+    </div>`;
+  document.getElementById('profileModal').style.display='flex';
+};
+window.closeProfile = ()=> document.getElementById('profileModal').style.display='none';
+
+function tenureStr(dateStr) {
+  if(!dateStr) return '—';
+  const d = new Date(dateStr);
+  const months = Math.floor((Date.now()-d.getTime())/(1000*60*60*24*30.44));
+  if(months<1) return 'Just started';
+  if(months<12) return `${months} month${months>1?'s':''}`;
+  const yrs=Math.floor(months/12), rem=months%12;
+  return `${yrs}yr${yrs>1?'s':''}${rem?` ${rem}mo`:''}`;
+}
+function formatDate(str) {
+  if(!str) return '—';
+  return new Date(str).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+}
+</script>
+</body>
+</html>

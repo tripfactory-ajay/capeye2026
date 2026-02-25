@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Import | CapeEye Auto Capital</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700;800&family=Barlow+Condensed:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="./firebase-config.js"></script>
+<script src="./ac-data.js"></script>
+<style>
+:root{--bg:#0b0e15;--bg2:#111622;--bg3:#1a2035;--border:rgba(255,255,255,0.07);--accent:#e8b84b;--accent2:#3b7ff5;--green:#22c55e;--red:#ef4444;--orange:#f97316;--text:#f1f5f9;--muted:#64748b;--card-radius:12px}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.header{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 28px;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.logo-area{display:flex;align-items:center;gap:14px}
+.logo-area img{height:40px;width:auto}
+.logo-divider{width:1px;height:32px;background:var(--border)}
+.system-name{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;letter-spacing:2px;color:var(--accent)}
+.nav{display:flex;gap:4px}
+.nav a{padding:8px 16px;border-radius:8px;font-size:14px;font-weight:500;color:var(--muted);text-decoration:none;transition:all .2s}
+.nav a:hover,.nav a.active{background:var(--bg3);color:var(--text)}
+.nav a.active{color:var(--accent)}
+.user-badge{background:var(--accent);color:#000;font-weight:700;font-size:12px;padding:4px 12px;border-radius:20px;letter-spacing:1px}
+.btn-sm{padding:6px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'Barlow',sans-serif}
+.main{max-width:1400px;margin:0 auto;padding:28px}
+.page-title{margin-bottom:24px}
+.page-title h1{font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:800;letter-spacing:1px}
+.page-title p{color:var(--muted);font-size:14px;margin-top:4px}
+.drop-zone{border:2px dashed var(--border);border-radius:16px;padding:48px;text-align:center;cursor:pointer;transition:all .3s;background:var(--bg2);margin-bottom:24px}
+.drop-zone:hover,.drop-zone.drag-over{border-color:var(--accent2);background:rgba(59,127,245,.04)}
+.drop-icon{font-size:48px;color:var(--muted);margin-bottom:16px}
+.drop-title{font-size:20px;font-weight:700;margin-bottom:8px}
+.drop-sub{font-size:14px;color:var(--muted);margin-bottom:20px}
+.btn{padding:10px 22px;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;border:none;font-family:'Barlow',sans-serif;transition:all .2s;display:inline-flex;align-items:center;gap:8px}
+.btn-primary{background:var(--accent2);color:#fff}
+.btn-accent{background:var(--accent);color:#000}
+.btn-ghost{background:var(--bg3);border:1px solid var(--border);color:var(--muted)}
+.btn-danger{background:rgba(239,68,68,.15);color:var(--red);border:1px solid rgba(239,68,68,.3)}
+.btn-success{background:rgba(34,197,94,.15);color:var(--green);border:1px solid rgba(34,197,94,.3)}
+/* SUMMARY CARDS */
+.summary-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+.sum-card{border-radius:var(--card-radius);padding:18px;border:1px solid var(--border);position:relative;overflow:hidden}
+.sum-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--c)}
+.sum-val{font-family:'Barlow Condensed',sans-serif;font-size:36px;font-weight:800}
+.sum-label{font-size:12px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-top:4px}
+/* PREVIEW TABLE */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--card-radius);overflow:hidden;margin-bottom:20px}
+.card-header{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--bg3)}
+.card-title{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
+.ac-table{width:100%;border-collapse:collapse;font-size:12px}
+.ac-table th{padding:9px 12px;text-align:left;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);font-weight:700;border-bottom:1px solid var(--border);background:var(--bg3);white-space:nowrap}
+.ac-table td{padding:9px 12px;border-bottom:1px solid rgba(255,255,255,.04)}
+.ac-table tr:last-child td{border-bottom:none}
+.ac-table tr:hover td{background:rgba(255,255,255,.02)}
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:800;letter-spacing:.3px;white-space:nowrap}
+.b-new{background:rgba(34,197,94,.15);color:var(--green)}
+.b-update{background:rgba(232,184,75,.15);color:var(--accent)}
+.b-same{background:rgba(100,116,139,.12);color:var(--muted)}
+.b-flag{background:rgba(239,68,68,.15);color:var(--red)}
+.reg-plate{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:11px;letter-spacing:1px;background:#f5c518;color:#000;padding:2px 7px;border-radius:4px}
+/* FLAGGED */
+.flag-section{background:rgba(239,68,68,.05);border:1px solid rgba(239,68,68,.2);border-radius:var(--card-radius);padding:20px;margin-bottom:20px}
+.flag-title{font-weight:800;color:var(--red);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.toast{position:fixed;bottom:24px;right:24px;border-radius:10px;z-index:9999;font-size:14px;font-weight:700;padding:13px 22px;display:flex;align-items:center;gap:10px;animation:slideUp .2s ease;max-width:400px}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<header class="header">
+  <div class="logo-area">
+    <img src="./autocapital-logo.png" alt="Auto Capital" onerror="this.style.display='none'">
+    <div class="logo-divider"></div>
+    <span class="system-name">CAPEYE</span>
+  </div>
+    <nav class="nav">
+    <a href="./index.html"><i class="fas fa-th-large"></i> Dashboard</a>
+    <a href="./inventory.html"><i class="fas fa-car"></i> Inventory</a>
+    <a href="./workflow.html"><i class="fas fa-tasks"></i> Workflow</a>
+    <a href="./keys.html"><i class="fas fa-key"></i> Keys</a>
+    <a href="./alerts.html"><i class="fas fa-bell"></i> Alerts</a>
+    <a href="./marketing.html"><i class="fas fa-chart-line"></i> Marketing</a>
+    <a href="./team.html"><i class="fas fa-users"></i> Team</a>
+    <a href="./admin.html"><i class="fas fa-cog"></i> Admin</a>
+    <a href="./import.html" class="active"><i class="fas fa-file-upload"></i> Import</a>
+  </nav>
+  <div style="display:flex;align-items:center;gap:10px">
+    <span id="userBadge" class="user-badge">AUTO CAPITAL</span>
+    <button class="btn-sm" onclick="doLogout()"><i class="fas fa-sign-out-alt"></i></button>
+  </div>
+</header>
+
+<main class="main">
+  <div class="page-title">
+    <h1><i class="fas fa-file-upload" style="color:var(--accent);margin-right:10px"></i>Stock Import</h1>
+    <p>Smart merge — new vehicles are added, existing are updated, missing vehicles are flagged for review</p>
+  </div>
+
+  <!-- DROP ZONE -->
+  <div class="drop-zone" id="dropZone" ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" ondrop="handleDrop(event)" onclick="document.getElementById('csvInput').click()">
+    <div class="drop-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+    <div class="drop-title">Drop your ClickDealer CSV here</div>
+    <div class="drop-sub">Or click to browse · Supports standard ClickDealer export format</div>
+    <button class="btn btn-primary" onclick="event.stopPropagation();document.getElementById('csvInput').click()"><i class="fas fa-folder-open"></i> Choose File</button>
+    <input type="file" id="csvInput" accept=".csv" style="display:none" onchange="handleFile(this)">
+  </div>
+
+  <!-- PREVIEW (hidden until CSV loaded) -->
+  <div id="previewArea" style="display:none">
+
+    <!-- SUMMARY CARDS -->
+    <div class="summary-row">
+      <div class="sum-card" style="--c:var(--green);background:rgba(34,197,94,.04)">
+        <div class="sum-val" id="sNew" style="color:var(--green)">0</div>
+        <div class="sum-label">✦ New Vehicles</div>
+      </div>
+      <div class="sum-card" style="--c:var(--accent);background:rgba(232,184,75,.04)">
+        <div class="sum-val" id="sUpdate" style="color:var(--accent)">0</div>
+        <div class="sum-label">↻ Updated</div>
+      </div>
+      <div class="sum-card" style="--c:var(--muted);background:rgba(100,116,139,.04)">
+        <div class="sum-val" id="sUnchanged" style="color:var(--muted)">0</div>
+        <div class="sum-label">— Unchanged</div>
+      </div>
+      <div class="sum-card" style="--c:var(--red);background:rgba(239,68,68,.04)">
+        <div class="sum-val" id="sFlagged" style="color:var(--red)">0</div>
+        <div class="sum-label">⚑ Not in CSV</div>
+      </div>
+    </div>
+
+    <!-- FLAGGED MISSING -->
+    <div class="flag-section" id="flagSection" style="display:none">
+      <div class="flag-title"><i class="fas fa-exclamation-triangle"></i> Vehicles in system but NOT in new CSV</div>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:14px">These vehicles won't be changed. Review them — they may have been sold, or just missing from this export.</p>
+      <div style="overflow-x:auto"><table class="ac-table" id="flagTable"></table></div>
+    </div>
+
+    <!-- CHANGES TABLE -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Import Preview — <span id="previewFilename" style="color:var(--accent2);font-weight:400"></span></span>
+        <div style="display:flex;gap:8px;align-items:center">
+          <div style="display:flex;gap:6px">
+            <span class="badge b-new" style="padding:4px 10px">✦ New</span>
+            <span class="badge b-update" style="padding:4px 10px">↻ Updated</span>
+            <span class="badge b-same" style="padding:4px 10px">— Same</span>
+          </div>
+          <button class="btn btn-ghost" onclick="cancelImport()"><i class="fas fa-times"></i> Cancel</button>
+          <button class="btn btn-accent" id="importBtn" onclick="doImport()"><i class="fas fa-check"></i> Apply Import</button>
+        </div>
+      </div>
+      <div style="overflow-x:auto;max-height:480px;overflow-y:auto">
+        <table class="ac-table" id="previewTable">
+          <thead>
+            <tr>
+              <th>Status</th><th>Reg</th><th>Stock No</th><th>Make / Model</th>
+              <th>Colour</th><th>Fuel</th><th>Mileage</th><th>Price</th><th>Location</th><th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="previewBody"></tbody>
+        </table>
+      </div>
+      <div style="padding:12px 16px;border-top:1px solid var(--border);font-size:12px;color:var(--muted)" id="previewFooter"></div>
+    </div>
+
+  </div><!-- end previewArea -->
+
+  <!-- HELP -->
+  <div class="card" style="margin-top:8px">
+    <div class="card-header"><span class="card-title">📋 How Smart Merge Works</span></div>
+    <div style="padding:20px;display:grid;grid-template-columns:repeat(4,1fr);gap:16px;font-size:13px">
+      <div><div style="font-size:20px;margin-bottom:6px">✦</div><div style="font-weight:700;color:var(--green);margin-bottom:4px">New Vehicle</div><div style="color:var(--muted)">Stock number not seen before — added fresh to the system</div></div>
+      <div><div style="font-size:20px;margin-bottom:6px">↻</div><div style="font-weight:700;color:var(--accent);margin-bottom:4px">Updated</div><div style="color:var(--muted)">Stock number exists but CSV has different data — fields updated</div></div>
+      <div><div style="font-size:20px;margin-bottom:6px">—</div><div style="font-weight:700;color:var(--muted);margin-bottom:4px">Unchanged</div><div style="color:var(--muted)">Exists and CSV data matches — no changes made</div></div>
+      <div><div style="font-size:20px;margin-bottom:6px">⚑</div><div style="font-weight:700;color:var(--red);margin-bottom:4px">Not in CSV</div><div style="color:var(--muted)">In system but missing from this export — flagged for your review, not deleted</div></div>
+    </div>
+  </div>
+
+</main>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getFirestore, collection, getDocs, doc, setDoc, updateDoc,
+         serverTimestamp, writeBatch } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const app=initializeApp(FIREBASE_CONFIG),auth=getAuth(app),db=getFirestore(app);
+window.doLogout=()=>signOut(auth).then(()=>location.href='./login.html');
+
+let existingVehicles={}, csvVehicles=[], mergeResult=null;
+
+onAuthStateChanged(auth, user=>{
+  if(!user){location.href='./login.html';return;}
+  document.getElementById('userBadge').textContent=user.email.split('@')[0].toUpperCase();
+  loadExisting();
+});
+
+async function loadExisting(){
+  const snap=await getDocs(collection(db,'vehicles'));
+  existingVehicles={};
+  if(snap.docs.length){
+    snap.docs.forEach(d=>{ existingVehicles[d.id]={id:d.id,...d.data()}; });
+  } else {
+    // fallback to seed data
+    AC_VEHICLES.forEach(v=>{ existingVehicles[v.stockNo]=v; });
+  }
+}
+
+// ── CSV FIELD MAP (ClickDealer standard) ─────────────────────────
+const FIELD_MAP={
+  stockNo:    ['Stock Number','Stock No','StockNo','stockNo','stock_no'],
+  registration:['Registration','Reg','VRN','registration'],
+  make:       ['Make','Manufacturer','make'],
+  model:      ['Model','model'],
+  variant:    ['Variant','Derivative','variant'],
+  colour:     ['Colour','Color','colour','color'],
+  fuel:       ['Fuel Type','Fuel','fuel','fuelType'],
+  gearbox:    ['Gearbox','Transmission','gearbox'],
+  mileage:    ['Mileage','Miles','mileage'],
+  price:      ['Price','Retail Price','Sale Price','price'],
+  mot:        ['MOT','MOT Expiry','mot'],
+  location:   ['Location','Site','location'],
+  status:     ['Status','Vehicle Status','status'],
+  regDate:    ['Reg Date','Registration Date','Year','regDate'],
+  vin:        ['VIN','Chassis Number','vin'],
+  engineSize: ['Engine Size','CC','engineSize'],
+  doors:      ['Doors','doors'],
+  seats:      ['Seats','seats'],
+  bodyStyle:  ['Body Style','Body','bodyStyle'],
+  description:['Description','Comments','description'],
+};
+
+function getField(row, fieldDefs){
+  for(const key of fieldDefs){
+    if(row[key]!==undefined&&row[key]!=='') return row[key];
+  }
+  return '';
+}
+
+function parseCSV(text){
+  const lines=text.trim().split('\n');if(lines.length<2)return[];
+  // Handle quoted fields
+  function parseLine(line){
+    const cols=[];let cur='',inQ=false;
+    for(let i=0;i<line.length;i++){
+      const c=line[i];
+      if(c==='"'){inQ=!inQ;}
+      else if(c===','&&!inQ){cols.push(cur.trim());cur='';}
+      else cur+=c;
+    }
+    cols.push(cur.trim());return cols;
+  }
+  const headers=parseLine(lines[0]).map(h=>h.replace(/^"|"$/g,'').trim());
+  return lines.slice(1).filter(l=>l.trim()).map(line=>{
+    const vals=parseLine(line);
+    const obj={};
+    headers.forEach((h,i)=>{ obj[h]=(vals[i]||'').replace(/^"|"$/g,'').trim(); });
+    return obj;
+  });
+}
+
+function mapRow(row){
+  const v={};
+  for(const [field,aliases] of Object.entries(FIELD_MAP)){
+    v[field]=getField(row,aliases);
+  }
+  // Clean up numerics
+  v.mileage=parseInt((v.mileage||'0').replace(/[^0-9]/g,''))||0;
+  v.price=parseFloat((v.price||'0').replace(/[^0-9.]/g,''))||0;
+  return v;
+}
+
+function diffVehicle(existing, incoming){
+  const changed=[];
+  const fields=['registration','make','model','colour','fuel','gearbox','mileage','price','mot','location','status','variant','vin'];
+  for(const f of fields){
+    const a=String(existing[f]||'').trim();
+    const b=String(incoming[f]||'').trim();
+    if(a&&b&&a!==b) changed.push({field:f,from:a,to:b});
+  }
+  return changed;
+}
+
+function computeMerge(){
+  const csvByStock={};
+  csvVehicles.forEach(v=>{ if(v.stockNo) csvByStock[v.stockNo]=v; });
+
+  const result={newVehicles:[],updated:[],unchanged:[],flagged:[]};
+
+  // Check each CSV vehicle against existing
+  for(const [stockNo,csvV] of Object.entries(csvByStock)){
+    const existing=existingVehicles[stockNo];
+    if(!existing){
+      result.newVehicles.push(csvV);
+    } else {
+      const changes=diffVehicle(existing,csvV);
+      if(changes.length>0) result.updated.push({vehicle:csvV,changes,existing});
+      else result.unchanged.push(csvV);
+    }
+  }
+
+  // Check each existing vehicle against CSV
+  for(const [stockNo,existing] of Object.entries(existingVehicles)){
+    if(!csvByStock[stockNo]) result.flagged.push(existing);
+  }
+
+  return result;
+}
+
+window.handleDrop=function(e){
+  e.preventDefault();document.getElementById('dropZone').classList.remove('drag-over');
+  const f=e.dataTransfer.files[0];
+  if(f&&f.name.endsWith('.csv'))processFile(f);else showToast('Please drop a CSV file','#f97316');
+};
+window.handleFile=function(inp){if(inp.files&&inp.files[0])processFile(inp.files[0]);};
+
+function processFile(file){
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const rows=parseCSV(e.target.result);
+    csvVehicles=rows.map(mapRow).filter(v=>v.stockNo||v.registration);
+    if(!csvVehicles.length){showToast('No vehicles found in CSV — check the file format','#f97316');return;}
+    mergeResult=computeMerge();
+    showPreview(file.name);
+  };
+  reader.readAsText(file);
+}
+
+function showPreview(filename){
+  const {newVehicles,updated,unchanged,flagged}=mergeResult;
+  document.getElementById('sNew').textContent=newVehicles.length;
+  document.getElementById('sUpdate').textContent=updated.length;
+  document.getElementById('sUnchanged').textContent=unchanged.length;
+  document.getElementById('sFlagged').textContent=flagged.length;
+  document.getElementById('previewFilename').textContent=filename;
+
+  // Flagged section
+  if(flagged.length){
+    document.getElementById('flagSection').style.display='block';
+    document.getElementById('flagTable').innerHTML=`
+      <thead><tr><th>Reg</th><th>Stock No</th><th>Make / Model</th><th>Location</th><th>Status</th><th>Note</th></tr></thead>
+      <tbody>${flagged.map(v=>`<tr>
+        <td><span class="reg-plate">${v.registration||'—'}</span></td>
+        <td style="color:var(--accent2);font-weight:700">${v.stockNo||v.id||'—'}</td>
+        <td>${v.make||''} ${v.model||''}</td>
+        <td style="font-size:11px;color:var(--muted)">${v.location||'—'}</td>
+        <td><span class="badge b-flag">${v.status||'—'}</span></td>
+        <td style="font-size:11px;color:var(--red)">Not in new CSV — review required</td>
+      </tr>`).join('')}</tbody>`;
+  } else {
+    document.getElementById('flagSection').style.display='none';
+  }
+
+  // Preview body
+  const allRows=[
+    ...newVehicles.map(v=>({v,type:'new',changes:[]})),
+    ...updated.map(({vehicle,changes})=>({v:vehicle,type:'update',changes})),
+    ...unchanged.map(v=>({v,type:'same',changes:[]}))
+  ];
+
+  document.getElementById('previewBody').innerHTML=allRows.map(({v,type,changes})=>{
+    const badge=type==='new'?'<span class="badge b-new">✦ New</span>':type==='update'?'<span class="badge b-update">↻ Updated</span>':'<span class="badge b-same">— Same</span>';
+    const changesHtml=changes.length?`<div style="font-size:10px;color:var(--accent);margin-top:3px">${changes.map(c=>c.field+': '+c.to).join(' · ')}</div>`:'';
+    return `<tr style="${type==='same'?'opacity:.5':''}">
+      <td>${badge}</td>
+      <td><span class="reg-plate">${v.registration||'—'}</span></td>
+      <td style="color:var(--accent2);font-weight:700;font-size:11px">${v.stockNo||'—'}</td>
+      <td>${v.make||''} ${v.model||''}<div style="font-size:10px;color:var(--muted)">${v.variant||''}</div>${changesHtml}</td>
+      <td>${v.colour||'—'}</td>
+      <td>${v.fuel||'—'}</td>
+      <td>${v.mileage?v.mileage.toLocaleString()+'mi':'—'}</td>
+      <td>${v.price?'£'+v.price.toLocaleString():'—'}</td>
+      <td style="font-size:11px">${v.location||'—'}</td>
+      <td><span style="font-size:10px;color:var(--muted)">${v.status||'—'}</span></td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('previewFooter').innerHTML=`Showing ${allRows.length} vehicles from CSV · ${newVehicles.length} new · ${updated.length} updates · ${unchanged.length} unchanged · <strong style="color:var(--red)">${flagged.length} flagged</strong>`;
+  document.getElementById('previewArea').style.display='block';
+  document.getElementById('previewArea').scrollIntoView({behavior:'smooth'});
+}
+
+window.cancelImport=function(){
+  csvVehicles=[];mergeResult=null;
+  document.getElementById('previewArea').style.display='none';
+  document.getElementById('csvInput').value='';
+};
+
+window.doImport=async function(){
+  if(!mergeResult)return;
+  const btn=document.getElementById('importBtn');
+  btn.innerHTML='<span class="spinner"></span> Importing...';btn.disabled=true;
+
+  const {newVehicles,updated}=mergeResult;
+  const batch=writeBatch(db);
+  let count=0;
+
+  newVehicles.forEach(v=>{
+    const id=v.stockNo||v.registration.replace(/\s+/g,'');
+    batch.set(doc(db,'vehicles',id),{...v,stockNo:id,_createdAt:serverTimestamp(),_updatedAt:serverTimestamp()});
+    count++;
+  });
+  updated.forEach(({vehicle})=>{
+    const id=vehicle.stockNo;
+    batch.set(doc(db,'vehicles',id),{...vehicle,_updatedAt:serverTimestamp()},{merge:true});
+    count++;
+  });
+
+  // Flag missing vehicles
+  const {flagged}=mergeResult;
+  flagged.forEach(v=>{
+    const id=v.stockNo||v.id;
+    if(id) batch.update(doc(db,'vehicles',id),{_flaggedMissing:true,_flaggedAt:serverTimestamp()});
+  });
+
+  try{
+    await batch.commit();
+    showToast(`✓ Import complete — ${newVehicles.length} added, ${updated.length} updated, ${flagged.length} flagged`);
+    btn.innerHTML='<i class="fas fa-check"></i> Done!';
+    await loadExisting();
+    setTimeout(()=>cancelImport(),2000);
+  }catch(e){
+    showToast('Import failed: '+e.message,'#ef4444');
+    btn.innerHTML='<i class="fas fa-check"></i> Apply Import';btn.disabled=false;
+  }
+};
+
+function showToast(msg,bg='#22c55e'){document.querySelectorAll('.toast').forEach(t=>t.remove());const t=document.createElement('div');t.className='toast';t.style.cssText=`background:${bg};color:${bg==='#22c55e'?'#000':'#fff'}`;t.innerHTML=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),5000);}
+</script>
+</body>
+</html>
