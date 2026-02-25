@@ -67,16 +67,14 @@ body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--text);min-
     <div class="logo-divider"></div>
     <span class="system-name">CAPEYE</span>
   </div>
-    <nav class="nav">
+  <nav class="nav">
     <a href="./index.html"><i class="fas fa-th-large"></i> Dashboard</a>
     <a href="./inventory.html"><i class="fas fa-car"></i> Inventory</a>
     <a href="./workflow.html"><i class="fas fa-tasks"></i> Workflow</a>
-    <a href="./keys.html"><i class="fas fa-key"></i> Keys</a>
     <a href="./alerts.html"><i class="fas fa-bell"></i> Alerts</a>
     <a href="./marketing.html" class="active"><i class="fas fa-chart-line"></i> Marketing</a>
     <a href="./team.html"><i class="fas fa-users"></i> Team</a>
     <a href="./admin.html"><i class="fas fa-cog"></i> Admin</a>
-    <a href="./import.html"><i class="fas fa-file-upload"></i> Import</a>
   </nav>
   <div style="display:flex;align-items:center;gap:10px">
     <span id="userBadge" class="user-badge">AUTO CAPITAL</span>
@@ -155,149 +153,15 @@ body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--text);min-
     </div>
   </div>
 </main>
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { getFirestore, collection, addDoc, getDocs, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-const app=initializeApp(FIREBASE_CONFIG),auth=getAuth(app),db=getFirestore(app);
-let activePlatform='all',parsedRows=[],allImports=[],charts={};
-window.doLogout=()=>signOut(auth).then(()=>location.href='./login.html');
 
-const PLATFORMS={
-  google:{name:'Google Ads',color:'#4285f4'},meta:{name:'Meta/Facebook',color:'#1877f2'},
-  autotrader:{name:'Auto Trader',color:'#ff5900'},ebay:{name:'eBay Motors',color:'#e53238'},cargurus:{name:'CarGurus',color:'#00a651'}
-};
-const COL={
-  google:{spend:'Cost',clicks:'Clicks',impressions:'Impressions',ctr:'CTR',cpc:'Avg. CPC',date:'Day',campaign:'Campaign'},
-  meta:{spend:'Amount spent (GBP)',clicks:'Link clicks',impressions:'Impressions',ctr:'CTR (link click-through rate)',cpc:'CPC (cost per link click)',date:'Day',campaign:'Campaign name'},
-  autotrader:{spend:'Spend',clicks:'Clicks',impressions:'Impressions',ctr:'CTR',cpc:'CPC',date:'Date',campaign:'Advert'},
-  ebay:{spend:'Total Cost',clicks:'Clicks',impressions:'Impressions',ctr:'Click Through Rate',cpc:'Cost Per Click',date:'Date',campaign:'Campaign Name'},
-  cargurus:{spend:'Spend',clicks:'Clicks',impressions:'Impressions',ctr:'CTR',cpc:'CPC',date:'Date',campaign:'Listing'}
-};
-
-onAuthStateChanged(auth,user=>{
-  if(!user){location.href='./login.html';return;}
-  document.getElementById('userBadge').textContent=user.email.split('@')[0].toUpperCase();
-  loadAll();
+<script>
+// ── No login required — review mode ─────────────────────────────
+document.addEventListener('DOMContentLoaded', function() {
+  var b = document.getElementById('userBadge');
+  if (b) b.textContent = 'AUTO CAPITAL';
 });
-
-window.setPlatform=function(p){
-  activePlatform=p;
-  document.querySelectorAll('.ptab').forEach(t=>t.classList.remove('active'));
-  document.getElementById('pt_'+p).classList.add('active');
-  buildKPIs();buildCharts();buildHistory();
-};
-
-function parseCSV(text){
-  const lines=text.trim().split('\n');if(lines.length<2)return[];
-  const headers=lines[0].split(',').map(h=>h.replace(/^"|"$/g,'').trim());
-  return lines.slice(1).map(line=>{
-    const vals=[];let cur='',inQ=false;
-    for(const c of line){if(c==='"'){inQ=!inQ;}else if(c===','&&!inQ){vals.push(cur);cur='';}else cur+=c;}
-    vals.push(cur);
-    const obj={};headers.forEach((h,i)=>{obj[h]=(vals[i]||'').replace(/^"|"$/g,'').trim();});
-    return obj;
-  }).filter(r=>Object.values(r).some(v=>v));
-}
-
-function normalise(row,platform){
-  const m=COL[platform]||{};
-  const get=k=>m[k]&&row[m[k]]!==undefined?row[m[k]]:'';
-  const num=v=>parseFloat((v||'0').replace(/[£$%,\s]/g,''))||0;
-  return{date:get('date'),campaign:get('campaign')||'—',spend:num(get('spend')),clicks:num(get('clicks')),impressions:num(get('impressions')),ctr:num(get('ctr')),cpc:num(get('cpc')),platform};
-}
-
-window.handleDrop=function(e){
-  e.preventDefault();document.getElementById('dropZone').classList.remove('drag-over');
-  const f=e.dataTransfer.files[0];
-  if(f&&f.name.endsWith('.csv'))processFile(f);else showToast('Please drop a CSV file','#f97316');
-};
-window.handleFile=function(inp){if(inp.files&&inp.files[0])processFile(inp.files[0]);};
-
-function processFile(file){
-  const platform=document.getElementById('platformSelect').value;
-  if(!platform){showToast('Please select a platform first','#f97316');return;}
-  const reader=new FileReader();
-  reader.onload=e=>{
-    const rows=parseCSV(e.target.result);
-    parsedRows=rows.map(r=>normalise(r,platform));
-    showPreview(parsedRows,platform,file.name);
-  };reader.readAsText(file);
-}
-
-function showPreview(rows,platform,filename){
-  if(!rows.length){showToast('No data found in CSV','#f97316');return;}
-  const spend=rows.reduce((s,r)=>s+r.spend,0),clicks=rows.reduce((s,r)=>s+r.clicks,0);
-  document.getElementById('previewInfo').innerHTML=`<strong style="color:var(--text)">${filename}</strong> · ${rows.length} rows · Platform: <strong style="color:var(--accent2)">${PLATFORMS[platform]?.name||platform}</strong> · Spend: <strong style="color:var(--accent)">£${spend.toFixed(2)}</strong> · Clicks: <strong>${clicks.toLocaleString()}</strong>`;
-  document.getElementById('previewTable').innerHTML=`<thead><tr><th>Date</th><th>Campaign</th><th>Spend</th><th>Clicks</th><th>Impressions</th><th>CTR</th><th>CPC</th></tr></thead><tbody>${rows.slice(0,20).map(r=>`<tr><td>${r.date}</td><td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.campaign}</td><td>£${r.spend.toFixed(2)}</td><td>${r.clicks.toLocaleString()}</td><td>${r.impressions.toLocaleString()}</td><td>${r.ctr.toFixed(2)}%</td><td>£${r.cpc.toFixed(2)}</td></tr>`).join('')}${rows.length>20?`<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:8px">...and ${rows.length-20} more rows</td></tr>`:''}</tbody>`;
-  document.getElementById('previewSection').style.display='block';
-  document.getElementById('previewSection').scrollIntoView({behavior:'smooth'});
-}
-
-window.cancelImport=function(){parsedRows=[];document.getElementById('previewSection').style.display='none';document.getElementById('csvFile').value='';};
-
-window.confirmImport=async function(){
-  if(!parsedRows.length)return;
-  const platform=document.getElementById('platformSelect').value;
-  const spend=parsedRows.reduce((s,r)=>s+r.spend,0),clicks=parsedRows.reduce((s,r)=>s+r.clicks,0),impressions=parsedRows.reduce((s,r)=>s+r.impressions,0);
-  const dates=parsedRows.map(r=>r.date).filter(Boolean).sort();
-  const dateRange=dates.length?dates[0]+' — '+dates[dates.length-1]:'Unknown';
-  try{
-    await addDoc(collection(db,'marketing'),{platform,rows:parsedRows,dateRange,summary:{totalSpend:spend,totalClicks:clicks,totalImpressions:impressions,rowCount:parsedRows.length},importedAt:serverTimestamp()});
-    showToast('Imported '+parsedRows.length+' rows for '+(PLATFORMS[platform]?.name||platform));
-    cancelImport();loadAll();
-  }catch(e){showToast('Import failed: '+e.message,'#ef4444');}
-};
-
-async function loadAll(){
-  const snap=await getDocs(query(collection(db,'marketing'),orderBy('importedAt','desc')));
-  allImports=snap.docs.map(d=>({id:d.id,...d.data()}));
-  buildKPIs();buildCharts();buildHistory();
-}
-
-function filtered(){return activePlatform==='all'?allImports:allImports.filter(i=>i.platform===activePlatform);}
-
-function buildKPIs(){
-  const rows=filtered().flatMap(i=>i.rows||[]);
-  const spend=rows.reduce((s,r)=>s+(r.spend||0),0),clicks=rows.reduce((s,r)=>s+(r.clicks||0),0),impressions=rows.reduce((s,r)=>s+(r.impressions||0),0);
-  document.getElementById('kSpend').textContent='£'+spend.toLocaleString('en-GB',{maximumFractionDigits:0});
-  document.getElementById('kClicks').textContent=clicks.toLocaleString();
-  document.getElementById('kImpressions').textContent=impressions>=1000?(impressions/1000).toFixed(1)+'K':impressions.toString();
-  document.getElementById('kCtr').textContent=(impressions>0?(clicks/impressions*100):0).toFixed(2)+'%';
-  document.getElementById('kCpc').textContent='£'+(clicks>0?(spend/clicks):0).toFixed(2);
-  document.getElementById('kSpendSub').textContent=activePlatform==='all'?filtered().length+' imports':PLATFORMS[activePlatform]?.name||activePlatform;
-}
-
-function buildCharts(){
-  const pSpend={},pClicks={},pImp={};
-  allImports.forEach(i=>{(i.rows||[]).forEach(r=>{pSpend[i.platform]=(pSpend[i.platform]||0)+(r.spend||0);pClicks[i.platform]=(pClicks[i.platform]||0)+(r.clicks||0);pImp[i.platform]=(pImp[i.platform]||0)+(r.impressions||0);});});
-  const pKeys=Object.keys(pSpend),pNames=pKeys.map(k=>PLATFORMS[k]?.name||k),pColors=pKeys.map(k=>PLATFORMS[k]?.color||'#64748b');
-  mkChart('platformChart','doughnut',pNames,[{data:pKeys.map(k=>pSpend[k]),backgroundColor:pColors,borderWidth:0}],{cutout:'60%',plugins:{legend:{position:'bottom',labels:{color:'#94a3b8',padding:10,font:{size:11}}}}});
-  mkChart('clicksChart','bar',pNames,[{data:pKeys.map(k=>pClicks[k]),backgroundColor:pColors,borderRadius:6}],{plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#64748b'},grid:{display:false}},y:{ticks:{color:'#64748b'},grid:{color:'rgba(255,255,255,.05)'}}}});
-  mkChart('ctrChart','bar',pNames,[{data:pKeys.map(k=>pImp[k]>0?(pClicks[k]/pImp[k]*100):0),backgroundColor:pColors,borderRadius:6}],{plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#64748b'},grid:{display:false}},y:{ticks:{color:'#64748b',callback:v=>v.toFixed(2)+'%'},grid:{color:'rgba(255,255,255,.05)'}}}});
-  const dateSpend={};filtered().forEach(i=>(i.rows||[]).forEach(r=>{if(r.date)dateSpend[r.date]=(dateSpend[r.date]||0)+(r.spend||0);}));
-  const sd=Object.keys(dateSpend).sort();
-  mkChart('spendChart','line',sd,[{label:'Spend £',data:sd.map(d=>dateSpend[d]),borderColor:'#3b7ff5',backgroundColor:'rgba(59,127,245,.1)',fill:true,tension:.4,pointRadius:2}],{scales:{x:{ticks:{color:'#64748b',maxTicksLimit:8},grid:{color:'rgba(255,255,255,.05)'}},y:{ticks:{color:'#64748b',callback:v=>'£'+v},grid:{color:'rgba(255,255,255,.05)'}}}});
-}
-
-function mkChart(id,type,labels,datasets,options){
-  if(charts[id])charts[id].destroy();
-  const ctx=document.getElementById(id);if(!ctx)return;
-  charts[id]=new Chart(ctx,{type,data:{labels,datasets},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},...options}});
-}
-
-function buildHistory(){
-  const imports=filtered();
-  document.getElementById('importCount').textContent=imports.length+' imports';
-  const icons={google:'🔍',meta:'📘',autotrader:'🚗',ebay:'🛒',cargurus:'🔎'};
-  document.getElementById('historyBody').innerHTML=imports.map(i=>{
-    const s=i.summary||{},ts=i.importedAt?.toDate?i.importedAt.toDate():new Date();
-    return `<tr><td><strong>${icons[i.platform]||'📊'} ${PLATFORMS[i.platform]?.name||i.platform}</strong></td><td style="color:var(--muted);font-size:12px">${ts.toLocaleString('en-GB')}</td><td>${(s.rowCount||0).toLocaleString()}</td><td style="font-size:12px;color:var(--muted)">${i.dateRange||'—'}</td><td style="font-weight:700;color:var(--accent)">£${(s.totalSpend||0).toLocaleString('en-GB',{maximumFractionDigits:2})}</td><td>${(s.totalClicks||0).toLocaleString()}</td><td>${(s.totalImpressions||0).toLocaleString()}</td></tr>`;
-  }).join('')||'<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--muted)">No imports yet — upload a CSV above</td></tr>';
-}
-
-function showToast(msg,bg='#22c55e'){document.querySelectorAll('.toast').forEach(t=>t.remove());const t=document.createElement('div');t.className='toast';t.style.cssText=`background:${bg};color:${bg==='#22c55e'?'#000':'#fff'}`;t.innerHTML=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),3500);}
+function doLogout() { window.location.href = './login.html'; }
 </script>
 </body>
 </html>

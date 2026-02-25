@@ -102,20 +102,18 @@ body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--text);min-
     <div class="logo-divider"></div>
     <span class="system-name">CAPEYE</span>
   </div>
-    <nav class="nav">
+  <nav class="nav">
     <a href="./index.html"><i class="fas fa-th-large"></i> Dashboard</a>
     <a href="./inventory.html"><i class="fas fa-car"></i> Inventory</a>
     <a href="./workflow.html"><i class="fas fa-tasks"></i> Workflow</a>
-    <a href="./keys.html"><i class="fas fa-key"></i> Keys</a>
     <a href="./alerts.html"><i class="fas fa-bell"></i> Alerts</a>
     <a href="./marketing.html"><i class="fas fa-chart-line"></i> Marketing</a>
     <a href="./team.html"><i class="fas fa-users"></i> Team</a>
     <a href="./admin.html" class="active"><i class="fas fa-cog"></i> Admin</a>
-    <a href="./import.html"><i class="fas fa-file-upload"></i> Import</a>
   </nav>
   <div class="user-info">
     <span id="userEmail" class="user-badge">ADMIN</span>
-    <button class="btn-sm btn-ghost" onclick="CE.logoutUser().then(()=>location.href='./login.html')"><i class="fas fa-sign-out-alt"></i></button>
+    <button class="btn-sm btn-ghost" onclick="doLogout()"><i class="fas fa-sign-out-alt"></i></button>
   </div>
 </header>
 
@@ -289,7 +287,7 @@ body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--text);min-
         <div class="card-header"><span class="card-title">🔑 Session</span></div>
         <div class="card-body">
           <div id="sessionInfo" style="font-size:13px;color:var(--muted);line-height:2"></div>
-          <button class="btn btn-danger" onclick="CE.logoutUser().then(()=>location.href='./login.html')" style="margin-top:14px"><i class="fas fa-sign-out-alt"></i> Sign Out</button>
+          <button class="btn btn-danger" onclick="doLogout()" style="margin-top:14px"><i class="fas fa-sign-out-alt"></i> Sign Out</button>
         </div>
       </div>
     </div>
@@ -297,344 +295,15 @@ body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--text);min-
 
 </main>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { getFirestore, collection, doc, getDoc, getDocs, setDoc, deleteDoc,
-         addDoc, serverTimestamp, writeBatch, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-const app  = initializeApp(FIREBASE_CONFIG);
-const auth = getAuth(app);
-const db   = getFirestore(app);
 
-let staffList = [], deptList = [], lists = {}, currentAvatar = null;
-let activeTab = 'staff';
-
-// ── Auth guard ──
-onAuthStateChanged(auth, user => {
-  if (!user) { window.location.href = './login.html'; return; }
-  document.getElementById('userEmail').textContent = user.email.split('@')[0].toUpperCase();
-  initAdmin();
+<script>
+// ── No login required — review mode ─────────────────────────────
+document.addEventListener('DOMContentLoaded', function() {
+  var b = document.getElementById('userBadge');
+  if (b) b.textContent = 'AUTO CAPITAL';
 });
-
-async function initAdmin() {
-  await Promise.all([loadStaff(), loadDepts(), loadLists()]);
-  renderDeptOptions();
-  renderStaff();
-  renderDepts();
-  renderAllLists();
-  renderWorkflowStages();
-  loadStats();
-  loadSessionInfo();
-}
-
-// ── TAB ──
-window.setTab = function(tab) {
-  activeTab = tab;
-  document.querySelectorAll('.admin-tab').forEach((el,i) => el.classList.toggle('active', el.textContent.toLowerCase().includes(tab.toLowerCase())||el.onclick?.toString().includes(tab)));
-  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-  const p = document.getElementById('panel-'+tab);
-  if(p) p.classList.add('active');
-};
-
-// ── STAFF ──
-async function loadStaff() {
-  const snap = await getDocs(collection(db,'staff'));
-  staffList = snap.docs.length ? snap.docs.map(d=>({id:d.id,...d.data()})) : AC_STAFF.map(s=>({...s,id:s.name.replace(/\s+/g,'_')}));
-}
-
-window.renderStaff = function() {
-  const search = (document.getElementById('staffSearch').value||'').toLowerCase();
-  const filtered = staffList.filter(s => !search || s.name?.toLowerCase().includes(search) || s.role?.toLowerCase().includes(search) || s.dept?.toLowerCase().includes(search));
-  document.getElementById('staffCount').textContent = staffList.length;
-  const deptColors = {};
-  deptList.forEach(d => deptColors[d.name] = d.color||'#64748b');
-
-  document.getElementById('staffGrid').innerHTML = filtered.map(s => {
-    const initials = (s.name||'?').split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase();
-    const deptColor = deptColors[s.dept]||'#64748b';
-    return `<div class="staff-card">
-      <div class="staff-card-top">
-        <div class="staff-avatar" style="background:${deptColor}22;color:${deptColor}">
-          ${s.photoUrl ? `<img src="${s.photoUrl}">` : initials}
-        </div>
-        <div style="flex:1;min-width:0">
-          <div class="staff-name">${s.name||'—'}</div>
-          <div class="staff-role">${s.role||'—'}</div>
-          <div class="staff-dept" style="background:${deptColor}22;color:${deptColor}">${s.dept||'—'}</div>
-          ${s.phone?`<div style="font-size:11px;color:var(--muted);margin-top:4px"><i class="fas fa-phone" style="font-size:9px"></i> ${s.phone}</div>`:''}
-        </div>
-      </div>
-      <div class="staff-card-actions">
-        <button class="btn" style="flex:1;padding:6px;font-size:11px;background:rgba(59,127,245,.1);color:var(--accent2);border:none;cursor:pointer;border-radius:6px" onclick="editStaff('${s.id}')"><i class="fas fa-edit"></i> Edit</button>
-        <button class="btn" style="padding:6px 10px;font-size:11px;background:rgba(239,68,68,.1);color:var(--red);border:1px solid rgba(239,68,68,.2);cursor:pointer;border-radius:6px" onclick="deleteStaff('${s.id}','${s.name}')"><i class="fas fa-trash"></i></button>
-      </div>
-    </div>`;
-  }).join('') || '<div style="color:var(--muted);font-size:14px;padding:20px">No staff found.</div>';
-};
-
-window.editStaff = function(id) {
-  const s = staffList.find(x=>x.id===id);
-  if(!s) return;
-  document.getElementById('editStaffId').value = id;
-  const nameParts = (s.name||'').split(' ');
-  document.getElementById('staffFirst').value = nameParts[0]||'';
-  document.getElementById('staffLast').value  = nameParts.slice(1).join(' ')||'';
-  document.getElementById('staffRole').value  = s.role||'';
-  document.getElementById('staffDept').value  = s.dept||'';
-  document.getElementById('staffPhone').value = s.phone||'';
-  document.getElementById('staffEmail').value = s.email||'';
-  document.getElementById('staffStart').value = s.startDate||'';
-  document.getElementById('staffEmergency').value = s.emergency||'';
-  document.getElementById('staffNotes').value = s.notes||'';
-  currentAvatar = s.photoUrl||null;
-  if(s.photoUrl){
-    document.getElementById('avatarWrap').innerHTML=`<img src="${s.photoUrl}" style="width:100%;height:100%;object-fit:cover;border-radius:50%"><input type="file" id="avatarFile" accept="image/*" onchange="previewAvatar(this)">`;
-  }
-  document.getElementById('staffFormTitle').textContent = 'Edit Staff Member';
-  document.getElementById('staffSaveLbl').textContent   = 'Save Changes';
-  document.getElementById('staffCancelBtn').style.display = '';
-  document.querySelector('#panel-staff .card').scrollIntoView({behavior:'smooth',block:'start'});
-};
-
-window.saveStaff = async function() {
-  const id    = document.getElementById('editStaffId').value;
-  const first = document.getElementById('staffFirst').value.trim();
-  const last  = document.getElementById('staffLast').value.trim();
-  if(!first){ showToast('Please enter a first name','#f97316'); return; }
-  const member = {
-    id: id || `${first}_${last}`.replace(/\s+/g,'_'),
-    name: `${first} ${last}`.trim(),
-    role: document.getElementById('staffRole').value.trim(),
-    dept: document.getElementById('staffDept').value,
-    phone: document.getElementById('staffPhone').value.trim(),
-    email: document.getElementById('staffEmail').value.trim(),
-    startDate: document.getElementById('staffStart').value,
-    emergency: document.getElementById('staffEmergency').value.trim(),
-    notes: document.getElementById('staffNotes').value.trim(),
-    photoUrl: currentAvatar || null
-  };
-  await setDoc(doc(db,'staff',member.id), {...member, _updatedAt: serverTimestamp()}, {merge:true});
-  const idx = staffList.findIndex(s=>s.id===member.id);
-  if(idx>=0) staffList[idx]=member; else staffList.push(member);
-  clearStaffForm(); renderStaff();
-  showToast(id ? 'Staff member updated ✓' : 'Staff member added ✓');
-};
-
-window.deleteStaff = async function(id, name) {
-  if(!confirm(`Delete ${name}? This cannot be undone.`)) return;
-  await deleteDoc(doc(db,'staff',id));
-  staffList = staffList.filter(s=>s.id!==id);
-  renderStaff(); showToast('Staff member removed');
-};
-
-window.clearStaffForm = function() {
-  document.getElementById('editStaffId').value='';
-  ['staffFirst','staffLast','staffRole','staffPhone','staffEmail','staffStart','staffEmergency','staffNotes'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('staffDept').selectedIndex=0;
-  currentAvatar=null;
-  document.getElementById('avatarWrap').innerHTML=`<i class="fas fa-camera" style="color:var(--muted);font-size:20px"></i><span style="font-size:10px;color:var(--muted);margin-top:4px">Photo</span><input type="file" id="avatarFile" accept="image/*" onchange="previewAvatar(this)">`;
-  document.getElementById('staffFormTitle').textContent='Add New Staff Member';
-  document.getElementById('staffSaveLbl').textContent='Add Staff Member';
-  document.getElementById('staffCancelBtn').style.display='none';
-};
-
-window.previewAvatar = function(input) {
-  if(!input.files||!input.files[0]) return;
-  const reader=new FileReader();
-  reader.onload=e=>{
-    currentAvatar=e.target.result;
-    document.getElementById('avatarWrap').innerHTML=`<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;border-radius:50%"><input type="file" id="avatarFile" accept="image/*" onchange="previewAvatar(this)">`;
-  };
-  reader.readAsDataURL(input.files[0]);
-};
-
-// ── DEPARTMENTS ──
-async function loadDepts() {
-  const snap = await getDocs(collection(db,'departments'));
-  deptList = snap.docs.length ? snap.docs.map(d=>({id:d.id,...d.data()})) : AC_DEPARTMENTS.map(d=>({...d,id:d.name.replace(/\s+/g,'_')}));
-}
-
-function renderDeptOptions() {
-  const sel = document.getElementById('staffDept');
-  sel.innerHTML = deptList.map(d=>`<option value="${d.name}">${d.icon||''} ${d.name}</option>`).join('');
-}
-
-window.renderDepts = function() {
-  document.getElementById('deptCount').textContent = deptList.length;
-  document.getElementById('deptGrid').innerHTML = deptList.map(d=>`
-    <div class="dept-card">
-      <div class="dept-icon-big" style="background:${d.color||'#64748b'}22;color:${d.color||'#64748b'}">${d.icon||'🏢'}</div>
-      <div style="flex:1">
-        <div style="font-weight:700;font-size:14px">${d.name}</div>
-        <div style="font-size:11px;color:var(--muted)">${staffList.filter(s=>s.dept===d.name).length} staff</div>
-      </div>
-      <div style="display:flex;gap:6px">
-        <button class="btn" style="padding:5px 10px;font-size:11px;background:rgba(59,127,245,.1);color:var(--accent2);border:none;cursor:pointer;border-radius:6px" onclick="editDept('${d.id}')"><i class="fas fa-edit"></i></button>
-        <button class="del-btn" onclick="deleteDept('${d.id}','${d.name}')"><i class="fas fa-trash"></i></button>
-      </div>
-    </div>`).join('');
-};
-
-window.editDept = function(id) {
-  const d=deptList.find(x=>x.id===id); if(!d) return;
-  document.getElementById('editDeptId').value=id;
-  document.getElementById('deptName').value=d.name;
-  document.getElementById('deptIcon').value=d.icon||'';
-  document.getElementById('deptColor').value=d.color||'#3b7ff5';
-  document.getElementById('deptFormTitle').textContent='Edit Department';
-  document.getElementById('deptSaveLbl').textContent='Save Changes';
-  document.getElementById('deptCancelBtn').style.display='';
-};
-window.saveDept = async function() {
-  const id   = document.getElementById('editDeptId').value;
-  const name = document.getElementById('deptName').value.trim();
-  if(!name){showToast('Enter a department name','#f97316');return;}
-  const dept = {id:id||name.replace(/\s+/g,'_'),name,icon:document.getElementById('deptIcon').value.trim(),color:document.getElementById('deptColor').value};
-  await setDoc(doc(db,'departments',dept.id),{...dept,_updatedAt:serverTimestamp()},{merge:true});
-  const idx=deptList.findIndex(d=>d.id===dept.id);
-  if(idx>=0)deptList[idx]=dept;else deptList.push(dept);
-  clearDeptForm(); renderDepts(); renderDeptOptions();
-  showToast(id?'Department updated ✓':'Department added ✓');
-};
-window.deleteDept = async function(id,name) {
-  if(!confirm(`Delete department "${name}"?`))return;
-  await deleteDoc(doc(db,'departments',id));
-  deptList=deptList.filter(d=>d.id!==id);
-  renderDepts(); renderDeptOptions(); showToast('Department removed');
-};
-window.clearDeptForm = function() {
-  document.getElementById('editDeptId').value='';
-  document.getElementById('deptName').value='';
-  document.getElementById('deptIcon').value='';
-  document.getElementById('deptColor').value='#3b7ff5';
-  document.getElementById('deptFormTitle').textContent='Add Department';
-  document.getElementById('deptSaveLbl').textContent='Add Department';
-  document.getElementById('deptCancelBtn').style.display='none';
-};
-
-// ── LISTS ──
-async function loadLists() {
-  const d = await getDoc(doc(db,'lists','main'));
-  lists = d.exists() ? d.data() : {faults:AC_FAULTS,repairs:AC_REPAIRS,parts:AC_PARTS,locations:AC_LOCATIONS};
-}
-async function saveListsToDb() {
-  await setDoc(doc(db,'lists','main'),{...lists,_updatedAt:serverTimestamp()},{merge:true});
-}
-
-function renderAllLists() {
-  renderList('locations','Locations',lists.locations||AC_LOCATIONS);
-  renderList('faults','Fault Types',lists.faults||AC_FAULTS);
-  renderList('repairs','Repair Types',lists.repairs||AC_REPAIRS);
-  renderList('parts','Parts List',lists.parts||AC_PARTS);
-}
-
-function renderList(key, title, items) {
-  const container = document.getElementById('list-'+key);
-  container.innerHTML = `
-    <div style="max-width:700px">
-      <div style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:800;margin-bottom:14px">${title} (${items.length})</div>
-      <div class="list-editor" id="le-${key}">
-        ${items.map((item,i)=>`
-        <div class="list-item" id="li-${key}-${i}">
-          <span style="flex:1">${item}</span>
-          <input style="flex:2;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:5px 10px;color:var(--text);font-size:12px;font-family:'Barlow',sans-serif;outline:none;margin:0 8px" value="${item}" onchange="updateListItem('${key}',${i},this.value)">
-          <button class="del-btn" onclick="removeListItem('${key}',${i})"><i class="fas fa-times"></i></button>
-        </div>`).join('')}
-      </div>
-      <div class="add-row">
-        <input class="add-input" id="add-${key}" placeholder="Add new ${title.toLowerCase().replace(' list','')} item...">
-        <button class="add-btn" onclick="addListItem('${key}')"><i class="fas fa-plus"></i> Add</button>
-      </div>
-    </div>`;
-}
-
-window.addListItem = async function(key) {
-  const input = document.getElementById('add-'+key);
-  const val = input.value.trim();
-  if(!val) return;
-  if(!lists[key]) lists[key]=[];
-  lists[key].push(val);
-  input.value='';
-  await saveListsToDb();
-  renderAllLists();
-  showToast('Item added ✓');
-};
-window.removeListItem = async function(key,idx) {
-  if(!confirm('Remove this item?')) return;
-  lists[key].splice(idx,1);
-  await saveListsToDb();
-  renderAllLists();
-  showToast('Item removed');
-};
-window.updateListItem = async function(key,idx,val) {
-  lists[key][idx]=val;
-  await saveListsToDb();
-  showToast('Updated ✓');
-};
-
-// ── WORKFLOW STAGES ──
-function renderWorkflowStages() {
-  document.getElementById('workflowStageList').innerHTML = AC_WORKFLOW_STAGES.map((s,i)=>`
-    <div style="display:flex;align-items:center;gap:14px;padding:12px 8px;border-bottom:1px solid var(--border);${i===AC_WORKFLOW_STAGES.length-1?'border-bottom:none':''}">
-      <div style="width:28px;height:28px;border-radius:50%;background:${s.color};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;flex-shrink:0">${s.id}</div>
-      <div style="flex:1">
-        <div style="font-weight:700">${s.name}</div>
-        <div style="font-size:12px;color:var(--muted)">${s.dept} → ${s.handoverTo||'Complete'}</div>
-      </div>
-      <div style="display:inline-flex;padding:3px 10px;border-radius:8px;font-size:11px;font-weight:700;background:${s.color}22;color:${s.color}">${s.dept}</div>
-    </div>`).join('');
-}
-
-// ── SYSTEM ──
-async function loadStats() {
-  const counts = await Promise.all([
-    getDocs(collection(db,'vehicles')),
-    getDocs(collection(db,'staff')),
-    getDocs(collection(db,'workflow')),
-    getDocs(collection(db,'alerts')),
-    getDocs(collection(db,'marketing'))
-  ]);
-  const [v,s,w,a,m]=counts.map(c=>c.size);
-  document.getElementById('statsPanel').innerHTML=`
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-      ${[['Vehicles',v,'fas fa-car','var(--accent2)'],['Staff',s,'fas fa-users','var(--green)'],['Workflow Records',w,'fas fa-tasks','var(--accent)'],['Alerts',a,'fas fa-bell','var(--orange)'],['Marketing Imports',m,'fas fa-chart-bar','#8b5cf6']].map(([label,count,icon,color])=>`
-      <div style="background:var(--bg3);border-radius:8px;padding:12px;text-align:center">
-        <i class="${icon}" style="color:${color};margin-bottom:6px;display:block"></i>
-        <div style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:800">${count}</div>
-        <div style="font-size:11px;color:var(--muted)">${label}</div>
-      </div>`).join('')}
-    </div>`;
-}
-function loadSessionInfo() {
-  const user=auth.currentUser;
-  if(!user) return;
-  document.getElementById('sessionInfo').innerHTML=`
-    <div>Signed in as: <strong style="color:var(--text)">${user.email}</strong></div>
-    <div>User ID: <code style="font-size:11px;color:var(--muted)">${user.uid}</code></div>
-    <div>Session started: ${new Date(user.metadata.lastSignInTime).toLocaleString('en-GB')}</div>`;
-}
-
-window.runSeed = async function() {
-  if(!confirm('Seed Firestore with default data? Existing records will not be overwritten.')) return;
-  showToast('Seeding... this may take a moment','#3b7ff5');
-  const batch=writeBatch(db);
-  AC_VEHICLES.forEach(v=>batch.set(doc(db,'vehicles',v.stockNo),{...v,_updatedAt:serverTimestamp()},{merge:true}));
-  await batch.commit();
-  for(const s of AC_STAFF) await setDoc(doc(db,'staff',s.name.replace(/\s+/g,'_')),{...s,_updatedAt:serverTimestamp()},{merge:true});
-  for(const d of AC_DEPARTMENTS) await setDoc(doc(db,'departments',d.name.replace(/\s+/g,'_')),{...d,_updatedAt:serverTimestamp()},{merge:true});
-  await setDoc(doc(db,'lists','main'),{faults:AC_FAULTS,repairs:AC_REPAIRS,parts:AC_PARTS,locations:AC_LOCATIONS,_updatedAt:serverTimestamp()});
-  showToast('✓ Firestore seeded successfully!','#22c55e');
-  loadStats();
-};
-
-function showToast(msg,bg='#22c55e'){
-  document.querySelectorAll('.toast').forEach(t=>t.remove());
-  const t=document.createElement('div');t.className='toast';
-  t.style.cssText=`background:${bg};color:${bg==='#22c55e'?'#000':'#fff'}`;
-  t.innerHTML=msg;document.body.appendChild(t);
-  setTimeout(()=>t.remove(),3000);
-}
+function doLogout() { window.location.href = './login.html'; }
 </script>
 </body>
 </html>

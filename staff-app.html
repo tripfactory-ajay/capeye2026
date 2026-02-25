@@ -704,5 +704,14 @@ function showToast(msg) {
   setTimeout(()=>t.remove(),2500);
 }
 </script>
+
+<script>
+// ── No login required — review mode ─────────────────────────────
+document.addEventListener('DOMContentLoaded', function() {
+  var b = document.getElementById('userBadge');
+  if (b) b.textContent = 'AUTO CAPITAL';
+});
+function doLogout() { window.location.href = './login.html'; }
+</script>
 </body>
 </html>

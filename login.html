@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login | CapeEye Auto Capital</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700;800&family=Barlow+Condensed:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="./firebase-config.js"></script>
+<script src="./ac-data.js"></script>
+<style>
+:root{--bg:#0b0e15;--bg2:#111622;--bg3:#1a2035;--border:rgba(255,255,255,0.07);--accent:#e8b84b;--accent2:#3b7ff5;--green:#22c55e;--red:#ef4444;--text:#f1f5f9;--muted:#64748b}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.login-wrap{width:100%;max-width:420px}
+.logo-area{text-align:center;margin-bottom:40px}
+.logo-area img{height:56px;margin-bottom:16px}
+.brand{font-family:'Barlow Condensed',sans-serif;font-size:42px;font-weight:800;letter-spacing:4px;color:var(--accent)}
+.brand-sub{font-size:13px;color:var(--muted);margin-top:4px;letter-spacing:2px;text-transform:uppercase}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:32px;box-shadow:0 24px 64px rgba(0,0,0,.4)}
+.card-title{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:800;letter-spacing:.5px;margin-bottom:24px;text-align:center}
+.field{margin-bottom:18px}
+.field label{display:block;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.field input{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:13px 16px;color:var(--text);font-size:15px;font-family:'Barlow',sans-serif;outline:none;transition:border-color .2s}
+.field input:focus{border-color:var(--accent2)}
+.field input::placeholder{color:var(--muted)}
+.btn-login{width:100%;padding:15px;border-radius:10px;background:var(--accent);color:#000;font-size:16px;font-weight:800;border:none;cursor:pointer;font-family:'Barlow',sans-serif;letter-spacing:.5px;transition:all .2s;margin-top:8px}
+.btn-login:hover{opacity:.92}
+.btn-login:disabled{opacity:.5;cursor:not-allowed}
+.error-msg{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:8px;padding:10px 14px;font-size:13px;color:var(--red);margin-bottom:16px;display:none}
+.footer-note{text-align:center;font-size:12px;color:var(--muted);margin-top:20px}
+.spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(0,0,0,.3);border-top-color:#000;border-radius:50%;animation:spin .6s linear infinite;vertical-align:middle;margin-right:6px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.setup-note{background:rgba(232,184,75,.08);border:1px solid rgba(232,184,75,.2);border-radius:10px;padding:14px;margin-top:20px;font-size:12px;color:var(--accent);line-height:1.6}
+.setup-note strong{display:block;margin-bottom:6px;font-size:13px}
+</style>
+</head>
+<body>
+<div class="login-wrap">
+  <div class="logo-area">
+    <img src="./autocapital-logo.png" alt="Auto Capital" onerror="this.style.display='none'">
+    <div class="brand">CAPEYE</div>
+    <div class="brand-sub">Auto Capital Back Office</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Sign In</div>
+    <div class="error-msg" id="errorMsg"></div>
+    <div class="field">
+      <label>Email Address</label>
+      <input type="email" id="emailInput" placeholder="your@email.com" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <div class="field">
+      <label>Password</label>
+      <input type="password" id="passInput" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <button class="btn-login" id="loginBtn" onclick="doLogin()">
+      <i class="fas fa-sign-in-alt"></i> Sign In
+    </button>
+  </div>
+
+  <div class="setup-note" id="setupNote" style="display:none">
+    <strong>⚙️ Firebase Not Configured Yet</strong>
+    Open <code>firebase-config.js</code> and paste your Firebase project credentials.
+    Then create your first user in Firebase Console → Authentication → Add User.
+  </div>
+
+  <div class="footer-note">
+    CapeEye Auto Capital · Powered by Firebase<br>
+    <a href="capeye.autocapital.co.uk" style="color:var(--accent);text-decoration:none">capeye.autocapital.co.uk</a>
+  </div>
+</div>
+
+
+
+<script>
+// ── No login required — review mode ─────────────────────────────
+document.addEventListener('DOMContentLoaded', function() {
+  var b = document.getElementById('userBadge');
+  if (b) b.textContent = 'AUTO CAPITAL';
+});
+function doLogout() { window.location.href = './login.html'; }
+</script>
+</body>
+</html>

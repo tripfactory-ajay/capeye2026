@@ -71,16 +71,14 @@ body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--text);min-
     <div class="logo-divider"></div>
     <span class="system-name">CAPEYE</span>
   </div>
-      <nav class="nav">
+    <nav class="nav">
     <a href="./index.html"><i class="fas fa-th-large"></i> Dashboard</a>
     <a href="./inventory.html" class="active"><i class="fas fa-car"></i> Inventory</a>
     <a href="./workflow.html"><i class="fas fa-tasks"></i> Workflow</a>
-    <a href="./keys.html"><i class="fas fa-key"></i> Keys</a>
     <a href="./alerts.html"><i class="fas fa-bell"></i> Alerts</a>
     <a href="./marketing.html"><i class="fas fa-chart-line"></i> Marketing</a>
     <a href="./team.html"><i class="fas fa-users"></i> Team</a>
     <a href="./admin.html"><i class="fas fa-cog"></i> Admin</a>
-    <a href="./import.html"><i class="fas fa-file-upload"></i> Import</a>
   </nav>
   <div class="header-right"><span class="user-badge">AUTO CAPITAL</span></div>
 </header>
@@ -283,17 +281,15 @@ function exportCSV() {
 populateFilters();
 applyFilters();
 </script>
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-const _fapp = initializeApp(FIREBASE_CONFIG);
-const _fauth = getAuth(_fapp);
-window.doLogout = () => signOut(_fauth).then(() => location.href = './login.html');
-onAuthStateChanged(_fauth, user => {
-  if (!user) { location.href = './login.html'; return; }
-  const b = document.getElementById('userBadge');
-  if (b) b.textContent = user.email.split('@')[0].toUpperCase();
+
+
+<script>
+// ── No login required — review mode ─────────────────────────────
+document.addEventListener('DOMContentLoaded', function() {
+  var b = document.getElementById('userBadge');
+  if (b) b.textContent = 'AUTO CAPITAL';
 });
+function doLogout() { window.location.href = './login.html'; }
 </script>
 </body>
 </html>
